@@ -1,22 +1,20 @@
 package com.github.devsns.domain.notifications.dto;
 
+import com.github.devsns.domain.notifications.constant.NotificationType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+
 public class NotificationDto {
-    private String message;
-//    private User recipient; // 알림을 받을 사용자 정보
-//    private User sender; // 알림을 생성한 사용자 정보 (optional)
 
-    private String likeNotification;
-    private String commentNotification;
-    private String followNotification;
-    private String messageNotification;
-
-    private int likeNotificationCount;
-    private int commentNotificationCount;
-    private int followNotificationCount;
-    private int messageNotificationCount;
+    private Long id;
+    private Long userId;
+    private LocalDateTime createdAt;
+    private NotificationType type;
 }
