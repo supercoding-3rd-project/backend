@@ -2,9 +2,14 @@ package com.github.devsns.domain.qnas.dto;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
+@Setter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class QuestionBoardReqDto {
+
+    private Integer userId;
+    private String title;
+    private String content;
 }
