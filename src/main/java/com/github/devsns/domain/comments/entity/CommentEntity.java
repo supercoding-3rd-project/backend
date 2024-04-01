@@ -1,6 +1,7 @@
 package com.github.devsns.domain.comments.entity;
 
 import com.github.devsns.domain.comments.constant.CommentStatus;
+import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.user.userEntity.UserEntity;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -16,8 +17,8 @@ public class CommentEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", nullable = false)
-    private Post post;
+    @JoinColumn(name = "ques_id", nullable = false)
+    private QuestionBoardEntity post;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

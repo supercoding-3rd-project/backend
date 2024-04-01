@@ -21,11 +21,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
         // 토큰 추출
         String token = extractTokenFromPayload(payload);
 
-        // 토큰을 사용하여 인증 및 유저 ID 확인
-        Long userId = authenticationService.getUserIdFromToken(token); //가상의 서비스
-
-        // 사용자에게 최근 알림을 전송
-        notificationService.sendRecentNotificationsToUser(userId, session);
+//        // 토큰을 사용하여 인증 및 유저 ID 확인
+//        Long userId = authenticationService.getUserIdFromToken(token); //가상의 서비스
+//
+//        // 사용자에게 최근 알림을 전송
+//        notificationService.sendRecentNotificationsToUser(userId, session);
     }
 
     private String extractTokenFromPayload(String payload) {
