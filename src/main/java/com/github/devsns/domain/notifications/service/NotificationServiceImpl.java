@@ -5,6 +5,7 @@ import com.github.devsns.domain.comments.entity.CommentEntity;
 import com.github.devsns.domain.notifications.constant.NotificationType;
 import com.github.devsns.domain.notifications.entity.*;
 import com.github.devsns.domain.notifications.repository.NotificationRepository;
+import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.user.userEntity.UserEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,7 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setRecipient(postAuthor);
 
         UserEntity commenter = comment.getCommenter();
-        Post post = comment.getPost();
+        QuestionBoardEntity post = comment.getPost();
 
         CommentNotification commentNotification = new CommentNotification();
         commentNotification.setCommenter(commenter);
@@ -69,7 +70,7 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.save(notification);
     }
 
-    public void sendPostLikeNotification(UserEntity recipient, UserEntity liker, Post post) {
+    public void sendPostLikeNotification(UserEntity recipient, UserEntity liker, QuestionBoardEntity post) {
         Notification notification = new Notification();
         notification.setRecipient(recipient);
 
