@@ -4,16 +4,19 @@ import com.github.devsns.domain.user.userEntity.UserEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
-public class MessageNotification {
+public class FollowingNotification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne
-    private UserEntity recipient; // 알림을 받는 사용자
-
+    private UserEntity recipient;
     @ManyToOne
-    private UserEntity sender; // 메시지를 보낸 사용자
+    private UserEntity follower;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
 }

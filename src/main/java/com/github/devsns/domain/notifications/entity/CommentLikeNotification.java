@@ -1,5 +1,7 @@
 package com.github.devsns.domain.notifications.entity;
 
+import com.github.devsns.domain.comments.entity.CommentEntity;
+import com.github.devsns.domain.user.userEntity.UserEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -11,11 +13,11 @@ public class CommentLikeNotification  {
     private Long id;
 
     @ManyToOne
-    private User recipient; // 알림을 받는 사용자
+    private UserEntity recipient; // 알림을 받는 사용자
 
     @ManyToOne
-    private User liker; // 댓글 좋아요를 누른 사용자
+    private UserEntity liker; // 댓글 좋아요를 누른 사용자
 
     @ManyToOne
-    private Comment comment; // 좋아요를 누른 댓글
+    private CommentEntity comment; // 좋아요를 누른 댓글
 }

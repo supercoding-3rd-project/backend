@@ -1,8 +1,11 @@
 package com.github.devsns.domain.notifications.service;
 
+import com.github.devsns.domain.comments.entity.CommentEntity;
+import com.github.devsns.domain.user.userEntity.UserEntity;
 import org.springframework.web.socket.WebSocketSession;
 
 public interface NotificationService {
-    public void sendRecentNotificationsToUser(Long userId, WebSocketSession session);
+    void sendRecentNotificationsToUser(Long userId, WebSocketSession session);
 
+    void sendCommentNotification(UserEntity postAuthor, CommentEntity comment);
 }

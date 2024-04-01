@@ -1,6 +1,5 @@
 package com.github.devsns.domain.notifications.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.devsns.domain.notifications.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
