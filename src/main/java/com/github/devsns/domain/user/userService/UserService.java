@@ -2,7 +2,7 @@ package com.github.devsns.domain.user.userService;
 
 import com.github.devsns.domain.user.userDto.SignupDto;
 import com.github.devsns.domain.user.userEntities.UserEntity;
-import com.github.devsns.domain.user.userRespository.UserRepository;
+import com.github.devsns.domain.user.userRepository.UserRepository;
 import com.github.devsns.exception.AppException;
 import com.github.devsns.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
