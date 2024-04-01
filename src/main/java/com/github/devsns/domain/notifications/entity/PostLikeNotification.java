@@ -1,5 +1,6 @@
 package com.github.devsns.domain.notifications.entity;
 
+import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.user.userEntities.UserEntity;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -18,5 +19,5 @@ public class PostLikeNotification  {
     private UserEntity liker; // 좋아요를 누른 사용자
 
     @ManyToOne
-    private Post post; // 좋아요를 누른 글
+    private QuestionBoardEntity post; // 좋아요를 누른 글
 }

@@ -5,6 +5,7 @@ import com.github.devsns.domain.comments.entity.CommentEntity;
 import com.github.devsns.domain.notifications.constant.NotificationType;
 import com.github.devsns.domain.notifications.entity.*;
 import com.github.devsns.domain.notifications.repository.NotificationRepository;
+import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.user.userEntities.UserEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -25,17 +26,17 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     public void sendRecentNotificationsToUser(Long userId, WebSocketSession session) {
-        // 사용자에게 전송할 최근 알림을 조회
-        List<Notification> recentNotifications = notificationRepository.findTop10ByUserIdOrderByCreatedAtDesc(userId);
-
-        // 조회된 알림을 WebSocket을 통해 사용자에게 전송
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            String jsonData = mapper.writeValueAsString(recentNotifications);
-            session.sendMessage(new TextMessage(jsonData));
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to send recent notifications to user", e);
-        }
+//        // 사용자에게 전송할 최근 알림을 조회
+//        List<Notification> recentNotifications = notificationRepository.findTop10ByUserIdOrderByCreatedAtDesc(userId);
+//
+//        // 조회된 알림을 WebSocket을 통해 사용자에게 전송
+//        ObjectMapper mapper = new ObjectMapper();
+//        try {
+//            String jsonData = mapper.writeValueAsString(recentNotifications);
+//            session.sendMessage(new TextMessage(jsonData));
+//        } catch (IOException e) {
+//            throw new RuntimeException("Failed to send recent notifications to user", e);
+//        }
     }
 
     public void sendCommentNotification(UserEntity postAuthor, CommentEntity comment) {
@@ -43,7 +44,7 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setRecipient(postAuthor);
 
         UserEntity commenter = comment.getCommenter();
-        Post post = comment.getPost();
+        QuestionBoardEntity post = comment.getPost();
 
         CommentNotification commentNotification = new CommentNotification();
         commentNotification.setCommenter(commenter);
@@ -69,7 +70,7 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.save(notification);
     }
 
-    public void sendPostLikeNotification(UserEntity recipient, UserEntity liker, Post post) {
+    public void sendPostLikeNotification(UserEntity recipient, UserEntity liker, QuestionBoardEntity post) {
         Notification notification = new Notification();
         notification.setRecipient(recipient);
 
