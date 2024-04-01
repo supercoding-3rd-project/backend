@@ -1,8 +1,6 @@
-package com.github.devsns.domain.qnas.dto;
+package com.github.devsns.domain.question.dto;
 
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter

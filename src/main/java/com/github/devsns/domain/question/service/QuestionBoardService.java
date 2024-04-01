@@ -1,8 +1,9 @@
-package com.github.devsns.domain.qnas.service;
+package com.github.devsns.domain.question.service;
 
-import com.github.devsns.domain.qnas.dto.QuestionBoardReqDto;
-import com.github.devsns.domain.qnas.repository.LikeRepository;
-import com.github.devsns.domain.qnas.repository.QuestionBoardRepository;
+import com.github.devsns.domain.question.dto.QuestionBoardReqDto;
+import com.github.devsns.domain.question.repository.LikeRepository;
+import com.github.devsns.domain.question.repository.QuestionBoardRepository;
+import com.github.devsns.domain.user.userEntities.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,5 +16,6 @@ public class QuestionBoardService {
 
 
     public void createQuestionBoard(QuestionBoardReqDto questionBoardReqDto) {
+
     }
 }

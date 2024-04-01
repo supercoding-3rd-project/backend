@@ -1,6 +1,6 @@
-package com.github.devsns.domain.qnas.repository;
+package com.github.devsns.domain.question.repository;
 
-import com.github.devsns.domain.qnas.entity.QuestionBoardEntity;
+import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

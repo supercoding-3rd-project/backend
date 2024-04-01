@@ -1,4 +1,4 @@
-package com.github.devsns.domain.qnas.entity;
+package com.github.devsns.domain.question.entity;
 
 import com.github.devsns.domain.user.userEntities.UserEntity;
 import jakarta.persistence.*;
