@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -19,5 +21,11 @@ public class QuestionBoardController {
     public ResponseEntity<?> createQuestionBoard(@RequestBody QuestionBoardReqDto questionBoardReqDto) {
         questionBoardService.createQuestionBoard(questionBoardReqDto);
         return ResponseEntity.ok("질문이 등록되었습니다.");
+    }
+
+    @PostMapping("/{quesId}/like")
+    public ResponseEntity<String> likeQuestionBoard(@PathVariable Long quesId, Principal principal) {
+        String result = questionBoardService.questionBoardLike(quesId);
+        return ResponseEntity.ok(result);
     }
 }

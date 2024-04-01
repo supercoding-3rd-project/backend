@@ -11,6 +11,7 @@ public enum ErrorCode {
     USERNAME_DUPLICATED(HttpStatus.CONFLICT, "이미 존재하는 닉네임입니다."),
     USE_EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "이메일을 찾을 수 없습니다."),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "유효하지 않은 비밀번호 입니다."),
+    QUES_BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "질문 게시글을 찾을 수 없습니다."),
     ;
 
     private final HttpStatus httpStatus;

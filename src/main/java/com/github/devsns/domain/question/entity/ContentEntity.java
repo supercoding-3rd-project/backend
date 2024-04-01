@@ -1,5 +1,6 @@
 package com.github.devsns.domain.question.entity;
 
+import com.github.devsns.domain.question.dto.QuestionBoardReqDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,4 +20,10 @@ public class ContentEntity {
 
     @Column(name = "markdown_content")
     private String content;
+
+    public static ContentEntity toEntity(String content) {
+        return ContentEntity.builder()
+                .content(content)
+                .build();
+    }
 }
