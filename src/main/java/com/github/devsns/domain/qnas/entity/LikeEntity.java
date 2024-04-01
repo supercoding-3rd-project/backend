@@ -1,6 +1,6 @@
 package com.github.devsns.domain.qnas.entity;
 
-import com.github.devsns.domain.user.userEntity.UserEntity;
+import com.github.devsns.domain.user.userEntities.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
