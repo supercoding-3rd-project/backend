@@ -1,11 +1,7 @@
-package com.github.devsns.domain.user.userEntity;
+package com.github.devsns.domain.user.userEntities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +9,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "users")
 public class UserEntity {
@@ -28,12 +25,19 @@ public class UserEntity {
     private String password;
 
     @Column(name = "username")
-    private String userName;
+    private String username;
 
-    @CreatedDate
-    @Column(updatable = false, name = "created_at")
-    private LocalDateTime createdAt;
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Column(name = "created_at")
+    private LocalDateTime createAt;
 
     @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
+    private LocalDateTime deleteAt;
+
+    // 기본권한 USER로 부여
+    public void addUserAuthority(){
+        this.role = Role.USER;
+    }
 }
