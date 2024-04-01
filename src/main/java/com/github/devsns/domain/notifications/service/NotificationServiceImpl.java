@@ -5,7 +5,7 @@ import com.github.devsns.domain.comments.entity.CommentEntity;
 import com.github.devsns.domain.notifications.constant.NotificationType;
 import com.github.devsns.domain.notifications.entity.*;
 import com.github.devsns.domain.notifications.repository.NotificationRepository;
-import com.github.devsns.domain.user.userEntity.UserEntity;
+import com.github.devsns.domain.user.userEntities.UserEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
