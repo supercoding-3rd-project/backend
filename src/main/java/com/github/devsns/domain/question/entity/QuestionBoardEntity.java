@@ -39,7 +39,6 @@ public class QuestionBoardEntity {
     private ContentEntity content;
 
     @OneToMany(mappedBy = "questionBoard")
-    @JoinColumn(name = "ques_id")
     private List<LikeEntity> like = new ArrayList<>();
 
     @DateTimeFormat(pattern = "yy.mm.dd hh:mm")

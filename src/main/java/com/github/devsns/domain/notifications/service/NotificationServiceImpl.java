@@ -6,7 +6,7 @@ import com.github.devsns.domain.notifications.constant.NotificationType;
 import com.github.devsns.domain.notifications.entity.*;
 import com.github.devsns.domain.notifications.repository.NotificationRepository;
 import com.github.devsns.domain.question.entity.QuestionBoardEntity;
-import com.github.devsns.domain.user.userEntity.UserEntity;
+import com.github.devsns.domain.user.userEntities.UserEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
@@ -26,17 +26,17 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     public void sendRecentNotificationsToUser(Long userId, WebSocketSession session) {
-        // 사용자에게 전송할 최근 알림을 조회
-        List<Notification> recentNotifications = notificationRepository.findTop10ByUserIdOrderByCreatedAtDesc(userId);
-
-        // 조회된 알림을 WebSocket을 통해 사용자에게 전송
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            String jsonData = mapper.writeValueAsString(recentNotifications);
-            session.sendMessage(new TextMessage(jsonData));
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to send recent notifications to user", e);
-        }
+//        // 사용자에게 전송할 최근 알림을 조회
+//        List<Notification> recentNotifications = notificationRepository.findTop10ByUserIdOrderByCreatedAtDesc(userId);
+//
+//        // 조회된 알림을 WebSocket을 통해 사용자에게 전송
+//        ObjectMapper mapper = new ObjectMapper();
+//        try {
+//            String jsonData = mapper.writeValueAsString(recentNotifications);
+//            session.sendMessage(new TextMessage(jsonData));
+//        } catch (IOException e) {
+//            throw new RuntimeException("Failed to send recent notifications to user", e);
+//        }
     }
 
     public void sendCommentNotification(UserEntity postAuthor, CommentEntity comment) {
