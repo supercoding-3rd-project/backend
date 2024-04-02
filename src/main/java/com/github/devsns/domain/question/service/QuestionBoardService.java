@@ -5,8 +5,8 @@ import com.github.devsns.domain.question.entity.LikeEntity;
 import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.question.repository.LikeRepository;
 import com.github.devsns.domain.question.repository.QuestionBoardRepository;
-import com.github.devsns.domain.user.userEntities.UserEntity;
-import com.github.devsns.domain.user.userRepository.UserRepository;
+import com.github.devsns.domain.user.entitiy.UserEntity;
+import com.github.devsns.domain.user.repository.UserRepository;
 import com.github.devsns.exception.AppException;
 import com.github.devsns.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,7 @@ public class QuestionBoardService {
     @Transactional
     public void createQuestionBoard(QuestionBoardReqDto questionBoardReqDto /*, String email*/) {
         UserEntity user = userRepository.findByEmail("user@email.com").orElseThrow(
-                () -> new AppException(ErrorCode.USE_EMAIL_NOT_FOUND.getMessage(), ErrorCode.USE_EMAIL_NOT_FOUND)
+                () -> new AppException(ErrorCode.USER_EMAIL_NOT_FOUND.getMessage(), ErrorCode.USER_EMAIL_NOT_FOUND)
         );
 
         QuestionBoardEntity questionBoard = QuestionBoardEntity.toEntity(user, questionBoardReqDto);
@@ -50,7 +50,7 @@ public class QuestionBoardService {
         );
 
         UserEntity user = userRepository.findByEmail(email).orElseThrow(
-                () -> new AppException(ErrorCode.USE_EMAIL_NOT_FOUND.getMessage(), ErrorCode.USE_EMAIL_NOT_FOUND)
+                () -> new AppException(ErrorCode.USER_EMAIL_NOT_FOUND.getMessage(), ErrorCode.USER_EMAIL_NOT_FOUND)
         );
 
         Optional<LikeEntity> likes = likeRepository.findByUserAndQuestionBoard(user, questionBoard);

@@ -1,6 +1,6 @@
-package com.github.devsns.domain.user.userRepository;
+package com.github.devsns.domain.user.repository;
 
-import com.github.devsns.domain.user.userEntities.UserEntity;
+import com.github.devsns.domain.user.entitiy.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

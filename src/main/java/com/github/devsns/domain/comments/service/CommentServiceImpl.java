@@ -1,12 +1,9 @@
 package com.github.devsns.domain.comments.service;
 
-import com.github.devsns.domain.comments.entity.CommentEntity;
 import com.github.devsns.domain.comments.repository.CommentRepository;
 import com.github.devsns.domain.notifications.service.NotificationService;
-import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.question.service.QuestionBoardService;
-import com.github.devsns.domain.user.userEntities.UserEntity;
-import com.github.devsns.domain.user.userService.UserService;
+import com.github.devsns.domain.user.service.UserService;
 import org.springframework.stereotype.Service;
 
 @Service

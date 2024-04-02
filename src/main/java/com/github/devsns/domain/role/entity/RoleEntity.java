@@ -1,4 +1,4 @@
-package com.github.devsns.domain.role.roleEntity;
+package com.github.devsns.domain.role.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,5 +20,4 @@ public class RoleEntity {
 
     @Column(name = "role_name")
     private String roleName;
-
 }
