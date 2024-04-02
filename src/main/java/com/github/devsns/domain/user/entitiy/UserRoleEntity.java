@@ -1,7 +1,6 @@
-package com.github.devsns.domain.user.userRoleEntity;
+package com.github.devsns.domain.user.entitiy;
 
-import com.github.devsns.domain.role.roleEntity.RoleEntity;
-import com.github.devsns.domain.user.userEntities.UserEntity;
+import com.github.devsns.domain.role.entity.RoleEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,16 +13,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "user_roles")
-public class userRole {
+public class UserRoleEntity {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_role_id")
     private Long userRoleId;
 
-    @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserEntity userEntity;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private UserEntity user;
 
-    @ManyToOne
     @JoinColumn(name = "role_id")
-    private RoleEntity roleEntity;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private RoleEntity role;
 }

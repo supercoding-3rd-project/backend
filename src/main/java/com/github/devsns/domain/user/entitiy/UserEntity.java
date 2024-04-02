@@ -1,9 +1,11 @@
-package com.github.devsns.domain.user.userEntities;
+package com.github.devsns.domain.user.entitiy;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,17 +29,13 @@ public class UserEntity {
     @Column(name = "username")
     private String username;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    List<UserRoleEntity> roles = new ArrayList<>();
 
     @Column(name = "created_at")
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "deleted_at")
-    private LocalDateTime deleteAt;
+    private LocalDateTime deletedAt;
 
-    // 기본권한 USER로 부여
-    public void addUserAuthority(){
-        this.role = Role.USER;
-    }
 }
