@@ -1,14 +1,15 @@
 package com.github.devsns.domain.notifications.entity;
 
-import com.github.devsns.domain.comments.entity.CommentEntity;
-import com.github.devsns.domain.question.entity.QuestionBoardEntity;
+import com.github.devsns.domain.answers.entity.AnswerEntity;
+import com.github.devsns.domain.comments.entity.AnswerCommentEntity;
+import com.github.devsns.domain.comments.entity.QuestionCommentEntity;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
 @Data
-public class CommentNotification {
+public class AnswerCommentNotification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,9 +21,9 @@ public class CommentNotification {
     private UserEntity commenter; // 댓글을 작성한 사용자
 
     @ManyToOne
-    private QuestionBoardEntity post; // 해당 댓글이 작성된 게시물
+    private AnswerEntity answer; // 해당 댓글이 작성된 답변
 
     @ManyToOne
-    private CommentEntity comment; // 작성된 댓글
+    private AnswerCommentEntity comment; // 작성된 댓글
 
 }
