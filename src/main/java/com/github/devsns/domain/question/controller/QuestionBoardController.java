@@ -1,6 +1,7 @@
 package com.github.devsns.domain.question.controller;
 
 import com.github.devsns.domain.question.dto.QuestionBoardReqDto;
+import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.question.service.QuestionBoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,8 +26,13 @@ public class QuestionBoardController {
     }
 
     @PostMapping("/{quesId}/like")
-    public ResponseEntity<String> likeQuestionBoard(@PathVariable Long quesId, Principal principal) {
-        String result = questionBoardService.questionBoardLike(quesId);
+    public ResponseEntity<?> likeQuestionBoard(@PathVariable Long quesId, Principal principal) {
+        String result = questionBoardService.questionBoardLike(quesId, principal.getName());
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/search")
+    public List<QuestionBoardEntity> findQuesBoardByTitleKeyword(@RequestParam("keyword") String keyword) {
+        return questionBoardService.findByNameContaining(keyword);
     }
 }

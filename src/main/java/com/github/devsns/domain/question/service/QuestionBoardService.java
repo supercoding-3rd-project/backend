@@ -11,8 +11,12 @@ import com.github.devsns.exception.AppException;
 import com.github.devsns.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,22 +26,30 @@ public class QuestionBoardService {
     private final LikeRepository likeRepository;
     private final UserRepository userRepository;
 
+    public List<QuestionBoardEntity> findByNameContaining(String titleKeyword) {
+        return questionBoardRepository.findQuestionBoardEntitiesByTitleContaining(titleKeyword).stream()
+                .filter(questionBoard -> questionBoard.getDeletedAt().isBefore(LocalDateTime.now()))
+                .collect(Collectors.toList());
+    }
 
-    public void createQuestionBoard(QuestionBoardReqDto questionBoardReqDto) {
-        UserEntity user = userRepository.findByEmail("email")
-                .orElseThrow(() -> new AppException(ErrorCode.USE_EMAIL_NOT_FOUND.getMessage(), ErrorCode.USE_EMAIL_NOT_FOUND));
+    // 질분 게시글 생성하기
+    @Transactional
+    public void createQuestionBoard(QuestionBoardReqDto questionBoardReqDto /*, String email*/) {
+        UserEntity user = userRepository.findByEmail("user@email.com").orElseThrow(
+                () -> new AppException(ErrorCode.USE_EMAIL_NOT_FOUND.getMessage(), ErrorCode.USE_EMAIL_NOT_FOUND)
+        );
 
         QuestionBoardEntity questionBoard = QuestionBoardEntity.toEntity(user, questionBoardReqDto);
 
         questionBoardRepository.save(questionBoard);
     }
 
-    public String questionBoardLike(Long questionBoardId) {
+    public String questionBoardLike(Long questionBoardId, String email) {
         QuestionBoardEntity questionBoard = questionBoardRepository.findById(questionBoardId).orElseThrow(
                 () -> new AppException(ErrorCode.QUES_BOARD_NOT_FOUND.getMessage(), ErrorCode.QUES_BOARD_NOT_FOUND)
         );
 
-        UserEntity user = userRepository.findByEmail("email").orElseThrow(
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(
                 () -> new AppException(ErrorCode.USE_EMAIL_NOT_FOUND.getMessage(), ErrorCode.USE_EMAIL_NOT_FOUND)
         );
 

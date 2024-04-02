@@ -7,7 +7,6 @@ import lombok.*;
 @Builder
 public class QuestionBoardReqDto {
 
-    private Integer userId;
     private String title;
     private String content;
 }
