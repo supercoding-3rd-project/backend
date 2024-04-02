@@ -32,18 +32,19 @@ public class QuestionBoardService {
                 .collect(Collectors.toList());
     }
 
-    // 질분 게시글 생성하기
+    // 질문 게시글 생성하기
     @Transactional
     public void createQuestionBoard(QuestionBoardReqDto questionBoardReqDto /*, String email*/) {
         UserEntity user = userRepository.findByEmail("user@email.com").orElseThrow(
                 () -> new AppException(ErrorCode.USER_EMAIL_NOT_FOUND.getMessage(), ErrorCode.USER_EMAIL_NOT_FOUND)
         );
 
-        QuestionBoardEntity questionBoard = QuestionBoardEntity.toEntity(user, questionBoardReqDto);
+        QuestionBoardEntity questionBoard = QuestionBoardEntity.toEntity(/*user,*/ questionBoardReqDto);
 
         questionBoardRepository.save(questionBoard);
     }
 
+    // 좋아요
     public String questionBoardLike(Long questionBoardId, String email) {
         QuestionBoardEntity questionBoard = questionBoardRepository.findById(questionBoardId).orElseThrow(
                 () -> new AppException(ErrorCode.QUES_BOARD_NOT_FOUND.getMessage(), ErrorCode.QUES_BOARD_NOT_FOUND)

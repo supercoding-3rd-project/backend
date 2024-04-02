@@ -13,13 +13,13 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 @Slf4j
 public class QuestionBoardController {
 
     private final QuestionBoardService questionBoardService;
 
-    @PostMapping("/createQuestion")
+    @PostMapping("/create/question")
     public ResponseEntity<?> createQuestionBoard(@RequestBody QuestionBoardReqDto questionBoardReqDto) {
         questionBoardService.createQuestionBoard(questionBoardReqDto);
         return ResponseEntity.ok("질문이 등록되었습니다.");
