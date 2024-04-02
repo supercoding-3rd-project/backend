@@ -1,6 +1,6 @@
 package com.github.devsns.domain.question.entity;
 
-import com.github.devsns.domain.user.userEntities.UserEntity;
+import com.github.devsns.domain.user.entitiy.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

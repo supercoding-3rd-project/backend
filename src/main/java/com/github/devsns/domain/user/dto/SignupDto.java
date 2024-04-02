@@ -1,4 +1,4 @@
-package com.github.devsns.domain.user.userDto;
+package com.github.devsns.domain.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
