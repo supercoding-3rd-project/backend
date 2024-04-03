@@ -1,13 +1,16 @@
 package com.github.devsns.domain.notifications.entity;
 
-import com.github.devsns.domain.comments.entity.CommentEntity;
+
+import com.github.devsns.domain.answers.entity.AnswerEntity;
+import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
 @Data
-public class CommentLikeNotification  {
+public class AnswerNotification {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,8 +19,8 @@ public class CommentLikeNotification  {
     private UserEntity recipient; // 알림을 받는 사용자
 
     @ManyToOne
-    private UserEntity liker; // 댓글 좋아요를 누른 사용자
+    private UserEntity answerer; // 답변을 작성한 사용자
 
     @ManyToOne
-    private CommentEntity comment; // 좋아요를 누른 댓글
+    private QuestionBoardEntity question; // 답변이 달린 질문
 }
