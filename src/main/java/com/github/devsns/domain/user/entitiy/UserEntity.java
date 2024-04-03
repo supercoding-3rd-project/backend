@@ -2,6 +2,7 @@ package com.github.devsns.domain.user.entitiy;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,22 +21,33 @@ public class UserEntity {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "email")
     private String email;
-
-    @Column(name = "password")
     private String password;
-
-    @Column(name = "username")
     private String username;
+    private String imageUrl;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    List<UserRoleEntity> roles = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @Enumerated(EnumType.STRING)
+    private SocialType socialType;
 
-    @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
+    private String socialId;
 
+    private String refreshToken;
+
+    // 유저 권한 설정
+    public void authorizeUser() {
+        this.role = Role.USER;
+    }
+
+    // 비밀번호 암호화
+    public void passwordEncode(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(this.password);
+    }
+
+    // 리프레시 토큰 업데이트
+    public void updateRefreshToken(String updateRefreshToken) {
+//        this.refreshToken = updateRefreshToken;
+    }
 }
