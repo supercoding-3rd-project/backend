@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class PostLikeNotification  {
+public class LikeQuestionNotification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,5 +19,5 @@ public class PostLikeNotification  {
     private UserEntity liker; // 좋아요를 누른 사용자
 
     @ManyToOne
-    private QuestionBoardEntity post; // 좋아요를 누른 글
+    private QuestionBoardEntity question; // 좋아요를 누른 글
 }

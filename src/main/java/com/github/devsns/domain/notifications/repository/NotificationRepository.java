@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-//    List<Notification> findTop10ByUserIdOrderByCreatedAtDesc(Long userId);
+    List<Notification> findFirst10ByRecipient_UserIdOrderByCreatedAtDesc(Long userId);
 }
