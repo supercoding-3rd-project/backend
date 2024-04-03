@@ -1,5 +1,6 @@
 package com.github.devsns.domain.question.entity;
 
+import com.github.devsns.domain.question.dto.QuestionBoardReqDto;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -54,7 +55,12 @@ public class QuestionBoardEntity {
 //    @OnDelete(action = OnDeleteAction.CASCADE)
 //    private List<AnswerEntity> answer = new ArrayList<AnswerEntity>();
 
-    public static QuestionBoardEntity toEntity() {
-        return QuestionBoardEntity.builder().build();
+    public static QuestionBoardEntity toEntity(/*UserEntity user,*/ QuestionBoardReqDto questionBoardReqDto) {
+        return QuestionBoardEntity.builder()
+//                .user(user)
+                .title(questionBoardReqDto.getTitle())
+                .content(ContentEntity.toEntity(questionBoardReqDto.getContent()))
+                .createdAt(LocalDateTime.now())
+                .build();
     }
 }

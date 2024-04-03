@@ -23,7 +23,7 @@ public class LikeEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "ques_id")
     private QuestionBoardEntity questionBoard;
 
