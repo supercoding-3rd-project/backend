@@ -25,7 +25,8 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-application-oauth.yaml
+
+
 
 ### NetBeans ###
 /nbproject/private/
@@ -36,3 +37,6 @@ application-oauth.yaml
 
 ### VS Code ###
 .vscode/
+
+# OAuth2
+/src/main/resources/application-oauth.yaml
