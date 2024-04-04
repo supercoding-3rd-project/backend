@@ -63,6 +63,8 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                 .refreshToken(refreshToken)
                 .imageUrl(userEntity.getImageUrl())
                 .build();
+
+
     }
 
     private String extractUsername(Authentication authentication) {

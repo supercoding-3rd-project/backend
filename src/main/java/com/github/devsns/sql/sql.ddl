@@ -1,10 +1,15 @@
 CREATE TABLE `users` (
-                         `user_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                         `email` VARCHAR(255) NOT NULL,
-                         `password` VARCHAR(255) NOT NULL,
-                         `username` VARCHAR(255) NOT NULL,
-                         `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                         `deleted_at` DATETIME NULL
+    `user_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `email` VARCHAR(255) NOT NULL,
+    `password` VARCHAR(255) NOT NULL,
+    `username` VARCHAR(255) NOT NULL,
+    `role` VARCHAR(20) NOT NULL,
+    `social_id` VARCHAR(20),
+    `social_type` VARCHAR(20),
+    `image_url` VARCHAR(255),
+    `refresh_token` VARCHAR(255),
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `deleted_at` DATETIME NULL
 );
 
 CREATE TABLE `roles` (

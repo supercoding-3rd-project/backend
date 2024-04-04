@@ -1,11 +1,14 @@
 package com.github.devsns.domain.user.service;
 
+import com.github.devsns.domain.auth.filter.CustomJsonUsernamePasswordAuthenticationFilter;
 import com.github.devsns.domain.user.dto.SignupDto;
 import com.github.devsns.domain.user.entitiy.Role;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import com.github.devsns.domain.user.repository.UserRepository;
 import com.github.devsns.exception.AppException;
 import com.github.devsns.exception.ErrorCode;
+import com.github.devsns.global.jwt.filter.JwtAuthenticationFilter;
+import com.github.devsns.global.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +23,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public void signup(SignupDto signupDto) throws Exception {
         // 이메일 중복 확인
@@ -37,6 +41,8 @@ public class UserService {
                 .password(signupDto.getPassword())
                 .username(signupDto.getPassword())
                 .role(Role.USER)
+                .createdAt(LocalDateTime.now())
+                .refreshToken(jwtService.createRefreshToken())
                 .build();
 
         userEntity.passwordEncode(passwordEncoder);

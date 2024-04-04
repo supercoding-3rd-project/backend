@@ -36,6 +36,8 @@ public class UserEntity {
 
     private String refreshToken;
 
+    private LocalDateTime createdAt;
+
     // 유저 권한 설정
     public void authorizeUser() {
         this.role = Role.USER;
@@ -48,6 +50,6 @@ public class UserEntity {
 
     // 리프레시 토큰 업데이트
     public void updateRefreshToken(String updateRefreshToken) {
-//        this.refreshToken = updateRefreshToken;
+        this.refreshToken = updateRefreshToken;
     }
 }
