@@ -55,9 +55,9 @@ public class QuestionBoardEntity {
 //    @OnDelete(action = OnDeleteAction.CASCADE)
 //    private List<AnswerEntity> answer = new ArrayList<AnswerEntity>();
 
-    public static QuestionBoardEntity toEntity(/*UserEntity user,*/ QuestionBoardReqDto questionBoardReqDto) {
+    public static QuestionBoardEntity toEntity(UserEntity user, QuestionBoardReqDto questionBoardReqDto) {
         return QuestionBoardEntity.builder()
-//                .user(user)
+                .user(user)
                 .title(questionBoardReqDto.getTitle())
                 .content(ContentEntity.toEntity(questionBoardReqDto.getContent()))
                 .createdAt(LocalDateTime.now())
