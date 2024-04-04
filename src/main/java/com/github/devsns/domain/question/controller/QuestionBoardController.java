@@ -23,7 +23,7 @@ public class QuestionBoardController {
     private final QuestionBoardService questionBoardService;
 
     @GetMapping
-    public List<QuestionBoardEntity> findAllQuestionBoard() {
+    public List<QuestionBoardResDto> findAllQuestionBoard() {
         return questionBoardService.findAllQuestionBoard();
     }
 

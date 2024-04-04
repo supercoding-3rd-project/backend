@@ -71,10 +71,18 @@ public class QuestionBoardService {
         }
     }
 
-    public List<QuestionBoardEntity> findAllQuestionBoard() {
-        return questionBoardRepository.findAll();
+    // 전체 질문 게시판
+    public List<QuestionBoardResDto> findAllQuestionBoard() {
+        List<QuestionBoardEntity> questionBoardEntities = questionBoardRepository.findAll();
+
+        return questionBoardEntities.stream()
+                .map(
+                        (questionBoard) -> new QuestionBoardResDto(questionBoard, likeRepository.countByQuestionBoard(questionBoard))
+                )
+                .collect(Collectors.toList());
     }
 
+    // 특정 id 질문 게시판
     public QuestionBoardResDto findQuestionBoardById(Long questionBoardId) {
         QuestionBoardEntity questionBoard = questionBoardRepository.findById(questionBoardId).orElseThrow(
                 () -> new AppException(ErrorCode.QUES_BOARD_NOT_FOUND.getMessage(), ErrorCode.QUES_BOARD_NOT_FOUND)
