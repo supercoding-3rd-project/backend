@@ -38,10 +38,7 @@ CREATE TABLE `question_board` (
     `deleted_at` DATETIME NULL
 );
 
-CREATE TABLE `content` (
-    `content_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `markdown_content` LONGTEXT NOT NULL
-);
+drop table `content`;
 
 create table ques_like
 (

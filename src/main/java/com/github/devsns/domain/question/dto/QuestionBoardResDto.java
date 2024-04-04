@@ -19,7 +19,7 @@ public class QuestionBoardResDto {
         QuestionBoardResDto.builder()
                 .id(questionBoard.getId())
                 .title(questionBoard.getTitle())
-                .content(questionBoard.getContent().getContent())
+                .content(questionBoard.getContent())
                 .likeCount(likeCount)
                 .build();
     }

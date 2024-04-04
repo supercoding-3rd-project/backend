@@ -35,9 +35,8 @@ public class QuestionBoardEntity {
     @Column(name = "title")
     private String title;
 
-    @OneToOne
-    @JoinColumn(name = "content_id")
-    private ContentEntity content;
+    @Column(name = "content")
+    private String content;
 
     @OneToMany(mappedBy = "questionBoard")
     private List<LikeEntity> like = new ArrayList<>();
@@ -59,7 +58,7 @@ public class QuestionBoardEntity {
         return QuestionBoardEntity.builder()
                 .user(user)
                 .title(questionBoardReqDto.getTitle())
-                .content(ContentEntity.toEntity(questionBoardReqDto.getContent()))
+                .content(questionBoardReqDto.getContent())
                 .createdAt(LocalDateTime.now())
                 .build();
     }
