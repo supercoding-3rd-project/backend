@@ -16,6 +16,8 @@ public enum ErrorCode {
     REFRESH_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "리프레시 토큰을 찾을 수 없습니다."),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
     ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "권한을 찾을 수 없습니다."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "일치하는 회원을 찾읋 수 없습니다"),
+    PASSWORD_ERROR(HttpStatus.CONFLICT, "비밀번호가 맞지 않습니다."),
     ;
 
     private final HttpStatus httpStatus;

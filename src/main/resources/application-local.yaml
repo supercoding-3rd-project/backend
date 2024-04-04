@@ -1,4 +1,10 @@
 spring:
+  config:
+    activate:
+      on-profile: "local"
+    import:
+      - application-jwt.yaml
+      - application-oauth.yaml
   datasource:
     url: jdbc:mysql://localhost:3306/alco_db?useUnicode=true&characterEncoding=UTF-8
     username: ${LOCAL_USERNAME}
@@ -12,3 +18,4 @@ spring:
         format_sql: false
         show_sql: true
     database-platform: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
