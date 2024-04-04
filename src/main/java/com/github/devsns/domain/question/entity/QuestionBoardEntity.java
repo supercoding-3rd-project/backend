@@ -38,6 +38,10 @@ public class QuestionBoardEntity {
     @Column(name = "content")
     private String content;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private QuestionBoardStatusType statusType;
+
     @OneToMany(mappedBy = "questionBoard")
     private List<LikeEntity> like = new ArrayList<>();
 
@@ -54,12 +58,24 @@ public class QuestionBoardEntity {
 //    @OnDelete(action = OnDeleteAction.CASCADE)
 //    private List<AnswerEntity> answer = new ArrayList<AnswerEntity>();
 
+    private void setStatusType(QuestionBoardStatusType statusType) {
+        this.statusType = statusType;
+    }
+
     public static QuestionBoardEntity toEntity(UserEntity user, QuestionBoardReqDto questionBoardReqDto) {
-        return QuestionBoardEntity.builder()
+        QuestionBoardEntity questionBoard = builder()
                 .user(user)
                 .title(questionBoardReqDto.getTitle())
                 .content(questionBoardReqDto.getContent())
                 .createdAt(LocalDateTime.now())
                 .build();
+
+        if (questionBoardReqDto.getStatusType().equals(QuestionBoardStatusType.SUBMIT.getStatus())) {
+            questionBoard.setStatusType(QuestionBoardStatusType.SUBMIT);
+        } else {
+            questionBoard.setStatusType(QuestionBoardStatusType.TEMP_SAVE);
+        }
+
+        return questionBoard;
     }
 }

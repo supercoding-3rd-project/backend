@@ -31,8 +31,8 @@ public class QuestionBoardController {
 
     @PostMapping("/create/question")
     public ResponseEntity<?> createQuestionBoard(@RequestBody QuestionBoardReqDto questionBoardReqDto, @AuthenticationPrincipal CustomUserDetails user) {
-        questionBoardService.createQuestionBoard(questionBoardReqDto, user.getUsername());
-        return ResponseEntity.ok("질문이 등록되었습니다.");
+        String result = questionBoardService.createQuestionBoard(questionBoardReqDto, user.getUsername());
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/{quesId}/like")
@@ -44,5 +44,11 @@ public class QuestionBoardController {
     @GetMapping("/v1/search")
     public List<QuestionBoardResDto> findQuesBoardByTitleKeyword(@RequestParam("keyword") String keyword) {
         return questionBoardService.findByNameContaining(keyword);
+    }
+
+    @DeleteMapping("/delete/{questionId}")
+    public ResponseEntity<?> deleteQuestion(@PathVariable Long questionId) {
+        questionBoardService.deleteQuestionBoard(questionId);
+        return ResponseEntity.ok("질문이 삭제되었습니다.");
     }
 }

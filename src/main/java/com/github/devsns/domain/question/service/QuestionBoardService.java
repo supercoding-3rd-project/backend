@@ -4,6 +4,7 @@ import com.github.devsns.domain.question.dto.QuestionBoardReqDto;
 import com.github.devsns.domain.question.dto.QuestionBoardResDto;
 import com.github.devsns.domain.question.entity.LikeEntity;
 import com.github.devsns.domain.question.entity.QuestionBoardEntity;
+import com.github.devsns.domain.question.entity.QuestionBoardStatusType;
 import com.github.devsns.domain.question.repository.LikeRepository;
 import com.github.devsns.domain.question.repository.QuestionBoardRepository;
 import com.github.devsns.domain.user.entitiy.UserEntity;
@@ -32,6 +33,7 @@ public class QuestionBoardService {
         List<QuestionBoardEntity> questionBoardEntities = questionBoardRepository.findQuestionBoardEntitiesByTitleContaining(titleKeyword);
 
         return questionBoardEntities.stream()
+                .filter(questionBoardEntity -> questionBoardEntity.getStatusType().equals(QuestionBoardStatusType.SUBMIT))
                 .map(
                         (questionBoard) -> new QuestionBoardResDto(questionBoard, likeRepository.countByQuestionBoard(questionBoard))
                 )
@@ -40,21 +42,27 @@ public class QuestionBoardService {
 
     // 질문 게시글 생성하기
     @Transactional
-    public void createQuestionBoard(QuestionBoardReqDto questionBoardReqDto, String email) {
+    public String createQuestionBoard(QuestionBoardReqDto questionBoardReqDto, String email) {
         UserEntity user = userRepository.findByEmail(email).orElseThrow(
                 () -> new AppException(ErrorCode.USER_EMAIL_NOT_FOUND.getMessage(), ErrorCode.USER_EMAIL_NOT_FOUND)
         );
 
+        String status = questionBoardReqDto.getStatusType();
+
         QuestionBoardEntity questionBoard = QuestionBoardEntity.toEntity(user, questionBoardReqDto);
 
         questionBoardRepository.save(questionBoard);
+
+        if (status.equals(QuestionBoardStatusType.SUBMIT.getStatus())) return "질문이 등록되었습니다.";
+        else return "임시 저장되었습니다.";
     }
 
     // 좋아요
     public String questionBoardLike(Long questionBoardId, String email) {
-        QuestionBoardEntity questionBoard = questionBoardRepository.findById(questionBoardId).orElseThrow(
-                () -> new AppException(ErrorCode.QUES_BOARD_NOT_FOUND.getMessage(), ErrorCode.QUES_BOARD_NOT_FOUND)
-        );
+        QuestionBoardEntity questionBoard = questionBoardRepository.findById(questionBoardId)
+                .filter(questionBoardEntity -> questionBoardEntity.getStatusType().equals(QuestionBoardStatusType.SUBMIT))
+                .orElseThrow(
+                () -> new AppException(ErrorCode.QUES_BOARD_NOT_FOUND.getMessage(), ErrorCode.QUES_BOARD_NOT_FOUND));
 
         UserEntity user = userRepository.findByEmail(email).orElseThrow(
                 () -> new AppException(ErrorCode.USER_EMAIL_NOT_FOUND.getMessage(), ErrorCode.USER_EMAIL_NOT_FOUND)
@@ -76,20 +84,34 @@ public class QuestionBoardService {
         List<QuestionBoardEntity> questionBoardEntities = questionBoardRepository.findAll();
 
         return questionBoardEntities.stream()
+                .filter(
+                        questionBoard -> questionBoard.getStatusType().equals(QuestionBoardStatusType.SUBMIT)
+                )
                 .map(
-                        (questionBoard) -> new QuestionBoardResDto(questionBoard, likeRepository.countByQuestionBoard(questionBoard))
+                        questionBoard -> new QuestionBoardResDto(questionBoard, likeRepository.countByQuestionBoard(questionBoard))
                 )
                 .collect(Collectors.toList());
     }
 
     // 특정 id 질문 게시판
     public QuestionBoardResDto findQuestionBoardById(Long questionBoardId) {
-        QuestionBoardEntity questionBoard = questionBoardRepository.findById(questionBoardId).orElseThrow(
-                () -> new AppException(ErrorCode.QUES_BOARD_NOT_FOUND.getMessage(), ErrorCode.QUES_BOARD_NOT_FOUND)
-        );
+        QuestionBoardEntity questionBoard = questionBoardRepository.findById(questionBoardId)
+                .filter(questionBoardEntity -> questionBoardEntity.getStatusType().equals(QuestionBoardStatusType.SUBMIT))
+                .orElseThrow(
+                () -> new AppException(ErrorCode.QUES_BOARD_NOT_FOUND.getMessage(), ErrorCode.QUES_BOARD_NOT_FOUND));
 
         Long likeCount = likeRepository.countByQuestionBoard(questionBoard);
 
         return new QuestionBoardResDto(questionBoard, likeCount);
+    }
+
+    @Transactional
+    public void deleteQuestionBoard(Long questionId) {
+        QuestionBoardEntity questionBoard = questionBoardRepository.findById(questionId)
+                .filter(questionBoardEntity -> questionBoardEntity.getStatusType().equals(QuestionBoardStatusType.SUBMIT))
+                .orElseThrow(
+                        () -> new AppException(ErrorCode.QUES_BOARD_NOT_FOUND.getMessage(), ErrorCode.QUES_BOARD_NOT_FOUND));
+
+        questionBoardRepository.delete(questionBoard);
     }
 }
