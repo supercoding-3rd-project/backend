@@ -1,5 +1,6 @@
 package com.github.devsns.domain.answers.entity;
 
+import com.github.devsns.domain.comments.entity.AnswerCommentEntity;
 import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import com.github.devsns.global.constant.Status;
@@ -8,6 +9,8 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -41,7 +44,10 @@ public class AnswerEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @Enumerated(EnumType.STRING)
-    private Status status = Status.ACTIVE;
+    @OneToMany(mappedBy = "answerLike", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AnswerLike> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy ="answer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<AnswerCommentEntity> comments = new ArrayList<>();
 
 }
