@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:mariadb://alco-db.cdi4cweas6u0.ap-northeast-2.rds.amazonaws.com:3306/alco_db?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=true
     username: ${LOCAL_USERNAME}
-    password: ${LOCAL_PASSWORD}
+    password: ${DEV_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
