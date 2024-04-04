@@ -4,13 +4,13 @@ spring:
       client:
         registration:
           google:
-            client-id: 794842258440-i0gm39nml32bde4mjaf0f1i7jrad5m4s.apps.googleusercontent.com
-            client-secret: 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
+            client-id: ${Google_OAuth_Client_ID}
+            client-secret: ${Google_OAuth_Client_Secret}
             scope: profile, email
 
           kakao:
-            client-id: fdf85dea9cad73b7e1cd41e24f253c75
-            client-secret: jpNAQrdHubWZAyfNE3JvLsfVSxTiwLQO
+            client-id: ${Kakao_OAuth_Client_ID}
+            client-secret: ${Kakao_OAuth_Client_Secret}
             redirect-uri: http://localhost:8080/login/oauth2/code/kakao
             client-authentication-method: POST
             authorization-grant-type: authorization_code

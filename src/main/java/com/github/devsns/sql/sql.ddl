@@ -9,7 +9,6 @@ CREATE TABLE `users` (
     `image_url` VARCHAR(255),
     `refresh_token` VARCHAR(255),
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    `deleted_at` DATETIME NULL
 );
 
 CREATE TABLE `roles` (
