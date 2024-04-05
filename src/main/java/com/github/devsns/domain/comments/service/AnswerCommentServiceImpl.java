@@ -4,11 +4,13 @@ import com.github.devsns.domain.answers.entity.AnswerEntity;
 import com.github.devsns.domain.answers.repository.AnswerRepository;
 import com.github.devsns.domain.comments.entity.AnswerCommentEntity;
 import com.github.devsns.domain.comments.repository.AnswerCommentRepository;
+import com.github.devsns.domain.notifications.entity.AnswerCommentNotification;
 import com.github.devsns.domain.notifications.service.NotificationService;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import com.github.devsns.domain.user.repository.UserRepository;
 import com.github.devsns.domain.user.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,7 +43,7 @@ public class AnswerCommentServiceImpl implements AnswerCommentService {
             throw new IllegalArgumentException("작성자가 아닙니다.");
         }
     }
-
+    @Transactional
     public void createAnswerComment(Long answerId, Long userId, String content) {
 
         // 게시물 조회
@@ -70,7 +72,7 @@ public class AnswerCommentServiceImpl implements AnswerCommentService {
         notificationService.sendCommentNotification(answerer, savedComment);
     }
 
-
+    @Transactional
     public void updateAnswerComment(String commentId, String content) {
         AnswerCommentEntity comment = answerCommentRepository.findById(Long.parseLong(commentId)).orElseThrow(() -> new NoSuchElementException("해당 댓글을 찾을 수 없습니다."));
         comment.setContent(content);
@@ -78,17 +80,20 @@ public class AnswerCommentServiceImpl implements AnswerCommentService {
         answerCommentRepository.save(comment);
     }
 
-
+    @Transactional
     public void deleteAnswerComment(String commentId) {
         AnswerCommentEntity comment = answerCommentRepository.findById(Long.parseLong(commentId)).orElseThrow(() -> new NoSuchElementException("해당 댓글을 찾을 수 없습니다."));
+
+        notificationService.deleteAnswerCommentNotification(comment);
+
         answerCommentRepository.delete(comment);
     }
 
-
-    public List<AnswerCommentEntity> getAllComments(Long quesId) {
-        Optional<AnswerEntity> answer = answerRepository.findById(quesId);
-        return answer.get().getComments();
-    }
+//    @Transactional
+//    public List<AnswerCommentEntity> getAllComments(Long quesId) {
+//        Optional<AnswerEntity> answer = answerRepository.findById(quesId);
+//        return answer.get().getComments();
+//    }
 
 }
 

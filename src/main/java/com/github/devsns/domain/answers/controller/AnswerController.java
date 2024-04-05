@@ -21,8 +21,7 @@ public class AnswerController {
     }
 
 
-
-    @PostMapping("/api/answer/{quesId}/create")
+    @PostMapping("/api/{quesId}/answer/create")
     public ResponseEntity<String> createAnswer(@PathVariable Long quesId,
                                                @RequestBody AnswerRequest answerRequest,
                                                Authentication authentication) {
@@ -47,14 +46,14 @@ public class AnswerController {
             Long userId = extractIdUtil.extractUserIdFromAuthentication(authentication);
             // 답변 소유자 확인
             answerService.checkAnswerer(answerId, userId);
-            // 답변에 좋아요를 추가
+            // 좋아요 생성
             answerService.likeAnswer(answerId, userId);
-
-            return ResponseEntity.ok("답변에 좋아요를 추가");
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().body("답변이 존재하지 않습니다");
         }
+        return ResponseEntity.ok("좋아요 성공");
     }
+
 
     @PostMapping("/api/answer/{answerId}/unlike")
     public ResponseEntity<String> unlikeAnswer(@PathVariable Long answerId,

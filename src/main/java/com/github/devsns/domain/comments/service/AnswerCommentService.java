@@ -16,6 +16,6 @@ public interface AnswerCommentService {
 
     void deleteAnswerComment(String commentId);
 
-    List<AnswerCommentEntity> getAllComments(Long quesId);
+//    List<AnswerCommentEntity> getAllComments(Long quesId);
 
 }

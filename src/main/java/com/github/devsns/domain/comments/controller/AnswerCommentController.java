@@ -39,7 +39,7 @@ public class AnswerCommentController {
         return ResponseEntity.ok("댓글 작성 완료");
     }
 
-    @PutMapping("/api/answer/{commentId}")
+    @PutMapping("/api/answer/comment/{commentId}")
     public ResponseEntity<String> updateComment(@PathVariable String commentId,
                                                 @RequestBody CommentRequest commentRequest,
                                                 Authentication authentication) {
@@ -62,7 +62,7 @@ public class AnswerCommentController {
         }
     }
 
-    @DeleteMapping("/api/answer/{commentId}/delete")
+    @DeleteMapping("/api/answer/comment/{commentId}/delete")
     public ResponseEntity<String> deleteComment(@PathVariable String commentId,
                                                 Authentication authentication) {
 
@@ -82,10 +82,10 @@ public class AnswerCommentController {
         }
     }
 
-    @GetMapping("/api/answer/{answerId}/comments")
-    public ResponseEntity<List<AnswerCommentEntity>> getAllComments(@PathVariable Long answerId) {
-        List<AnswerCommentEntity> comments = answerCommentService.getAllComments(answerId);
-        return ResponseEntity.ok(comments);
-    }
+//    @GetMapping("/api/answer/{answerId}/comments")
+//    public ResponseEntity<List<AnswerCommentEntity>> getAllComments(@PathVariable Long answerId) {
+//        List<AnswerCommentEntity> comments = answerCommentService.getAllComments(answerId);
+//        return ResponseEntity.ok(comments);
+//    }
 
 }
