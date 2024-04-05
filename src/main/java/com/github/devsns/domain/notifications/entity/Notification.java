@@ -24,9 +24,6 @@ public class Notification {
     private NotificationType type;
 
     @ManyToOne
-    private LikeCommentNotification likeCommentNotification; // 댓글 좋아요 알림
-
-    @ManyToOne
     private QuestionCommentNotification questionCommentNotification; // 질문 댓글 작성 알림
 
     @ManyToOne
