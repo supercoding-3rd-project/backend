@@ -4,6 +4,9 @@ import com.github.devsns.domain.answers.entity.AnswerEntity;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -12,6 +15,7 @@ import java.util.List;
 
 @Entity
 @Data
+@EntityListeners(AuditingEntityListener.class)
 public class AnswerCommentEntity {
 
     @Id
@@ -31,16 +35,13 @@ public class AnswerCommentEntity {
     private String content;
 
     @Column(nullable = false, updatable = false)
-    @DateTimeFormat(pattern = "yy.mm.dd hh:mm")
+    @CreatedDate
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
-    @DateTimeFormat(pattern = "yy.mm.dd hh:mm")
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @DateTimeFormat(pattern = "yy.mm.dd hh:mm")
-    @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
 }
 
 

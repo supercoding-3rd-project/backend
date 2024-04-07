@@ -12,6 +12,7 @@ import com.github.devsns.domain.user.service.UserService;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.OneToMany;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class QuestionCommentServiceImpl implements QuestionCommentService {
             throw new IllegalArgumentException("작성자가 아닙니다.");
         }
     }
-
+    @Transactional
     public void createQuestionComment(Long quesId, Long userId, String content) {
 
         // 게시물 조회
@@ -72,8 +73,7 @@ public class QuestionCommentServiceImpl implements QuestionCommentService {
         // 게시물 작성자에게 알림 전송
         notificationService.sendCommentNotification(questionAuthor, savedComment);
     }
-
-
+    @Transactional
     public void updateQuestionComment(String commentId, String content) {
         QuestionCommentEntity comment = questionCommentRepository.findById(Long.parseLong(commentId)).orElseThrow(() -> new NoSuchElementException("해당 댓글을 찾을 수 없습니다."));
         comment.setContent(content);
@@ -81,9 +81,12 @@ public class QuestionCommentServiceImpl implements QuestionCommentService {
         questionCommentRepository.save(comment);
     }
 
-
+    @Transactional
     public void deleteQuestionComment(String commentId) {
         QuestionCommentEntity comment = questionCommentRepository.findById(Long.parseLong(commentId)).orElseThrow(() -> new NoSuchElementException("해당 댓글을 찾을 수 없습니다."));
+
+        notificationService.deleteQuestionCommentNotification(comment);
+
         questionCommentRepository.delete(comment);
     }
 
