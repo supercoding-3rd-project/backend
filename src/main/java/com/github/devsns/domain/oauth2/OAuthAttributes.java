@@ -57,7 +57,6 @@ public class OAuthAttributes {
     OAuth2UserInfo에서 socialId(식별값), nickname, imageUrl을 가져와서 build
     email에는 UUID로 중복 없는 랜덤 값 생성
     */
-
     public UserEntity toEntity(SocialType socialType, OAuth2UserInfo oauth2UserInfo) {
         return UserEntity.builder()
                 .socialType(socialType)
