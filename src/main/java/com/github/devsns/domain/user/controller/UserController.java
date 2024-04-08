@@ -48,6 +48,7 @@ public class UserController {
     }
 
     // 유저정보 추가 입력
+    // TODO: 이미지 업로드 구현해야함
     @PutMapping("/user/update/{userId}")
     public ResponseEntity<?> updateUser(
             @PathVariable Long userId,
@@ -66,6 +67,7 @@ public class UserController {
     }
 
     // 유저 삭제
+    // TODO: 유저 탈퇴 시 cascade 적용해서 전부 삭제 구현해야함
     @DeleteMapping("/user/delete/{userId}")
     public ResponseEntity<?> deleteUser(
             @PathVariable Long userId,
