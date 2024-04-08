@@ -4,7 +4,6 @@ import com.github.devsns.domain.auth.entity.CustomUserDetails;
 import com.github.devsns.domain.question.dto.QuestionBoardReqDto;
 import com.github.devsns.domain.question.dto.QuestionBoardResDto;
 import com.github.devsns.domain.question.service.QuestionBoardService;
-import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +11,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-@Api(tags = "Some API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")

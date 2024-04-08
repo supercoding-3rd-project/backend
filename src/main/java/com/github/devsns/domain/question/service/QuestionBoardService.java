@@ -105,6 +105,7 @@ public class QuestionBoardService {
         return new QuestionBoardResDto(questionBoard, likeCount);
     }
 
+    // 삭제
     @Transactional
     public void deleteQuestionBoard(Long questionId) {
         QuestionBoardEntity questionBoard = questionBoardRepository.findById(questionId)
