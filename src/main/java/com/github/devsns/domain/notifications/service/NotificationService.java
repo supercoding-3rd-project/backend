@@ -29,5 +29,23 @@ public interface NotificationService {
     void sendLikeQuestionNotification(UserEntity recipient, UserEntity liker, QuestionBoardEntity question);
 
 
+    void deleteQuestionCommentNotification(QuestionCommentEntity comment);
+
+    void deleteAnswerCommentNotification(AnswerCommentEntity comment);
+
+
+    void deleteLikeQuestionNotification(QuestionBoardEntity question, UserEntity liker);
+
+
+    void deleteLikeAnswerNotification(AnswerEntity answer, UserEntity liker);
+
+
+    void deleteAnswerNotification(AnswerEntity answer, UserEntity answerer);
+
+
+    void deleteMessageNotification(UserEntity recipient, UserEntity sender);
+
+
+
 
 }

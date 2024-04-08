@@ -16,4 +16,5 @@ public interface AnswerService {
     void deleteAnswer(Long answerId);
 
     void updateAnswer(Long answerId, Long userId, String title, String content);
+
 }
