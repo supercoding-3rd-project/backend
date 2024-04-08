@@ -1,6 +1,5 @@
 package com.github.devsns.domain.notifications.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.devsns.domain.answers.entity.AnswerEntity;
 import com.github.devsns.domain.comments.entity.AnswerCommentEntity;
 import com.github.devsns.domain.comments.entity.QuestionCommentEntity;
@@ -9,38 +8,25 @@ import com.github.devsns.domain.notifications.entity.*;
 import com.github.devsns.domain.notifications.repository.NotificationRepository;
 import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.user.entitiy.UserEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import jakarta.persistence.EntityManager;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.stereotype.Service;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.List;
+
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
-    private final SimpMessagingTemplate messagingTemplate;
+    private final EntityManager entityManager;
 
-    public NotificationServiceImpl(NotificationRepository notificationRepository, SimpMessagingTemplate messagingTemplate) {
+    public NotificationServiceImpl(NotificationRepository notificationRepository, EntityManager entityManager) {
+        this.entityManager = entityManager;
         this.notificationRepository = notificationRepository;
-        this.messagingTemplate = messagingTemplate;
     }
 
-    public void sendRecentNotificationsToUser(Long userId, WebSocketSession session) {
-        // 사용자에게 전송할 최근 알림을 조회
-        List<Notification> recentNotifications = notificationRepository.findFirst10ByRecipient_UserIdOrderByCreatedAtDesc(userId);
-
-        // 조회된 알림을 WebSocket을 통해 사용자에게 전송
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            String jsonData = mapper.writeValueAsString(recentNotifications);
-            session.sendMessage(new TextMessage(jsonData));
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to send recent notifications to user", e);
-        }
-    }
-
+    @Transactional
     public void sendCommentNotification(UserEntity questionAuthor, QuestionCommentEntity comment) {
         Notification notification = new Notification();
         notification.setRecipient(questionAuthor);
@@ -54,13 +40,16 @@ public class NotificationServiceImpl implements NotificationService {
 
         questionCommentNotification.setComment(comment);
 
+        // QuestionCommentNotification 엔티티를 저장
+        entityManager.persist(questionCommentNotification);
+
         notification.setQuestionCommentNotification(questionCommentNotification);
         notification.setType(NotificationType.QUESTION_COMMENT);
         notificationRepository.save(notification);
     }
 
-    @Override
-    public void sendCommentNotification(UserEntity answerAuthor,AnswerCommentEntity comment) {
+    @Transactional
+    public void sendCommentNotification(UserEntity answerAuthor, AnswerCommentEntity comment) {
         Notification notification = new Notification();
         notification.setRecipient(answerAuthor);
 
@@ -73,42 +62,15 @@ public class NotificationServiceImpl implements NotificationService {
 
         answerCommentNotification.setComment(comment);
 
+        // AnswerCommentNotification 엔티티를 저장
+        entityManager.persist(answerCommentNotification);
+
         notification.setAnswerCommentNotification(answerCommentNotification);
         notification.setType(NotificationType.ANSWER_COMMENT);
         notificationRepository.save(notification);
     }
 
-
-    public void sendLikeCommentNotification(UserEntity recipient, UserEntity liker, QuestionCommentEntity comment) {
-        Notification notification = new Notification();
-        notification.setRecipient(recipient);
-
-
-        LikeCommentNotification likeCommentNotification = new LikeCommentNotification();
-        likeCommentNotification.setLiker(liker);
-        likeCommentNotification.setQuestionComment(comment);
-
-        notification.setLikeCommentNotification(likeCommentNotification);
-        notification.setType(NotificationType.COMMENT_LIKE);
-        notificationRepository.save(notification);
-    }
-
-    @Override
-    public void sendLikeCommentNotification(UserEntity recipient, UserEntity liker, AnswerCommentEntity comment) {
-        Notification notification = new Notification();
-        notification.setRecipient(recipient);
-
-
-        LikeCommentNotification likeCommentNotification = new LikeCommentNotification();
-        likeCommentNotification.setLiker(liker);
-        likeCommentNotification.setAnswerComment(comment);
-
-        notification.setLikeCommentNotification(likeCommentNotification);
-        notification.setType(NotificationType.COMMENT_LIKE);
-        notificationRepository.save(notification);
-    }
-
-
+    @Transactional
     public void sendLikeQuestionNotification(UserEntity recipient, UserEntity liker, QuestionBoardEntity question) {
         Notification notification = new Notification();
         notification.setRecipient(recipient);
@@ -117,23 +79,15 @@ public class NotificationServiceImpl implements NotificationService {
         likeQuestionNotification.setLiker(liker);
         likeQuestionNotification.setQuestion(question);
 
+        // LikeQuestionNotification 엔티티를 저장
+        entityManager.persist(likeQuestionNotification);
+
         notification.setLikeQuestionNotification(likeQuestionNotification);
         notification.setType(NotificationType.QUESTION_LIKE);
         notificationRepository.save(notification);
     }
 
-
-    public void sendMessageNotification(UserEntity recipient, UserEntity sender) {
-        Notification notification = new Notification();
-        notification.setRecipient(recipient);
-
-        MessageNotification messageNotification = new MessageNotification();
-        messageNotification.setSender(sender);
-
-        notification.setType(NotificationType.MESSAGE);
-        notificationRepository.save(notification);
-    }
-
+    @Transactional
     public void sendLikeAnswerNotification(UserEntity recipient, UserEntity liker, AnswerEntity answer) {
         Notification notification = new Notification();
         notification.setRecipient(recipient);
@@ -142,21 +96,112 @@ public class NotificationServiceImpl implements NotificationService {
         likeAnswerNotification.setLiker(liker);
         likeAnswerNotification.setAnswer(answer);
 
+        // LikeAnswerNotification 엔티티를 저장
+        entityManager.persist(likeAnswerNotification);
+
         notification.setLikeAnswerNotification(likeAnswerNotification);
         notification.setType(NotificationType.ANSWER_LIKE);
         notificationRepository.save(notification);
     }
 
+    @Transactional
     public void sendAnswerNotification(UserEntity recipient, UserEntity answerer, QuestionBoardEntity question) {
         Notification notification = new Notification();
         notification.setRecipient(recipient);
 
         AnswerNotification answerNotification = new AnswerNotification();
         answerNotification.setAnswerer(answerer);
-        answerNotification.setQuestion(question);
+        answerNotification.setQuestion(question); //1대1
+
+        // AnswerNotification 엔티티를 저장
+        entityManager.persist(answerNotification);
 
         notification.setAnswerNotification(answerNotification);
         notification.setType(NotificationType.ANSWER);
         notificationRepository.save(notification);
+    }
+
+    @Transactional
+    public void sendFollowNotification(UserEntity recipient, UserEntity follower) {
+        Notification notification = new Notification();
+        notification.setRecipient(recipient);
+
+        FollowNotification followNotification = new FollowNotification();
+        followNotification.setFollower(follower);
+
+        // FollowNotification 엔티티를 저장
+        entityManager.persist(followNotification);
+
+        notification.setFollowNotification(followNotification);
+        notification.setType(NotificationType.FOLLOW);
+        notificationRepository.save(notification);
+    }
+
+
+    @Transactional
+    public void sendMessageNotification(UserEntity recipient, UserEntity sender) {
+        Notification notification = new Notification();
+        notification.setRecipient(recipient);
+
+        MessageNotification messageNotification = new MessageNotification();
+        messageNotification.setSender(sender);
+
+        // MessageNotification 엔티티를 저장
+        entityManager.persist(messageNotification);
+
+        notification.setMessageNotification(messageNotification);
+        notification.setType(NotificationType.MESSAGE);
+        notificationRepository.save(notification);
+    }
+
+    @Transactional
+    public void deleteQuestionCommentNotification(QuestionCommentEntity comment) {
+        Notification notification = notificationRepository.findByQuestionCommentNotification_Comment(comment)
+                .orElse(null);
+        if (notification != null) {
+            notificationRepository.delete(notification);
+        }
+    }
+
+    @Transactional
+    public void deleteAnswerCommentNotification(AnswerCommentEntity comment) {
+        Notification notification = notificationRepository.findByAnswerCommentNotification_Comment(comment)
+                .orElse(null);
+        if (notification != null) {
+            notificationRepository.delete(notification);
+        }
+    }
+
+    @Transactional
+    public void deleteLikeQuestionNotification(QuestionBoardEntity question, UserEntity liker) {
+        Notification notification = notificationRepository.findByLikeQuestionNotification_Question_AndLikeQuestionNotification_Liker(question, liker)
+                .orElse(null);
+        if (notification != null) {
+            notificationRepository.delete(notification);
+        }
+    }
+
+    @Transactional
+    public void deleteLikeAnswerNotification(AnswerEntity answer, UserEntity liker) {
+        Notification notification = notificationRepository.findByLikeAnswerNotification_Answer_AndLikeAnswerNotification_Liker(answer, liker)
+                .orElse(null);
+        if (notification != null) {
+            notificationRepository.delete(notification);
+        }
+    }
+
+    @Transactional
+    public void deleteAnswerNotification(AnswerEntity answer, UserEntity answerer) {
+        notificationRepository.deleteByAnswerNotification_Question_AndAnswerNotification_Answerer(answer.getQuestion(), answerer);
+    }
+
+
+    @Transactional
+    public void deleteMessageNotification(UserEntity recipient, UserEntity sender) {
+        Notification notification = notificationRepository.findByMessageNotification_Sender_AndRecipient(sender, recipient)
+                .orElse(null);
+        if (notification != null) {
+            notificationRepository.delete(notification);
+        }
     }
 }

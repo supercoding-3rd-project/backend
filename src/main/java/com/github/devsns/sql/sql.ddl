@@ -4,28 +4,11 @@ CREATE TABLE `users` (
     `password` VARCHAR(255) NOT NULL,
     `username` VARCHAR(255) NOT NULL,
     `role` VARCHAR(20) NOT NULL,
-    `social_id` VARCHAR(20),
-    `social_type` VARCHAR(20),
+    `social_id` VARCHAR(20) default "X",
+    `social_type` VARCHAR(20) default "X",
     `image_url` VARCHAR(255),
     `refresh_token` VARCHAR(255),
-    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-);
-
-CREATE TABLE `roles` (
-    `role_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `role_name` VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE `user_roles` (
-    `user_role_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `user_id` INT NOT NULL,
-    `role_id` INT NOT NULL
-);
-
-CREATE TABLE `refresh_tokens` (
-    `refresh_token_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `user_id` INT NOT NULL,
-    `refresh_token` VARCHAR(255) NOT NULL
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `question_board` (

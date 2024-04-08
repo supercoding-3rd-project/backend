@@ -1,16 +1,26 @@
 package com.github.devsns.domain.answers.entity;
 
+import com.github.devsns.domain.comments.entity.AnswerCommentEntity;
 import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import com.github.devsns.global.constant.Status;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class AnswerEntity {
 
     @Id
@@ -29,19 +39,21 @@ public class AnswerEntity {
 
     private String content;
 
-    @DateTimeFormat(pattern = "yy.mm.dd hh:mm")
+    @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @DateTimeFormat(pattern = "yy.mm.dd hh:mm")
+    @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @DateTimeFormat(pattern = "yy.mm.dd hh:mm")
-    @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
+//    @Column(name = "deleted_at")
+//    private LocalDateTime deletedAt;
 
-    @Enumerated(EnumType.STRING)
-    private Status status = Status.ACTIVE;
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AnswerLike> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<AnswerCommentEntity> comments = new ArrayList<>();
 
 }
