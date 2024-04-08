@@ -35,9 +35,12 @@ public class QuestionBoardEntity {
     @Column(name = "title")
     private String title;
 
-    @OneToOne
-    @JoinColumn(name = "content_id")
-    private ContentEntity content;
+    @Column(name = "content")
+    private String content;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private QuestionBoardStatusType statusType;
 
     @OneToMany(mappedBy = "questionBoard")
     private List<LikeEntity> like = new ArrayList<>();
@@ -55,12 +58,24 @@ public class QuestionBoardEntity {
 //    @OnDelete(action = OnDeleteAction.CASCADE)
 //    private List<AnswerEntity> answer = new ArrayList<AnswerEntity>();
 
-    public static QuestionBoardEntity toEntity(/*UserEntity user,*/ QuestionBoardReqDto questionBoardReqDto) {
-        return QuestionBoardEntity.builder()
-//                .user(user)
+    private void setStatusType(QuestionBoardStatusType statusType) {
+        this.statusType = statusType;
+    }
+
+    public static QuestionBoardEntity toEntity(UserEntity user, QuestionBoardReqDto questionBoardReqDto) {
+        QuestionBoardEntity questionBoard = builder()
+                .user(user)
                 .title(questionBoardReqDto.getTitle())
-                .content(ContentEntity.toEntity(questionBoardReqDto.getContent()))
+                .content(questionBoardReqDto.getContent())
                 .createdAt(LocalDateTime.now())
                 .build();
+
+        if (questionBoardReqDto.getStatusType().equals(QuestionBoardStatusType.SUBMIT.getStatus())) {
+            questionBoard.setStatusType(QuestionBoardStatusType.SUBMIT);
+        } else {
+            questionBoard.setStatusType(QuestionBoardStatusType.TEMP_SAVE);
+        }
+
+        return questionBoard;
     }
 }

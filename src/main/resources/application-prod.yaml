@@ -15,7 +15,7 @@ spring:
     open-in-view: false
   config:
     activate:
-      on-profile: dev
+      on-profile: prod
     import:
       - application-jwt.yaml
       - application-oauth.yaml
