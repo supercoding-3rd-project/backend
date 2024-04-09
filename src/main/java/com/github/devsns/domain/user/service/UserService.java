@@ -45,7 +45,7 @@ public class UserService {
     public void signup(SignupDto signupDto) throws Exception {
         // 이메일 중복 확인
         if (userRepository.findByEmail(signupDto.getEmail()).isPresent()) {
-            throw new AppException(ErrorCode.EMAIL_DUPLICATED.getMessage(), ErrorCode.EMAIL_DUPLICATED);
+            throw new AppException(ErrorCode.USER_EMAIL_DUPLICATED.getMessage(), ErrorCode.USER_EMAIL_DUPLICATED);
         }
 
         // 유저네임 중복 확인
@@ -56,7 +56,7 @@ public class UserService {
         UserEntity userEntity = UserEntity.builder()
                 .email(signupDto.getEmail())
                 .password(signupDto.getPassword())
-                .username(signupDto.getPassword())
+                .username(signupDto.getUsername())
                 .role(Role.USER)
                 .createdAt(LocalDateTime.now())
                 .refreshToken(jwtService.createRefreshToken())
@@ -106,5 +106,14 @@ public class UserService {
             userRepository.delete(user);
 //            questionBoardRepository.deleteAllByUser(user);
         }
+    }
+
+    // 유저네임으로 유저 찾기
+    @Transactional(readOnly = true)
+    public UserEntity findUser(String username) {
+
+        return userRepository.findByUsername(username).orElseThrow(
+                () -> new AppException(ErrorCode.USERNAME_NOT_FOUND.getMessage(), ErrorCode.USERNAME_NOT_FOUND)
+        );
     }
 }
