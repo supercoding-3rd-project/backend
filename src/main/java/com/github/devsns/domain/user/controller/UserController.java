@@ -29,7 +29,6 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
-    private final UserRepository userRepository;
 
     // 회원가입
     @PostMapping("/signup")

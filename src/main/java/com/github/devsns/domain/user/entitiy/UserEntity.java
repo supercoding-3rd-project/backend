@@ -1,5 +1,6 @@
 package com.github.devsns.domain.user.entitiy;
 
+import com.github.devsns.domain.follow.entity.FollowEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,10 +39,18 @@ public class UserEntity {
 
     private LocalDateTime createdAt;
 
-    // 유저 권한 설정
-    public void authorizeUser() {
-        this.role = Role.USER;
-    }
+    // 팔로우
+    @OneToMany(mappedBy = "fromUser", fetch = FetchType.LAZY)
+    private List<FollowEntity> followings;
+
+    @OneToMany(mappedBy = "toUser", fetch = FetchType.LAZY)
+    private List<FollowEntity> followers;
+
+
+//    // 유저 권한 설정
+//    public void authorizeUser() {
+//        this.role = Role.USER;
+//    }
 
     // 비밀번호 암호화
     public void passwordEncode(PasswordEncoder passwordEncoder) {
