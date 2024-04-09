@@ -46,6 +46,7 @@ dependencies {
     // 데이터베이스 드라이버 - 사용 중인 데이터베이스에 맞게 최신 버전으로 업데이트
     runtimeOnly 'com.h2database:h2' // H2 데이터베이스 드라이버
 //    runtimeOnly 'mysql:mysql-connector-java' // MySQL 데이터베이스 드라이버
+    runtimeOnly 'com.mysql:mysql-connector-j'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client' // MariaDB 데이터베이스 드라이버
 
     // security 보안 및 JWT
