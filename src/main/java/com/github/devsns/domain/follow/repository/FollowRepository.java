@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -22,9 +23,9 @@ public interface FollowRepository extends JpaRepository<FollowEntity, Long> {
     @Query("delete from FollowEntity f where f.toUser = :toUser and f.fromUser = :fromUser")
     void deleteByToUserAndFromUser(@Param("toUser") UserEntity toUser, @Param("fromUser") UserEntity fromUser);
 
-    Optional<FollowEntity> findByFromUser(UserEntity fromUser);
+    List<FollowEntity> findByFromUser(UserEntity fromUser);
 
-    Optional<FollowEntity> findByToUser(UserEntity toUser);
+    List<FollowEntity> findByToUser(UserEntity toUser);
 
     Long countByFollowId(Long followId);
 }

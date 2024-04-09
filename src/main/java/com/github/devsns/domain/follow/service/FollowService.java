@@ -41,6 +41,7 @@ public class FollowService {
         followRepository.save(followEntity);
     }
 
+    // 언팔로우
     @Transactional
     public void unfollow(String toUsername, String fromUsername) {
         UserEntity toUser = userRepository.findByUsername(toUsername).orElseThrow(
