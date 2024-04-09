@@ -1,3 +1,4 @@
+
 # CREATE TABLE `users` (
 #     `user_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 #     `email` VARCHAR(255) NOT NULL,
