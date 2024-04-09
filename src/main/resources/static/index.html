@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat App</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- CDN을 통해 stomp.min.js와 sockjs.min.js 파일을 가져옴 -->
+    <script src="https://cdn.jsdelivr.net/webjars/org.webjars.npm/stompjs/4.0.11/dist/stomp.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/webjars/org.webjars.npm/sockjs-client/1.5.0/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+    <!-- main.js 파일 로드 -->
+    <script src="js/main.js"></script>
+</head>
+<body>
+
+<div id="chat-container">
+    <h3>Chat</h3>
+    <div id="chat-messages"></div>
+    <div id="users" style="float:left;">
+        <h3>Users</h3>
+        <ul id="user-list"></ul>
+    </div>
+    <div id="chat-box" style="float:left; margin-left: 20px;">
+        <h3>Chat Box</h3>
+        <input type="text" id="sender-input" placeholder="Sender"> <!-- sender 입력란 -->
+        <input type="text" id="recipient-input" placeholder="Recipient">
+        <input type="text" id="message-input" placeholder="Message">
+        <button onclick="sendMessage('User')">Send</button>
+    </div>
+</div>
+</body>
+</html>
