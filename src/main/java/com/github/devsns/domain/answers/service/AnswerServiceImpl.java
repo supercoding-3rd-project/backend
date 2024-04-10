@@ -7,7 +7,6 @@ import com.github.devsns.domain.answers.repository.AnswerRepository;
 import com.github.devsns.domain.comments.entity.AnswerCommentEntity;
 import com.github.devsns.domain.comments.repository.AnswerCommentRepository;
 import com.github.devsns.domain.notifications.constant.NotificationType;
-import com.github.devsns.domain.notifications.entity.AnswerCommentNotification;
 import com.github.devsns.domain.notifications.entity.Notification;
 import com.github.devsns.domain.notifications.repository.NotificationRepository;
 import com.github.devsns.domain.notifications.service.NotificationService;
@@ -18,9 +17,7 @@ import com.github.devsns.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -122,10 +119,10 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Transactional
-    public void deleteAnswer(Long answerId) {
+    public List<Notification> deleteAnswer(Long answerId) {
 
         AnswerEntity answer = answerRepository.findById(answerId).orElseThrow(() -> new IllegalArgumentException("답변자가 아닙습니다."));
-        List<Notification> notifications = notificationRepository.findAllByRecipientUserIdOrderByCreatedAtDesc(answer.getAnswerer().getUserId());
+        List<Notification> notifications = notificationRepository.findAllByRecipientId(answer.getAnswerer().getUserId());
 
         // 모든 댓글과 좋아요에 대한 알림을 삭제합니다.
         for (Notification notification : notifications) {
@@ -147,8 +144,9 @@ public class AnswerServiceImpl implements AnswerService {
             answerCommentRepository.delete(comment);
         }
 
-        notificationService.deleteAnswerNotification(answer, answer.getAnswerer());
+        notificationService.deleteAnswerNotification(answerId, answer.getAnswerer().getUserId());
         answerRepository.delete(answer);
+        return notifications;
     }
 
     @Transactional

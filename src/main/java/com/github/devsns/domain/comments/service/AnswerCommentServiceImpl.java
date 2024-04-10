@@ -69,7 +69,7 @@ public class AnswerCommentServiceImpl implements AnswerCommentService {
         AnswerCommentEntity savedComment = answerCommentRepository.save(comment);
 
         // 게시물 작성자에게 알림 전송
-        notificationService.sendCommentNotification(answerer, savedComment);
+        notificationService.sendAnswerCommentNotification(answerer, savedComment);
     }
 
     @Transactional
@@ -83,8 +83,8 @@ public class AnswerCommentServiceImpl implements AnswerCommentService {
     @Transactional
     public void deleteAnswerComment(String commentId) {
         AnswerCommentEntity comment = answerCommentRepository.findById(Long.parseLong(commentId)).orElseThrow(() -> new NoSuchElementException("해당 댓글을 찾을 수 없습니다."));
-
-        notificationService.deleteAnswerCommentNotification(comment);
+        Long id = comment.getAnswer().getId();
+        notificationService.deleteAnswerCommentNotification(id);
 
         answerCommentRepository.delete(comment);
     }

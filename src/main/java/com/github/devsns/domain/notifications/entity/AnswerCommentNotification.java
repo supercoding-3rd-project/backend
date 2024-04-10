@@ -9,21 +9,16 @@ import lombok.Data;
 
 @Entity
 @Data
-public class AnswerCommentNotification {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Table(name = "answer_comment_notification")
+public class AnswerCommentNotification extends Notification {
 
-    @ManyToOne
-    private UserEntity recipient; // 알림을 받는 사용자
+    @Column(name = "commenter_id")
+    private Long commenterId; // 댓글을 작성한 사용자
 
-    @ManyToOne
-    private UserEntity commenter; // 댓글을 작성한 사용자
+    @Column(name = "answer_id")
+    private Long answerId; // 해당 댓글이 작성된 답변
 
-    @ManyToOne
-    private AnswerEntity answer; // 해당 댓글이 작성된 답변
-
-    @ManyToOne
-    private AnswerCommentEntity comment; // 작성된 댓글
+    @Column(name = "comment_id")
+    private Long commentId; // 작성된 댓글
 
 }

@@ -3,17 +3,15 @@ package com.github.devsns.domain.notifications.entity;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Entity
-@Data
-public class MessageNotification {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne
-    private UserEntity recipient; // 알림을 받는 사용자
-
-    @ManyToOne
-    private UserEntity sender; // 메시지를 보낸 사용자
-}
+//@Entity
+//@Data
+//@Table(name = "message_notification")
+//@EntityListeners(AuditingEntityListener.class)
+//public class MessageNotification extends Notification {
+//
+//    @Column(name = "sender_id")
+//    private Long senderId; // 메시지를 보낸 사용자
+//
+//}
