@@ -4,20 +4,16 @@ import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Data
-public class LikeQuestionNotification {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Table(name = "like_question_notification")
+public class LikeQuestionNotification extends Notification {
 
-    @ManyToOne
-    private UserEntity recipient; // 알림을 받는 사용자
+    @Column(name = "liker_id")
+    private Long likerId; // 좋아요를 누른 사용자
 
-    @ManyToOne
-    private UserEntity liker; // 좋아요를 누른 사용자
-
-    @ManyToOne
-    private QuestionBoardEntity question; // 좋아요를 누른 글
+    @Column(name = "question_id")
+    private Long questionId; // 좋아요를 누른 글
 }

@@ -29,8 +29,8 @@ public class AnswerLike {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userId;
 
-    @Column(nullable = false, updatable = false)
 
+    @Column(nullable = false, updatable = false)
     @CreatedDate
     private LocalDateTime createdAt;
 

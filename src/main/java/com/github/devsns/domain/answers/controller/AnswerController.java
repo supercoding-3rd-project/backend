@@ -1,6 +1,6 @@
 package com.github.devsns.domain.answers.controller;
 
-import com.github.devsns.domain.answers.dto.AnswerRequest;
+import com.github.devsns.domain.answers.dto.AnswerDto;
 import com.github.devsns.domain.answers.service.AnswerService;
 import com.github.devsns.global.component.ExtractIdUtil;
 import org.springframework.http.ResponseEntity;
@@ -23,14 +23,14 @@ public class AnswerController {
 
     @PostMapping("/api/{quesId}/answer/create")
     public ResponseEntity<String> createAnswer(@PathVariable Long quesId,
-                                               @RequestBody AnswerRequest answerRequest,
+                                               @RequestBody AnswerDto answerDto,
                                                Authentication authentication) {
 
         // Authentication 객체에서 사용자 ID 추출
         Long userId = extractIdUtil.extractUserIdFromAuthentication(authentication);
 
-        String title = answerRequest.getTitle();
-        String content = answerRequest.getContent();
+        String title = answerDto.getTitle();
+        String content = answerDto.getContent();
 
         // AnswerService의 createAnswer() 메서드 호출
         answerService.createAnswer(quesId, userId, title, content);
@@ -89,11 +89,11 @@ public class AnswerController {
 
     @PutMapping("/api/answer/{answerId}/update")
     public ResponseEntity<String> updateAnswer(@PathVariable Long answerId,
-                                               @RequestBody AnswerRequest answerRequest,
+                                               @RequestBody AnswerDto answerDto,
                                                Authentication authentication) {
 
-        String title = answerRequest.getTitle();
-        String content = answerRequest.getContent();
+        String title = answerDto.getTitle();
+        String content = answerDto.getContent();
 
         try {
             // Authentication 객체에서 사용자 ID 추출

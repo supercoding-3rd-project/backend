@@ -71,7 +71,7 @@ public class QuestionCommentServiceImpl implements QuestionCommentService {
         QuestionCommentEntity savedComment = questionCommentRepository.save(comment);
 
         // 게시물 작성자에게 알림 전송
-        notificationService.sendCommentNotification(questionAuthor, savedComment);
+        notificationService.sendQuestionCommentNotification(questionAuthor, savedComment);
     }
     @Transactional
     public void updateQuestionComment(String commentId, String content) {
@@ -84,8 +84,8 @@ public class QuestionCommentServiceImpl implements QuestionCommentService {
     @Transactional
     public void deleteQuestionComment(String commentId) {
         QuestionCommentEntity comment = questionCommentRepository.findById(Long.parseLong(commentId)).orElseThrow(() -> new NoSuchElementException("해당 댓글을 찾을 수 없습니다."));
-
-        notificationService.deleteQuestionCommentNotification(comment);
+        Long id = comment.getQuestion().getId();
+        notificationService.deleteQuestionCommentNotification(id);
 
         questionCommentRepository.delete(comment);
     }

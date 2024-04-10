@@ -1,14 +1,12 @@
 package com.github.devsns.domain.comments.controller;
 
-import com.github.devsns.domain.comments.dto.CommentRequest;
-import com.github.devsns.domain.comments.entity.AnswerCommentEntity;
+import com.github.devsns.domain.comments.dto.AnswerCommentDto;
 import com.github.devsns.domain.comments.service.AnswerCommentService;
 import com.github.devsns.global.component.ExtractIdUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -25,13 +23,13 @@ public class AnswerCommentController {
     //답변에 댓글을 답니다
     @PostMapping("/api/answer/{answerId}/comment")
     public ResponseEntity<String> createAnswerComment(@PathVariable Long answerId,
-                                                      @RequestBody CommentRequest commentRequest,
+                                                      @RequestBody AnswerCommentDto answerCommentDto,
                                                       Authentication authentication) {
 
         // Authentication 객체에서 사용자 ID 추출
         Long userId = extractIdUtil.extractUserIdFromAuthentication(authentication);
 
-        String content = commentRequest.getContent(); // 댓글 내용
+        String content = answerCommentDto.getContent(); // 댓글 내용
 
         // CommentService의 createComment 메서드 호출
         answerCommentService.createAnswerComment(answerId, userId, content);
@@ -41,12 +39,12 @@ public class AnswerCommentController {
 
     @PutMapping("/api/answer/comment/{commentId}")
     public ResponseEntity<String> updateComment(@PathVariable String commentId,
-                                                @RequestBody CommentRequest commentRequest,
+                                                @RequestBody AnswerCommentDto answerCommentDto,
                                                 Authentication authentication) {
         try {
             // Authentication 객체에서 사용자 ID 추출
             Long userId = extractIdUtil.extractUserIdFromAuthentication(authentication);
-            String content = commentRequest.getContent(); // 댓글 내용
+            String content = answerCommentDto.getContent(); // 댓글 내용
 
             // 댓글 소유자 확인
             answerCommentService.checkCommenter(commentId, userId);

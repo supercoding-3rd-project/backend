@@ -1,15 +1,13 @@
 package com.github.devsns.domain.comments.controller;
 
-import com.github.devsns.domain.comments.dto.CommentRequest;
-import com.github.devsns.domain.comments.entity.QuestionCommentEntity;
-import com.github.devsns.domain.comments.service.AnswerCommentService;
+import com.github.devsns.domain.comments.dto.AnswerCommentDto;
+import com.github.devsns.domain.comments.dto.QuestionCommentDto;
 import com.github.devsns.domain.comments.service.QuestionCommentService;
 import com.github.devsns.global.component.ExtractIdUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -26,13 +24,13 @@ public class QuestionCommentController {
     // 질문에 댓글을 생성합니다.
     @PostMapping("/api/question/{quesId}/comment")
     public ResponseEntity<String> createQuestionComment(@PathVariable Long quesId,
-                                                        @RequestBody CommentRequest commentRequest,
+                                                        @RequestBody QuestionCommentDto questionCommentDto,
                                                         Authentication authentication) {
 
         // Authentication 객체에서 사용자 ID 추출
         Long userId = extractIdUtil.extractUserIdFromAuthentication(authentication);
 
-        String content = commentRequest.getContent(); // 댓글 내용
+        String content = questionCommentDto.getContent(); // 댓글 내용
 
         // CommentService의 createComment 메서드 호출
         questionCommentService.createQuestionComment(quesId, userId, content);
@@ -42,12 +40,12 @@ public class QuestionCommentController {
 
     @PutMapping("/api/question/{commentId}")
     public ResponseEntity<String> updateComment(@PathVariable String commentId,
-                                                @RequestBody CommentRequest commentRequest,
+                                                @RequestBody QuestionCommentDto questionCommentDto,
                                                 Authentication authentication) {
         try {
             // Authentication 객체에서 사용자 ID 추출
             Long userId = extractIdUtil.extractUserIdFromAuthentication(authentication);
-            String content = commentRequest.getContent(); // 댓글 내용
+            String content = questionCommentDto.getContent(); // 댓글 내용
 
             // 댓글 소유자 확인
             questionCommentService.checkCommenter(commentId, userId);

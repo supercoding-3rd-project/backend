@@ -1,6 +1,8 @@
 package com.github.devsns.domain.answers.service;
 
-import com.github.devsns.domain.answers.dto.AnswerRequest;
+import com.github.devsns.domain.notifications.entity.Notification;
+
+import java.util.List;
 
 public interface AnswerService {
 
@@ -13,7 +15,7 @@ public interface AnswerService {
 
     void unlikeAnswer(Long answerId, Long userId);
 
-    void deleteAnswer(Long answerId);
+    List<Notification> deleteAnswer(Long answerId);
 
     void updateAnswer(Long answerId, Long userId, String title, String content);
 

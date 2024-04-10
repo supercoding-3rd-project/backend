@@ -29,11 +29,15 @@ dependencies {
 
     // OAuth2
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // WebSocket
+//    implementation 'org.springframework.security:spring-security-messaging:6.1.4'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
     // 개발 도구
     developmentOnly 'org.springframework.boot:spring-boot-devtools' // 스프링 부트 개발 도구

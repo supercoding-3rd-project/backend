@@ -3,18 +3,14 @@ package com.github.devsns.domain.notifications.entity;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Data
-public class FollowNotification {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Table(name = "follow_notification")
+public class FollowNotification extends Notification {
 
-    @ManyToOne
-    private UserEntity recipient; // 알림을 받는 사용자
-
-    @ManyToOne
-    private UserEntity follower; // 팔로우를 한 사용자
+    @Column(name = "follower_id")
+    private Long followerId; // 팔로우를 한 사용자
 
 }
