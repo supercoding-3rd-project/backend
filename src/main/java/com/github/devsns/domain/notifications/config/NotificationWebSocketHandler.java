@@ -1,22 +1,16 @@
 package com.github.devsns.domain.notifications.config;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.devsns.domain.notifications.component.NotificationCreatedEvent;
 import com.github.devsns.domain.notifications.component.UserSessionManager;
 import com.github.devsns.domain.notifications.dto.UserWebSocketSession;
 import com.github.devsns.domain.notifications.entity.Notification;
 import com.github.devsns.domain.notifications.repository.NotificationRepository;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import com.github.devsns.domain.user.repository.UserRepository;
-import com.github.devsns.global.component.ExtractIdUtil;
 import com.github.devsns.global.jwt.service.JwtService;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -24,15 +18,12 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @Slf4j
-public class WebSocketHandler extends TextWebSocketHandler {
+public class NotificationWebSocketHandler extends TextWebSocketHandler {
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
@@ -40,7 +31,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper;
     private final UserSessionManager userSessionManager;
 
-    public WebSocketHandler(JwtService jwtService, UserRepository userRepository, NotificationRepository notificationRepository, ObjectMapper objectMapper, UserSessionManager userSessionManager) {
+    public NotificationWebSocketHandler(JwtService jwtService, UserRepository userRepository, NotificationRepository notificationRepository, ObjectMapper objectMapper, UserSessionManager userSessionManager) {
         this.userSessionManager = userSessionManager;
         this.jwtService = jwtService;
         this.userRepository = userRepository;
@@ -82,11 +73,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
 
     @Async
-    @EventListener
-    public void handleNotificationCreated(NotificationCreatedEvent event) {
-        log.info("Handling NotificationCreatedEvent for notification: {}", event.getNotification().getId());
+    @Transactional
+    public void handleNotificationCreated(Notification notification) {
+        log.info("Handling NotificationCreatedEvent for notification: {}", notification.getId());
         // 나머지 로직
-        Notification notification = event.getNotification();
         Long userId = notification.getRecipientId();
 
         // 사용자의 WebSocket 세션을 찾아서 알림 전송

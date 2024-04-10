@@ -2,31 +2,25 @@ package com.github.devsns.domain.notifications.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.orm.hibernate5.support.OpenSessionInViewFilter;
-import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.config.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Configuration
 @EnableWebSocket
-public class WebSocketConfig implements WebSocketConfigurer {
+public class NotificationWebSocketConfig implements WebSocketConfigurer {
 
-    private final WebSocketHandler webSocketHandler;
+    private final NotificationWebSocketHandler notificationWebSocketHandler;
 
-    public WebSocketConfig(WebSocketHandler webSocketHandler) {
-        this.webSocketHandler = webSocketHandler;
+    public NotificationWebSocketConfig(NotificationWebSocketHandler notificationWebSocketHandler) {
+        this.notificationWebSocketHandler = notificationWebSocketHandler;
     }
 
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(webSocketHandler,"/ws").setAllowedOrigins("*");
+        registry.addHandler(notificationWebSocketHandler,"/ws").setAllowedOrigins("*");
     }
 
 

@@ -5,10 +5,10 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.stereotype.Component;
 
 @Component
-public class NotificationCreatedEvent extends ApplicationEvent {
+public class NotificationCreateEvent extends ApplicationEvent {
     private final Notification notification;
 
-    public NotificationCreatedEvent(Notification notification) {
+    public NotificationCreateEvent(Notification notification) {
         super(notification);
         this.notification = notification;
     }
