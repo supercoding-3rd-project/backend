@@ -3,13 +3,16 @@ package com.github.devsns.domain.answers.entity;
 import com.github.devsns.domain.comments.entity.AnswerCommentEntity;
 import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.user.entitiy.UserEntity;
-import com.github.devsns.global.constant.Status;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,10 +30,6 @@ public class AnswerEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ques_id", nullable = false)
-    private QuestionBoardEntity question;
-
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity answerer;
@@ -47,8 +46,11 @@ public class AnswerEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-//    @Column(name = "deleted_at")
-//    private LocalDateTime deletedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ques_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private QuestionBoardEntity questionBoard;
 
     @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AnswerLike> likes = new ArrayList<>();

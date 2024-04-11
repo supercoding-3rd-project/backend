@@ -1,37 +1,33 @@
 package com.github.devsns.domain.comments.controller;
 
-import com.github.devsns.domain.comments.dto.CommentRequest;
-import com.github.devsns.domain.comments.entity.AnswerCommentEntity;
+import com.github.devsns.domain.comments.dto.AnswerCommentReqDto;
 import com.github.devsns.domain.comments.service.AnswerCommentService;
 import com.github.devsns.global.component.ExtractIdUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
+@RequiredArgsConstructor
 public class AnswerCommentController {
 
     private final AnswerCommentService answerCommentService;
     private final ExtractIdUtil extractIdUtil;
 
-    public AnswerCommentController(AnswerCommentService answerCommentService, ExtractIdUtil extractIdUtil) {
-        this.extractIdUtil = extractIdUtil;
-        this.answerCommentService = answerCommentService;
-    }
 
     //답변에 댓글을 답니다
     @PostMapping("/api/answer/{answerId}/comment")
     public ResponseEntity<String> createAnswerComment(@PathVariable Long answerId,
-                                                      @RequestBody CommentRequest commentRequest,
+                                                      @RequestBody AnswerCommentReqDto answerCommentReqDto,
                                                       Authentication authentication) {
 
         // Authentication 객체에서 사용자 ID 추출
         Long userId = extractIdUtil.extractUserIdFromAuthentication(authentication);
 
-        String content = commentRequest.getContent(); // 댓글 내용
+        String content = answerCommentReqDto.getContent(); // 댓글 내용
 
         // CommentService의 createComment 메서드 호출
         answerCommentService.createAnswerComment(answerId, userId, content);
@@ -41,12 +37,12 @@ public class AnswerCommentController {
 
     @PutMapping("/api/answer/comment/{commentId}")
     public ResponseEntity<String> updateComment(@PathVariable String commentId,
-                                                @RequestBody CommentRequest commentRequest,
+                                                @RequestBody AnswerCommentReqDto answerCommentReqDto,
                                                 Authentication authentication) {
         try {
             // Authentication 객체에서 사용자 ID 추출
             Long userId = extractIdUtil.extractUserIdFromAuthentication(authentication);
-            String content = commentRequest.getContent(); // 댓글 내용
+            String content = answerCommentReqDto.getContent(); // 댓글 내용
 
             // 댓글 소유자 확인
             answerCommentService.checkCommenter(commentId, userId);
@@ -81,11 +77,5 @@ public class AnswerCommentController {
             return ResponseEntity.badRequest().body("댓글이 존재하지 않습니다");
         }
     }
-
-//    @GetMapping("/api/answer/{answerId}/comments")
-//    public ResponseEntity<List<AnswerCommentEntity>> getAllComments(@PathVariable Long answerId) {
-//        List<AnswerCommentEntity> comments = answerCommentService.getAllComments(answerId);
-//        return ResponseEntity.ok(comments);
-//    }
 
 }

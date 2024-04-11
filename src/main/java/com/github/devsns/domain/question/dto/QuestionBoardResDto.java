@@ -1,7 +1,13 @@
 package com.github.devsns.domain.question.dto;
 
+import com.github.devsns.domain.answers.dto.AnswerResDto;
+//import com.github.devsns.domain.comments.dto.QuestionCommentResDto;
 import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -13,15 +19,23 @@ public class QuestionBoardResDto {
     private Long id;
     private String title;
     private String content;
+    private Long questioner;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private Long likeCount;
+    private List<AnswerResDto> answers;
 
-    public QuestionBoardResDto(QuestionBoardEntity questionBoard, Long likeCount) {
-        QuestionBoardResDto.builder()
-                .id(questionBoard.getId())
-                .title(questionBoard.getTitle())
-                .content(questionBoard.getContent())
-                .likeCount(likeCount)
-                .build();
+    public QuestionBoardResDto(QuestionBoardEntity questionBoard) {
+        this.id = questionBoard.getId();
+        this.title = questionBoard.getTitle();
+        this.content = questionBoard.getContent();
+        this.questioner = questionBoard.getUser().getUserId();
+        this.createdAt = questionBoard.getCreatedAt();
+        this.updatedAt = questionBoard.getUpdatedAt();
+        this.likeCount = (long) questionBoard.getLike().size();
+        this.answers = questionBoard.getAnswer().stream()
+                .map(AnswerResDto::new)
+                .collect(Collectors.toList());
     }
 }
 

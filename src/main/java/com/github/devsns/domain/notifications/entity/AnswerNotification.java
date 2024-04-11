@@ -1,26 +1,21 @@
 package com.github.devsns.domain.notifications.entity;
 
 
-import com.github.devsns.domain.answers.entity.AnswerEntity;
-import com.github.devsns.domain.question.entity.QuestionBoardEntity;
-import com.github.devsns.domain.user.entitiy.UserEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
 @Data
-public class AnswerNotification {
+@Table(name = "answer_notifications")
+public class AnswerNotification extends Notification {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @ManyToOne
-    private UserEntity recipient; // 알림을 받는 사용자
+    @Column(name = "answerer_id")
+    private Long answererId; // 답변을 작성한 사용자
 
-    @ManyToOne
-    private UserEntity answerer; // 답변을 작성한 사용자
+    @Column(name = "question_id")
+    private Long questionId; // 답변이 달린 질문
 
-    @ManyToOne
-    private QuestionBoardEntity question; // 답변이 달린 질문
 }

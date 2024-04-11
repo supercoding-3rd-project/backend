@@ -1,8 +1,9 @@
 package com.github.devsns.domain.answers.controller;
 
-import com.github.devsns.domain.answers.dto.AnswerRequest;
+import com.github.devsns.domain.answers.dto.AnswerReqDto;
 import com.github.devsns.domain.answers.service.AnswerService;
 import com.github.devsns.global.component.ExtractIdUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -10,27 +11,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.NoSuchElementException;
 
 @RestController
+@RequiredArgsConstructor
 public class AnswerController {
 
     private final AnswerService answerService;
     private final ExtractIdUtil extractIdUtil;
 
-    public AnswerController(AnswerService answerService, ExtractIdUtil extractIdUtil) {
-        this.extractIdUtil = extractIdUtil;
-        this.answerService = answerService;
-    }
-
 
     @PostMapping("/api/{quesId}/answer/create")
     public ResponseEntity<String> createAnswer(@PathVariable Long quesId,
-                                               @RequestBody AnswerRequest answerRequest,
+                                               @RequestBody AnswerReqDto answerReqDto,
                                                Authentication authentication) {
 
         // Authentication 객체에서 사용자 ID 추출
         Long userId = extractIdUtil.extractUserIdFromAuthentication(authentication);
 
-        String title = answerRequest.getTitle();
-        String content = answerRequest.getContent();
+        String title = answerReqDto.getTitle();
+        String content = answerReqDto.getContent();
 
         // AnswerService의 createAnswer() 메서드 호출
         answerService.createAnswer(quesId, userId, title, content);
@@ -46,30 +43,15 @@ public class AnswerController {
             Long userId = extractIdUtil.extractUserIdFromAuthentication(authentication);
             // 답변 소유자 확인
             answerService.checkAnswerer(answerId, userId);
-            // 좋아요 생성
-            answerService.likeAnswer(answerId, userId);
+            // 좋아요 확인
+            String message = answerService.likeAnswer(answerId, userId);
+            return ResponseEntity.ok(message);
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().body("답변이 존재하지 않습니다");
         }
-        return ResponseEntity.ok("좋아요 성공");
+
     }
 
-
-    @PostMapping("/api/answer/{answerId}/unlike")
-    public ResponseEntity<String> unlikeAnswer(@PathVariable Long answerId,
-                                               Authentication authentication) {
-        try {
-            // Authentication 객체에서 사용자 ID 추출
-            Long userId = extractIdUtil.extractUserIdFromAuthentication(authentication);
-            // 답변 소유자 확인
-            answerService.checkAnswerer(answerId, userId);
-            // 답변에 좋아요를 취소
-            answerService.unlikeAnswer(answerId, userId);
-            return ResponseEntity.ok("답변에 좋아요를 취소");
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body("답변이 존재하지 않습니다");
-        }
-    }
 
     @DeleteMapping("/api/answer/{answerId}/delete")
     public ResponseEntity<String> deleteAnswer(@PathVariable Long answerId,
@@ -89,11 +71,11 @@ public class AnswerController {
 
     @PutMapping("/api/answer/{answerId}/update")
     public ResponseEntity<String> updateAnswer(@PathVariable Long answerId,
-                                               @RequestBody AnswerRequest answerRequest,
+                                               @RequestBody AnswerReqDto answerReqDto,
                                                Authentication authentication) {
 
-        String title = answerRequest.getTitle();
-        String content = answerRequest.getContent();
+        String title = answerReqDto.getTitle();
+        String content = answerReqDto.getContent();
 
         try {
             // Authentication 객체에서 사용자 ID 추출
