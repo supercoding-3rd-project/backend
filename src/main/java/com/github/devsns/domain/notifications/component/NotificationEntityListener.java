@@ -32,20 +32,18 @@ public class NotificationEntityListener {
         if (entity instanceof Notification) {
             eventPublisher.publishEvent(new NotificationCreateEvent((Notification) entity));
         } else if (entity instanceof AnswerCommentNotification) {
-            eventPublisher.publishEvent(new NotificationCreateEvent((Notification)entity));
+            eventPublisher.publishEvent(new NotificationCreateEvent((Notification) entity));
         } else if (entity instanceof AnswerNotification) {
-            eventPublisher.publishEvent(new NotificationCreateEvent((Notification)entity));
+            eventPublisher.publishEvent(new NotificationCreateEvent((Notification) entity));
         } else if (entity instanceof FollowNotification) {
-            eventPublisher.publishEvent(new NotificationCreateEvent((Notification)entity));
+            eventPublisher.publishEvent(new NotificationCreateEvent((Notification) entity));
         } else if (entity instanceof LikeAnswerNotification) {
-            eventPublisher.publishEvent(new NotificationCreateEvent((Notification)entity));
+            eventPublisher.publishEvent(new NotificationCreateEvent((Notification) entity));
         } else if (entity instanceof LikeQuestionNotification) {
-            eventPublisher.publishEvent(new NotificationCreateEvent((Notification)entity));
+            eventPublisher.publishEvent(new NotificationCreateEvent((Notification) entity));
 //        } else if (entity instanceof MessageNotification) {
 //            log.info("MessageNotification entity changed. ID: {}", ((MessageNotification) entity).getId());
 //            eventPublisher.publishEvent(new NotificationCreateEvent((Notification)entity));
-        } else if (entity instanceof QuestionCommentNotification) {
-            eventPublisher.publishEvent(new NotificationCreateEvent((Notification)entity));
         }
     }
 }

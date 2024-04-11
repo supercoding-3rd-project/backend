@@ -1,21 +1,21 @@
 package com.github.devsns.domain.notifications.config;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.hibernate5.support.OpenSessionInViewFilter;
-import org.springframework.web.socket.config.annotation.*;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 @Slf4j
 @Configuration
 @EnableWebSocket
+@RequiredArgsConstructor
 public class NotificationWebSocketConfig implements WebSocketConfigurer {
 
     private final NotificationWebSocketHandler notificationWebSocketHandler;
-
-    public NotificationWebSocketConfig(NotificationWebSocketHandler notificationWebSocketHandler) {
-        this.notificationWebSocketHandler = notificationWebSocketHandler;
-    }
 
 
     @Override
