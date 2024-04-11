@@ -41,7 +41,6 @@ public class securityConfig {
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
 
-
     @Bean
     public SecurityFilterChain filterChain (HttpSecurity http) throws Exception {
         http.headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
@@ -51,7 +50,7 @@ public class securityConfig {
                 .rememberMe(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/api/v1/**", "/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").authenticated()
+                        .requestMatchers("/api/v1/**", "/swagger-resources/**", "/v3/api-docs/**").authenticated() //swagger-ui 제외
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth -> oauth

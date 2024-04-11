@@ -22,14 +22,11 @@ repositories {
 }
 
 dependencies {
-    // swagger
-    implementation 'io.springfox:springfox-boot-starter:3.0.0'
-    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
-
-    // OAuth2
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    // Spring Boot 기본 웹 스타터
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // OAuth2, 웹소켓, 보안, 유효성 검사, 데이터 JPA 스타터
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -40,25 +37,19 @@ dependencies {
 
 
     // lombok
-    compileOnly 'org.projectlombok:lombok' // 최신 버전으로 업데이트 권장
+    compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
     // 데이터베이스 드라이버 - 사용 중인 데이터베이스에 맞게 최신 버전으로 업데이트
-    runtimeOnly 'com.h2database:h2' // H2 데이터베이스 드라이버
-//    runtimeOnly 'mysql:mysql-connector-java' // MySQL 데이터베이스 드라이버
+    runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client' // MariaDB 데이터베이스 드라이버
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
-    // security 보안 및 JWT
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    testImplementation 'org.springframework.security:spring-security-test'
+    // JWT
     implementation 'com.auth0:java-jwt:4.2.1' // JWT 라이브러리, 최신 버전 사용 권장
 
-    // querydsl
-    implementation "com.querydsl:querydsl-jpa:5.0.0:jakarta"
-    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
-    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+    // swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
 
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

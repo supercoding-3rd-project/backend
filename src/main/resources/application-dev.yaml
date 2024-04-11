@@ -1,8 +1,9 @@
 spring:
   datasource:
-    url: jdbc:mariadb://alco-db.cdi4cweas6u0.ap-northeast-2.rds.amazonaws.com:3306/alco_db?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
-    username: ${LOCAL_USERNAME}
-    password: ${DEV_PASSWORD}
+    url: jdbc:mariadb://sc-alco.cn6w8cie8wju.ap-northeast-2.rds.amazonaws.com:3306/Alco?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
+#    url: jdbc:mariadb://alco-db.cdi4cweas6u0.ap-northeast-2.rds.amazonaws.com:3306/alco_db?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
+    username: ${MyMariaDB_Name}
+    password: ${MyMariaDB_PW}
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
@@ -19,6 +20,25 @@ spring:
     import:
       - application-jwt.yaml
       - application-oauth.yaml
+springdoc:
+  version: '@project.version@'
+  api-docs:
+    path: '/api-docs'
+  default-consumes-media-type: 'application/json'
+  default-produces-media-type: 'application/json'
+  swagger-ui:
+    operations-sorter: 'alpha'
+    tags-sorter: 'alpha'
+    path: '/swagger-ui'
+#    '/swagger-ui.html'
+    disable-swagger-default-url: true
+    display-query-params-without-oauth2: true
+    doc-expansion: 'none'
+  paths-to-match: '/api/**'
+
+
+
+
 
 #server:
 #  port: 443
