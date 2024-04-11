@@ -1,6 +1,7 @@
 package com.github.devsns.domain.user.controller;
 
 import com.github.devsns.domain.auth.entity.CustomUserDetails;
+import com.github.devsns.domain.follow.dto.FollowResponseDto;
 import com.github.devsns.domain.user.dto.SignupDto;
 import com.github.devsns.domain.user.dto.UpdateUser;
 import com.github.devsns.domain.user.dto.UserResponseDto;
@@ -32,23 +33,35 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/signup")
-    public String signUp(@RequestBody SignupDto signupDto) throws Exception {
+    public ResponseEntity<?> signUp(@Valid @RequestBody SignupDto signupDto, BindingResult bindingResult) throws Exception {
+        if(bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
+        }
+
         userService.signup(signupDto);
-        return "회원가입 성공";
+        return ResponseEntity.ok("회원가입 성공");
     }
 
     // 마이페이지
-    @GetMapping("/user/myPage")
-    public ResponseEntity<?> getUser(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    @GetMapping("/v1/user/myPage")
+    public ResponseEntity<?> getMyPage(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         String email = customUserDetails.getUsername();
-        UserResponseDto userResponseDto = userService.getUser(email);
+        UserResponseDto userResponseDto = userService.getMyPage(email);
 
         return ResponseEntity.ok(userResponseDto);
     }
 
+    // 유저정보 가져오기
+    @GetMapping("/user/{username}")
+    public ResponseEntity<?> getUser(@PathVariable("username") String username) {
+        userService.getUser(username);
+        FollowResponseDto followResponseDto = userService.getUser(username);
+
+        return ResponseEntity.ok(followResponseDto);
+    }
+
     // 유저정보 추가 입력
-    // TODO: 이미지 업로드 구현해야함
-    @PutMapping("/user/update/{userId}")
+    @PutMapping("/v1/user/update/{userId}")
     public ResponseEntity<?> updateUser(
             @PathVariable Long userId,
             @RequestBody UpdateUser updateUser,
@@ -67,7 +80,7 @@ public class UserController {
 
     // 유저 삭제
     // TODO: 유저 탈퇴 시 cascade 적용해서 전부 삭제 구현해야함
-    @DeleteMapping("/user/delete/{userId}")
+    @DeleteMapping("/v1/user/delete/{userId}")
     public ResponseEntity<?> deleteUser(
             @PathVariable Long userId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {

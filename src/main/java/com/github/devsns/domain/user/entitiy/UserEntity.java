@@ -40,17 +40,11 @@ public class UserEntity {
     private LocalDateTime createdAt;
 
     // 팔로우
-    @OneToMany(mappedBy = "fromUser", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "fromUser", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<FollowEntity> followings;
 
-    @OneToMany(mappedBy = "toUser", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "toUser", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<FollowEntity> followers;
-
-
-//    // 유저 권한 설정
-//    public void authorizeUser() {
-//        this.role = Role.USER;
-//    }
 
     // 비밀번호 암호화
     public void passwordEncode(PasswordEncoder passwordEncoder) {
