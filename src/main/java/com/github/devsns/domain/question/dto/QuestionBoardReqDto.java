@@ -1,7 +1,8 @@
 package com.github.devsns.domain.question.dto;
 
-import com.github.devsns.domain.question.entity.QuestionBoardStatusType;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter

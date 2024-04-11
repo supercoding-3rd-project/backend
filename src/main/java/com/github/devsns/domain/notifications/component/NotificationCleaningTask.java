@@ -1,19 +1,17 @@
 package com.github.devsns.domain.notifications.component;
 
-import com.github.devsns.domain.notifications.entity.Notification;
 import com.github.devsns.domain.notifications.repository.NotificationRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
 @Component
+@RequiredArgsConstructor
 public class NotificationCleaningTask {
     private final NotificationRepository notificationRepository;
 
-    public NotificationCleaningTask(NotificationRepository notificationRepository) {
-        this.notificationRepository = notificationRepository;
-    }
 
     @Scheduled(cron = "0 * * * * *") // 매 분 0초마다 실행
     public void cleanupNotifications() {

@@ -11,9 +11,7 @@ public interface AnswerService {
 
     void createAnswer(Long quesId, Long userId, String title, String content);
 
-    void likeAnswer(Long answerId, Long userId);
-
-    void unlikeAnswer(Long answerId, Long userId);
+    String likeAnswer(Long answerId, Long userId);
 
     List<Notification> deleteAnswer(Long answerId);
 

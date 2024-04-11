@@ -9,6 +9,7 @@ import com.github.devsns.domain.user.entitiy.UserEntity;
 import com.github.devsns.domain.user.repository.UserRepository;
 import com.github.devsns.global.jwt.service.JwtService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,7 @@ import java.util.Optional;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class NotificationWebSocketHandler extends TextWebSocketHandler {
 
     private final JwtService jwtService;
@@ -31,13 +33,6 @@ public class NotificationWebSocketHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper;
     private final UserSessionManager userSessionManager;
 
-    public NotificationWebSocketHandler(JwtService jwtService, UserRepository userRepository, NotificationRepository notificationRepository, ObjectMapper objectMapper, UserSessionManager userSessionManager) {
-        this.userSessionManager = userSessionManager;
-        this.jwtService = jwtService;
-        this.userRepository = userRepository;
-        this.notificationRepository = notificationRepository;
-        this.objectMapper = objectMapper;
-    }
 
     @Override
     @Transactional
@@ -122,26 +117,6 @@ public class NotificationWebSocketHandler extends TextWebSocketHandler {
         // 맵에서 세션 제거
         userSessionManager.removeUserSession(userId);
     }
-
-
-//    private String extractTokenFromSession(String token) {
-//        // JWT 토큰의 일반적인 형식은 "Bearer {token}"입니다.
-//        // 따라서 공백을 기준으로 문자열을 분리하여 토큰 부분을 추출합니다.
-//
-//        String[] parts = token.split(" ");
-//
-//        // 분리된 부분 중에서 두 번째 요소가 토큰이 됩니다.
-//        // 예를 들어, "Bearer {token}" 형식이면 parts[1]에 토큰이 위치합니다.
-//        if (parts.length == 2) {
-//            jwtService.isTokenValid(parts[1]);
-//            return parts[1];
-//        } else {
-//            // 형식이 맞지 않는 경우 null을 반환하거나 예외 처리를 수행할 수 있습니다.
-//            throw new IllegalArgumentException("Invalid token format");
-//        }
-//    }
-
-
 
 }
 

@@ -4,38 +4,26 @@ import com.github.devsns.domain.answers.entity.AnswerEntity;
 import com.github.devsns.domain.answers.repository.AnswerRepository;
 import com.github.devsns.domain.comments.entity.AnswerCommentEntity;
 import com.github.devsns.domain.comments.repository.AnswerCommentRepository;
-import com.github.devsns.domain.notifications.entity.AnswerCommentNotification;
 import com.github.devsns.domain.notifications.service.NotificationService;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import com.github.devsns.domain.user.repository.UserRepository;
 import com.github.devsns.domain.user.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class AnswerCommentServiceImpl implements AnswerCommentService {
     private final NotificationService notificationService;
-    private final UserService userService;
     private final UserRepository userRepository;
     private final AnswerRepository answerRepository;
     private final AnswerCommentRepository answerCommentRepository;
 
-
-    public AnswerCommentServiceImpl(NotificationService notificationService, UserService userService,
-                                    UserRepository userRepository,
-                                    AnswerRepository answerRepository,
-                                    AnswerCommentRepository answerCommentRepository) {
-        this.notificationService = notificationService;
-        this.userService = userService;
-        this.userRepository = userRepository;
-        this.answerRepository = answerRepository;
-        this.answerCommentRepository = answerCommentRepository;
-    }
 
     public void checkCommenter(String commentId, Long userId) {
         AnswerCommentEntity comment = answerCommentRepository.findById(Long.parseLong(commentId)).orElseThrow(() -> new IllegalArgumentException("코멘터가 아닙니다."));
@@ -48,7 +36,6 @@ public class AnswerCommentServiceImpl implements AnswerCommentService {
 
         // 게시물 조회
         Optional<AnswerEntity> answer = answerRepository.findById(answerId);
-        //QuestionBoardEntity post = questionBoardService.getPost(postId);
 
 
         // 답변 작성자
@@ -57,7 +44,6 @@ public class AnswerCommentServiceImpl implements AnswerCommentService {
 
         // 댓글 작성자
         Optional<UserEntity> commenter = userRepository.findById(userId);
-        //UserEntity commenter = userService.getUser(userId);
 
 
         AnswerCommentEntity comment = new AnswerCommentEntity();
@@ -88,12 +74,6 @@ public class AnswerCommentServiceImpl implements AnswerCommentService {
 
         answerCommentRepository.delete(comment);
     }
-
-//    @Transactional
-//    public List<AnswerCommentEntity> getAllComments(Long quesId) {
-//        Optional<AnswerEntity> answer = answerRepository.findById(quesId);
-//        return answer.get().getComments();
-//    }
 
 }
 

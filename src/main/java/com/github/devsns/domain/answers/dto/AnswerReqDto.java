@@ -3,7 +3,7 @@ package com.github.devsns.domain.answers.dto;
 import lombok.Data;
 
 @Data
-public class AnswerDto {
+public class AnswerReqDto {
     private Long id;
     private Long userId;
     private Long questionId;

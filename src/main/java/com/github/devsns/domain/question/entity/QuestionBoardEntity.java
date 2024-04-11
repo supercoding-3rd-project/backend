@@ -1,5 +1,7 @@
 package com.github.devsns.domain.question.entity;
 
+import com.github.devsns.domain.answers.entity.AnswerEntity;
+//import com.github.devsns.domain.comments.entity.QuestionCommentEntity;
 import com.github.devsns.domain.question.dto.QuestionBoardReqDto;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import jakarta.persistence.*;
@@ -9,7 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,18 +48,20 @@ public class QuestionBoardEntity {
     @OneToMany(mappedBy = "questionBoard")
     private List<LikeEntity> like = new ArrayList<>();
 
-    @DateTimeFormat(pattern = "yy.mm.dd hh:mm")
+    @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @DateTimeFormat(pattern = "yy.mm.dd hh:mm")
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-//    @OneToMany(mappedBy = "questionBoard", cascade = CascadeType.PERSIST, orphanRemoval = true)
-//    @JoinColumn(name = "ques_id")
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    private List<AnswerEntity> answer = new ArrayList<AnswerEntity>();
+
+    @OneToMany(mappedBy = "questionBoard", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<AnswerEntity> answer = new ArrayList<>();
 
     private void setStatusType(QuestionBoardStatusType statusType) {
         this.statusType = statusType;

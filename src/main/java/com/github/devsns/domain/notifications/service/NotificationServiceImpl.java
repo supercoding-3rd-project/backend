@@ -1,17 +1,13 @@
 package com.github.devsns.domain.notifications.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.devsns.domain.answers.entity.AnswerEntity;
 import com.github.devsns.domain.comments.entity.AnswerCommentEntity;
-import com.github.devsns.domain.comments.entity.QuestionCommentEntity;
 import com.github.devsns.domain.notifications.constant.NotificationType;
 import com.github.devsns.domain.notifications.entity.*;
 import com.github.devsns.domain.notifications.repository.*;
 import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.user.entitiy.UserEntity;
-import jakarta.persistence.EntityManager;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.scheduling.annotation.Async;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,51 +15,14 @@ import java.time.LocalDateTime;
 
 
 @Service
+@RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
-    private final EntityManager entityManager;
-    private final ObjectMapper objectMapper;
-    private final QuestionCommentNotificationRepository questionCommentNotificationRepository;
     private final AnswerCommentNotificationRepository answerCommentNotificationRepository;
-    private final LikeQuestionNotificationRepository likeQuestionNotificationRepository;
-    private final LikeAnswerNotificationRepository likeAnswerNotificationRepository;
     private final AnswerNotificationRepository answerNotificationRepository;
 //    private final MessageNotificationRepository messageNotificationRepository;
     private final FollowNotificationRepository followNotificationRepository;
 
-    public NotificationServiceImpl(QuestionCommentNotificationRepository questionCommentNotificationRepository,
-                                   AnswerCommentNotificationRepository answerCommentNotificationRepository,
-                                   LikeQuestionNotificationRepository likeQuestionNotificationRepository,
-                                   LikeAnswerNotificationRepository likeAnswerNotificationRepository,
-                                   AnswerNotificationRepository answerNotificationRepository,
-                                   FollowNotificationRepository followNotificationRepository, NotificationRepository notificationRepository,
-                                   EntityManager entityManager, ObjectMapper objectMapper) {
-
-        this.questionCommentNotificationRepository = questionCommentNotificationRepository;
-        this.answerCommentNotificationRepository = answerCommentNotificationRepository;
-        this.likeQuestionNotificationRepository = likeQuestionNotificationRepository;
-        this.likeAnswerNotificationRepository = likeAnswerNotificationRepository;
-        this.answerNotificationRepository = answerNotificationRepository;
-        this.followNotificationRepository = followNotificationRepository;
-        this.objectMapper = objectMapper;
-        this.notificationRepository = notificationRepository;
-        this.entityManager = entityManager;
-    }
-
-    @Transactional
-    public void sendQuestionCommentNotification(UserEntity recipient, QuestionCommentEntity comment) {
-
-        QuestionCommentNotification questionCommentNotification = new QuestionCommentNotification();
-        questionCommentNotification.setRecipientId(recipient.getUserId());
-        questionCommentNotification.setType(NotificationType.QUESTION_COMMENT);
-        questionCommentNotification.setCreatedAt(LocalDateTime.now());
-        questionCommentNotification.setRead(false);
-        questionCommentNotification.setCommenterId(comment.getCommenter().getUserId());
-        questionCommentNotification.setQuestionId(comment.getQuestion().getId());
-        questionCommentNotification.setCommentId(comment.getId());
-
-        notificationRepository.save(questionCommentNotification);
-    }
 
     @Transactional
     public void sendAnswerCommentNotification(UserEntity recipient, AnswerCommentEntity comment) {
@@ -114,6 +73,7 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.save(likeAnswerNotification);
     }
 
+
     @Transactional
     public void sendAnswerNotification(UserEntity recipient, UserEntity answerer, QuestionBoardEntity question) {
 
@@ -145,25 +105,12 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.save(followNotification);
     }
 
-    @Transactional
-    public void deleteQuestionCommentNotification(Long commentId) {
-        questionCommentNotificationRepository.deleteByCommentId(commentId);
-    }
 
     @Transactional
     public void deleteAnswerCommentNotification(Long commentId) {
         answerCommentNotificationRepository.deleteByCommentId(commentId);
     }
 
-    @Transactional
-    public void deleteByLikeQuestionNotification(Long likerId, Long questionId) {
-        likeQuestionNotificationRepository.deleteByLikerIdAndQuestionId(likerId, questionId);
-    }
-
-    @Transactional
-    public void deleteByLikeAnswerNotification(Long likerId, Long answerId) {
-        likeAnswerNotificationRepository.deleteByLikerIdAndAnswerId(likerId, answerId);
-    }
 
     @Transactional
     public void deleteAnswerNotification(Long answererId, Long questionId) {

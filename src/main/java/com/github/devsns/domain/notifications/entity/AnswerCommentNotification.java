@@ -1,10 +1,8 @@
 package com.github.devsns.domain.notifications.entity;
 
-import com.github.devsns.domain.answers.entity.AnswerEntity;
-import com.github.devsns.domain.comments.entity.AnswerCommentEntity;
-import com.github.devsns.domain.comments.entity.QuestionCommentEntity;
-import com.github.devsns.domain.user.entitiy.UserEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity

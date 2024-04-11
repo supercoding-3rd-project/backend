@@ -9,7 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,12 +22,12 @@ public class QuestionBoardController {
     private final QuestionBoardService questionBoardService;
 
     @GetMapping("/v1")
-    public List<QuestionBoardResDto> findAllQuestionBoard() {
+    public Map<Integer, List<QuestionBoardResDto>> findAllQuestionBoard() {
         return questionBoardService.findAllQuestionBoard();
     }
 
     @GetMapping("/v1/{id}")
-    public QuestionBoardResDto findByQuestionBoardId(@PathVariable Long id) {
+    public Map<Integer, QuestionBoardResDto> findByQuestionBoardId(@PathVariable Long id) {
         return questionBoardService.findQuestionBoardById(id);
     }
 
@@ -42,7 +44,7 @@ public class QuestionBoardController {
     }
 
     @GetMapping("/v1/search")
-    public List<QuestionBoardResDto> findQuesBoardByTitleKeyword(@RequestParam("keyword") String keyword) {
+    public Map<Integer, List<QuestionBoardResDto>> findQuesBoardByTitleKeyword(@RequestParam("keyword") String keyword) {
         return questionBoardService.findByNameContaining(keyword);
     }
 

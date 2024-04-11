@@ -1,12 +1,10 @@
 package com.github.devsns.domain.notifications.entity;
 
 
-import com.github.devsns.domain.answers.entity.AnswerEntity;
-import com.github.devsns.domain.question.entity.QuestionBoardEntity;
-import com.github.devsns.domain.user.entitiy.UserEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Data;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Data
