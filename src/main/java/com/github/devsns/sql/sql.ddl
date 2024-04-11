@@ -5,8 +5,8 @@
 #     `password` VARCHAR(255) NOT NULL,
 #     `username` VARCHAR(255) NOT NULL,
 #     `role` VARCHAR(20) NOT NULL,
-#     `social_id` VARCHAR(20) default "X",
-#     `social_type` VARCHAR(20) default "X",
+#     `social_id` VARCHAR(255),
+#     `social_type` VARCHAR(20),
 #     `image_url` VARCHAR(255),
 #     `refresh_token` VARCHAR(255),
 #     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP

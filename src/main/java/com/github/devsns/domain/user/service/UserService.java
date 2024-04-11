@@ -5,6 +5,7 @@ import com.github.devsns.domain.auth.filter.CustomJsonUsernamePasswordAuthentica
 import com.github.devsns.domain.comments.controller.AnswerCommentController;
 import com.github.devsns.domain.comments.repository.AnswerCommentRepository;
 import com.github.devsns.domain.comments.repository.QuestionCommentRepository;
+import com.github.devsns.domain.follow.dto.FollowResponseDto;
 import com.github.devsns.domain.notifications.repository.NotificationRepository;
 import com.github.devsns.domain.question.repository.LikeRepository;
 import com.github.devsns.domain.question.repository.QuestionBoardRepository;
@@ -19,13 +20,16 @@ import com.github.devsns.exception.ErrorCode;
 import com.github.devsns.global.jwt.filter.JwtAuthenticationFilter;
 import com.github.devsns.global.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -57,6 +61,7 @@ public class UserService {
                 .email(signupDto.getEmail())
                 .password(signupDto.getPassword())
                 .username(signupDto.getUsername())
+                .imageUrl("anonymous.png")
                 .role(Role.USER)
                 .createdAt(LocalDateTime.now())
                 .refreshToken(jwtService.createRefreshToken())
@@ -69,12 +74,22 @@ public class UserService {
 
     // 마이페이지에 유저 가져오기
     @Transactional(readOnly = true)
-    public UserResponseDto getUser(String email) {
+    public UserResponseDto getMyPage(String email) {
         UserEntity user = userRepository.findByEmail(email).orElseThrow(
                 () -> new AppException(ErrorCode.USER_EMAIL_NOT_FOUND.getMessage(), ErrorCode.USER_EMAIL_NOT_FOUND)
         );
 
+
         return new UserResponseDto(user);
+    }
+
+    // 유저정보 가져오기
+    public FollowResponseDto getUser(String username) {
+        UserEntity user = userRepository.findByUsername(username).orElseThrow(
+                () -> new AppException(ErrorCode.USERNAME_NOT_FOUND.getMessage(), ErrorCode.USERNAME_NOT_FOUND)
+        );
+
+        return new FollowResponseDto(user);
     }
 
     // 마이페이지에서 유저정보 업데이트
@@ -87,9 +102,7 @@ public class UserService {
 
         String encodedPassword = passwordEncoder.encode(updateUser.getPassword());
 
-
         user.setImageUrl(updateUser.getImageUrl());
-        user.setEmail(updateUser.getEmail());
         user.setPassword(encodedPassword);
         user.setUsername(updateUser.getUsername());
 
@@ -104,7 +117,6 @@ public class UserService {
 
         if (userRepository.findByEmail(email).isPresent()) {
             userRepository.delete(user);
-//            questionBoardRepository.deleteAllByUser(user);
         }
     }
 
@@ -116,4 +128,5 @@ public class UserService {
                 () -> new AppException(ErrorCode.USERNAME_NOT_FOUND.getMessage(), ErrorCode.USERNAME_NOT_FOUND)
         );
     }
+
 }

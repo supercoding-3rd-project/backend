@@ -25,6 +25,7 @@ import java.util.Map;
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final UserRepository userRepository;
+
     private static final String KAKAO = "kakao";
 
     @Override

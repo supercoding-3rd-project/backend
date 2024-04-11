@@ -1,5 +1,6 @@
 package com.github.devsns.domain.follow.service;
 
+import com.github.devsns.domain.follow.dto.FollowResponseDto;
 import com.github.devsns.domain.follow.entity.FollowEntity;
 import com.github.devsns.domain.follow.repository.FollowRepository;
 import com.github.devsns.domain.user.entitiy.UserEntity;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -53,5 +56,43 @@ public class FollowService {
         );
 
         followRepository.deleteByToUserAndFromUser(toUser, fromUser);
+    }
+
+    // 유저가 팔로잉하는 리스트 찾기
+    public List<FollowResponseDto> getFollowing(String username) {
+        UserEntity fromUser = userRepository.findByUsername(username).orElseThrow(
+                () -> new AppException(ErrorCode.USERNAME_NOT_FOUND.getMessage(), ErrorCode.USERNAME_NOT_FOUND)
+        );
+
+        List<FollowEntity> getFromUser = followRepository.findByFromUser(fromUser);
+
+        List<FollowResponseDto> followResponseDtoList = new ArrayList<>();
+
+        for (FollowEntity follow : getFromUser) {
+            UserEntity toUser = follow.getToUser();
+            FollowResponseDto followResponseDto = new FollowResponseDto(toUser);
+            followResponseDtoList.add(followResponseDto);
+        }
+
+        return followResponseDtoList;
+    }
+
+    // 유저의 팔로워 리스트 찾기
+    public List<FollowResponseDto> getFollower(String username) {
+        UserEntity toUser = userRepository.findByUsername(username).orElseThrow(
+                () -> new AppException(ErrorCode.USERNAME_NOT_FOUND.getMessage(), ErrorCode.USERNAME_NOT_FOUND)
+        );
+
+        List<FollowEntity> getToUser = followRepository.findByToUser(toUser);
+
+        List<FollowResponseDto> followResponseDtoList = new ArrayList<>();
+
+        for (FollowEntity follow : getToUser) {
+            UserEntity fromUser = follow.getFromUser();
+            FollowResponseDto followResponseDto = new FollowResponseDto(fromUser);
+            followResponseDtoList.add(followResponseDto);
+        }
+
+        return followResponseDtoList;
     }
 }
