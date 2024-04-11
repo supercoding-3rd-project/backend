@@ -13,14 +13,18 @@ public class ChatRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String roomId;
 
-    // User 엔터티와의 관계를 정의
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "participant1_id") // DB에서 사용할 컬럼명
-    private UserEntity participant1;
+//    // User 엔터티와의 관계를 정의
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "participant1_id") // DB에서 사용할 컬럼명
+//    private UserEntity participant1;
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "participant2_id") // DB에서 사용할 컬럼명
+//    private UserEntity participant2;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "participant2_id") // DB에서 사용할 컬럼명
-    private UserEntity participant2;
 
+    private Long participant1;
+
+    private Long participant2;
 
 }
