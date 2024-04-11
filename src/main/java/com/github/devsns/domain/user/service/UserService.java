@@ -1,10 +1,7 @@
 package com.github.devsns.domain.user.service;
 
 import com.github.devsns.domain.answers.repository.AnswerRepository;
-import com.github.devsns.domain.auth.filter.CustomJsonUsernamePasswordAuthenticationFilter;
-import com.github.devsns.domain.comments.controller.AnswerCommentController;
 import com.github.devsns.domain.comments.repository.AnswerCommentRepository;
-import com.github.devsns.domain.comments.repository.QuestionCommentRepository;
 import com.github.devsns.domain.follow.dto.FollowResponseDto;
 import com.github.devsns.domain.notifications.repository.NotificationRepository;
 import com.github.devsns.domain.question.repository.LikeRepository;
@@ -17,15 +14,12 @@ import com.github.devsns.domain.user.entitiy.UserEntity;
 import com.github.devsns.domain.user.repository.UserRepository;
 import com.github.devsns.exception.AppException;
 import com.github.devsns.exception.ErrorCode;
-import com.github.devsns.global.jwt.filter.JwtAuthenticationFilter;
 import com.github.devsns.global.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
 
 import java.time.LocalDateTime;
 
@@ -37,7 +31,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final QuestionBoardRepository questionBoardRepository;
     private final AnswerRepository answerRepository;
-    private final QuestionCommentRepository questionCommentRepository;
     private final AnswerCommentRepository answerCommentRepository;
     private final NotificationRepository notificationRepository;
     private final LikeRepository likeRepository;
