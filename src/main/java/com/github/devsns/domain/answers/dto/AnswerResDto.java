@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 public class AnswerResDto {
 
     private Long id;
-    private String title;
     private String content;
-    private Long answerer;
+    private Long answererId;
+    private String answerer;
     private Long likeCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -26,9 +26,9 @@ public class AnswerResDto {
 
     public AnswerResDto(AnswerEntity answerEntity) {
         this.id = answerEntity.getId();
-        this.title = answerEntity.getTitle();
         this.content = answerEntity.getContent();
-        this.answerer = answerEntity.getAnswerer().getUserId();
+        this.answererId = answerEntity.getAnswerer().getUserId();
+        this.answerer = answerEntity.getAnswerer().getUsername();
         this.createdAt = answerEntity.getCreatedAt();
         this.updatedAt = answerEntity.getUpdatedAt();
         this.likeCount = (long) answerEntity.getLikes().size();

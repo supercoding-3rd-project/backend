@@ -14,14 +14,16 @@ public class AnswerCommentResDto {
 
     private Long id;
     private String content;
-    private Long commenter;
+    private Long commenterId;
+    private String commenter;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public AnswerCommentResDto(AnswerCommentEntity answerCommentEntity) {
         this.id = answerCommentEntity.getId();
         this.content = answerCommentEntity.getContent();
-        this.commenter = answerCommentEntity.getCommenter().getUserId();
+        this.commenterId = answerCommentEntity.getCommenter().getUserId();
+        this.commenter = answerCommentEntity.getCommenter().getUsername();
         this.createdAt = answerCommentEntity.getCreatedAt();
         this.updatedAt = answerCommentEntity.getUpdatedAt();
     }

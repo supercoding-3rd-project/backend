@@ -27,12 +27,12 @@ public class AnswerController {
         // Authentication 객체에서 사용자 ID 추출
         Long userId = extractUserDataUtil.extractUserIdFromAuthentication(authentication);
 
-        String title = answerReqDto.getTitle();
         String content = answerReqDto.getContent();
+        String userName = extractUserDataUtil.extractUserNameFromAuthentication(authentication);
 
 
         // AnswerService의 createAnswer() 메서드 호출
-        answerService.createAnswer(quesId, userId, title, content);
+        answerService.createAnswer(quesId, userId, userName, content);
 
         return ResponseEntity.ok("답변 작성 완료");
     }
@@ -76,7 +76,6 @@ public class AnswerController {
                                                @RequestBody AnswerReqDto answerReqDto,
                                                Authentication authentication) {
 
-        String title = answerReqDto.getTitle();
         String content = answerReqDto.getContent();
 
         try {
@@ -85,7 +84,7 @@ public class AnswerController {
             // 답변 소유자 확인
             answerService.checkAnswerer(answerId, userId);
             // 답변 업데이트
-            answerService.updateAnswer(answerId, userId, title, content);
+            answerService.updateAnswer(answerId, userId, content);
             return ResponseEntity.ok("답변 업데이트");
 
         } catch (NoSuchElementException e) {

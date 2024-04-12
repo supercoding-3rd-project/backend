@@ -13,6 +13,9 @@ public class AnswerCommentNotification extends Notification {
     @Column(name = "commenter_id")
     private Long commenterId; // 댓글을 작성한 사용자
 
+    @Column(name = "commenter")
+    private String commenter;
+
     @Column(name = "answer_id")
     private Long answerId; // 해당 댓글이 작성된 답변
 

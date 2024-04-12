@@ -42,7 +42,7 @@ public class QuestionBoardController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("v1/question/like/{quesId}")
+    @PostMapping("v1/question/{quesId}/like")
     public ResponseEntity<?> likeQuestionBoard(@PathVariable Long quesId, @AuthenticationPrincipal CustomUserDetails user) {
         String result = questionBoardService.questionBoardLike(quesId, user.getUsername());
         return ResponseEntity.ok(result);
