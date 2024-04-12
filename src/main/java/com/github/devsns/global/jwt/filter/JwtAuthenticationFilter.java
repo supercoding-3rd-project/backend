@@ -27,7 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final String NO_CHECK_URL = "/login"; // "/login"으로 들어오는 요청은 Filter 작동 X
+    private static final String NO_CHECK_URL = "/api/login"; // "/login"으로 들어오는 요청은 Filter 작동 X
     private final JwtService jwtService;
     private final UserRepository userRepository;
 
@@ -40,6 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         이때, return을 통해 다음 필터를 호출하고 현재 필터의 진행을 막는다.
          */
         if (request.getRequestURI().equals(NO_CHECK_URL)) {
+            log.info(request.getRequestURI());
             filterChain.doFilter(request, response);
             return;
         }
