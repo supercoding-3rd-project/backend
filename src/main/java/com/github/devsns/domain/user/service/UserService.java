@@ -1,10 +1,8 @@
 package com.github.devsns.domain.user.service;
 
 import com.github.devsns.domain.answers.repository.AnswerRepository;
-import com.github.devsns.domain.auth.filter.CustomJsonUsernamePasswordAuthenticationFilter;
-import com.github.devsns.domain.comments.controller.AnswerCommentController;
+
 import com.github.devsns.domain.comments.repository.AnswerCommentRepository;
-import com.github.devsns.domain.comments.repository.QuestionCommentRepository;
 import com.github.devsns.domain.follow.dto.FollowResponseDto;
 import com.github.devsns.domain.notifications.repository.NotificationRepository;
 import com.github.devsns.domain.question.repository.LikeRepository;
@@ -37,7 +35,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final QuestionBoardRepository questionBoardRepository;
     private final AnswerRepository answerRepository;
-    private final QuestionCommentRepository questionCommentRepository;
     private final AnswerCommentRepository answerCommentRepository;
     private final NotificationRepository notificationRepository;
     private final LikeRepository likeRepository;
