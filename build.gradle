@@ -37,7 +37,7 @@ dependencies {
 
 
     // lombok
-    compileOnly 'org.projectlombok:lombok' // 최신 버전으로 업데이트 권장
+    compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
     // 데이터베이스 드라이버 - 사용 중인 데이터베이스에 맞게 최신 버전으로 업데이트
