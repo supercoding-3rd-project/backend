@@ -4,10 +4,7 @@ import com.github.devsns.domain.answers.entity.AnswerEntity;
 import com.github.devsns.domain.comments.entity.AnswerCommentEntity;
 import com.github.devsns.domain.notifications.constant.NotificationType;
 import com.github.devsns.domain.notifications.entity.*;
-import com.github.devsns.domain.notifications.repository.AnswerCommentNotificationRepository;
-import com.github.devsns.domain.notifications.repository.AnswerNotificationRepository;
-import com.github.devsns.domain.notifications.repository.FollowNotificationRepository;
-import com.github.devsns.domain.notifications.repository.NotificationRepository;
+import com.github.devsns.domain.notifications.repository.*;
 import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +20,8 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final AnswerCommentNotificationRepository answerCommentNotificationRepository;
     private final AnswerNotificationRepository answerNotificationRepository;
-//    private final MessageNotificationRepository messageNotificationRepository;
+    private final LikeAnswerNotificationRepository likeAnswerNotificationRepository;
+    private final LikeQuestionNotificationRepository likeQuestionNotificationRepository;
     private final FollowNotificationRepository followNotificationRepository;
 
 
@@ -79,6 +77,23 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.save(likeAnswerNotification);
     }
 
+    @Transactional
+    public void sendDislikeAnswerNotification(UserEntity recipient, UserEntity liker, AnswerEntity answer) {
+
+        // LikeAnswerNotification 엔티티 생성
+        LikeAnswerNotification likeAnswerNotification = new LikeAnswerNotification();
+        likeAnswerNotification.setRecipientId(recipient.getUserId());
+        likeAnswerNotification.setType(NotificationType.ANSWER_DISLIKE);
+        likeAnswerNotification.setCreatedAt(LocalDateTime.now());
+        likeAnswerNotification.setRead(false);
+        likeAnswerNotification.setLikerId(liker.getUserId());
+        likeAnswerNotification.setLiker(liker.getUsername());
+        likeAnswerNotification.setAnswerId(answer.getId());
+
+        // Notification 엔티티 저장
+        notificationRepository.save(likeAnswerNotification);
+    }
+
 
     @Transactional
     public void sendAnswerNotification(UserEntity recipient, UserEntity answerer, QuestionBoardEntity question) {
@@ -119,7 +134,6 @@ public class NotificationServiceImpl implements NotificationService {
         answerCommentNotificationRepository.deleteByCommentId(commentId);
     }
 
-
     @Transactional
     public void deleteAnswerNotification(Long answererId, Long questionId) {
         answerNotificationRepository.deleteByAnswererIdAndQuestionId(answererId, questionId);
@@ -130,4 +144,15 @@ public class NotificationServiceImpl implements NotificationService {
         followNotificationRepository.deleteByRecipientIdAndFollowerId(
                 recipientId, followerId);
     }
+
+    @Transactional
+    public void deleteLikeAnswerNotification(Long recipientId, Long likerId) {
+        likeAnswerNotificationRepository.deleteByRecipientIdAndLikerId(recipientId, likerId);
+    }
+
+    @Transactional
+    public void deleteLikeQuestionNotification(Long recipientId, Long likerId) {
+        likeQuestionNotificationRepository.deleteByRecipientIdAndLikerId(recipientId, likerId);
+    }
+
 }

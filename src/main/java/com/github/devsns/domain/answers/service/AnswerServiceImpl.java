@@ -14,6 +14,7 @@ import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.question.repository.QuestionBoardRepository;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import com.github.devsns.domain.user.repository.UserRepository;
+import com.github.devsns.global.constant.LikeType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,40 +68,36 @@ public class AnswerServiceImpl implements AnswerService {
 
 
     @Transactional
-    public String likeAnswer(Long answerId, Long userId) {
-
-        AnswerEntity answer = answerRepository.findById(answerId).orElseThrow(() -> new IllegalArgumentException("답변자가 아닙습니다."));
+    public String updateAnswerReaction(Long answerId, Long userId, LikeType likeType) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        AnswerEntity answer = answerRepository.findById(answerId)
+                .orElseThrow(() -> new IllegalArgumentException("답변을 찾을 수 없습니다."));
 
-        boolean isLiked = false;
+        Optional<AnswerLike> existingLike = answerLikeRepository.findByAnswerIdAndUserId(answerId, user);
 
-        for (AnswerLike existingLike : answer.getLikes()) {
-            if (existingLike.getUserId().getUserId().equals(userId)) {
-                // 좋아요 취소
-                answer.getLikes().remove(existingLike);
-                isLiked = true;
-                break;
+        if (existingLike.isPresent()) {
+            if (existingLike.get().getLiketype() == likeType) {
+                answerLikeRepository.delete(existingLike.get());
+                notificationService.deleteLikeAnswerNotification(answer.getAnswerer().getUserId(), user.getUserId());
+                return likeType == LikeType.LIKE ? "좋아요를 취소했습니다." : "싫어요를 취소했습니다.";
+            } else {
+                return "이미 다른 반응을 하셨습니다.";
             }
+        } else {
+            AnswerLike newLike = new AnswerLike();
+            newLike.setUserId(user);
+            newLike.setAnswer(answer);
+            newLike.setLiketype(likeType);
+            answerLikeRepository.save(newLike);
+            if (likeType == LikeType.LIKE) {
+                notificationService.sendLikeAnswerNotification(answer.getAnswerer(), user, answer);
+            } else {
+                notificationService.sendDislikeAnswerNotification(answer.getAnswerer(), user, answer);
+            }
+            return likeType == LikeType.LIKE ? "좋아요를 눌렀습니다." : "싫어요를 눌렀습니다.";
         }
-
-        // 새로운 좋아요 엔티티 생성
-        if (!isLiked) {
-            AnswerLike like = new AnswerLike();
-            like.setUserId(user);
-            like.setAnswer(answer);
-
-            // 답변의 좋아요 리스트에 추가
-            answer.getLikes().add(like);
-            // 좋아요 저장
-            answerRepository.save(answer);
-            notificationService.sendLikeAnswerNotification(answer.getAnswerer(), user, answer);
-        }
-        answerRepository.save(answer);
-        // 좋아요 상태에 따라 응답 제공
-        return isLiked ? "좋아요를 취소했습니다." : "좋아요를 눌렀습니다.";
     }
-
     @Transactional
     public List<Notification> deleteAnswer(Long answerId) {
 
@@ -113,6 +110,8 @@ public class AnswerServiceImpl implements AnswerService {
             if (notification.getType() == NotificationType.ANSWER_COMMENT) {
                 notificationRepository.delete(notification);
             } else if (notification.getType() == NotificationType.ANSWER_LIKE) {
+                notificationRepository.delete(notification);
+            } else if (notification.getType() == NotificationType.ANSWER_DISLIKE) {
                 notificationRepository.delete(notification);
             }
         }

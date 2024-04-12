@@ -1,6 +1,7 @@
 package com.github.devsns.domain.answers.entity;
 
 import com.github.devsns.domain.user.entitiy.UserEntity;
+import com.github.devsns.global.constant.LikeType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +31,9 @@ public class AnswerLike {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userId;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private LikeType liketype;
 
     @Column(nullable = false, updatable = false)
     @CreatedDate
