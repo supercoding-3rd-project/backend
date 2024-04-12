@@ -8,6 +8,7 @@ import com.github.devsns.domain.follow.repository.FollowRepository;
 import com.github.devsns.domain.notifications.repository.NotificationRepository;
 import com.github.devsns.domain.question.repository.LikeRepository;
 import com.github.devsns.domain.question.repository.QuestionBoardRepository;
+import com.github.devsns.domain.user.dto.GetUserDto;
 import com.github.devsns.domain.user.dto.SignupDto;
 import com.github.devsns.domain.user.dto.UpdateUser;
 import com.github.devsns.domain.user.dto.UserResponseDto;
@@ -90,12 +91,20 @@ public class UserService {
     }
 
     // 유저정보 가져오기
-    public FollowResponseDto getUser(String username) {
+    public GetUserDto getUser(String username) {
         UserEntity user = userRepository.findByUsername(username).orElseThrow(
                 () -> new AppException(ErrorCode.USERNAME_NOT_FOUND.getMessage(), ErrorCode.USERNAME_NOT_FOUND)
         );
 
-        return new FollowResponseDto(user);
+        GetUserDto getUserDto = new GetUserDto(user);
+
+        Long followingCount = followRepository.countByFromUser(user);
+        Long followerCount = followRepository.countByToUser(user);
+
+        getUserDto.setFollowingCount(followingCount);
+        getUserDto.setFollowerCount(followerCount);
+
+        return getUserDto;
     }
 
     // 마이페이지에서 유저정보 업데이트

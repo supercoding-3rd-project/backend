@@ -2,6 +2,7 @@ package com.github.devsns.domain.user.controller;
 
 import com.github.devsns.domain.auth.entity.CustomUserDetails;
 import com.github.devsns.domain.follow.dto.FollowResponseDto;
+import com.github.devsns.domain.user.dto.GetUserDto;
 import com.github.devsns.domain.user.dto.SignupDto;
 import com.github.devsns.domain.user.dto.UpdateUser;
 import com.github.devsns.domain.user.dto.UserResponseDto;
@@ -55,9 +56,9 @@ public class UserController {
     @GetMapping("/user/{username}")
     public ResponseEntity<?> getUser(@PathVariable("username") String username) {
         userService.getUser(username);
-        FollowResponseDto followResponseDto = userService.getUser(username);
+        GetUserDto getUserDto = userService.getUser(username);
 
-        return ResponseEntity.ok(followResponseDto);
+        return ResponseEntity.ok(getUserDto);
     }
 
     // 유저정보 추가 입력
