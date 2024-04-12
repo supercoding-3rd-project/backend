@@ -21,36 +21,37 @@ public class QuestionBoardController {
 
     private final QuestionBoardService questionBoardService;
 
-    @GetMapping("/v1")
+    @GetMapping("/search")
     public Map<Integer, List<QuestionBoardResDto>> findAllQuestionBoard() {
         return questionBoardService.findAllQuestionBoard();
     }
 
-    @GetMapping("/v1/{id}")
+    @GetMapping("/search/user/{id}")
     public Map<Integer, QuestionBoardResDto> findByQuestionBoardId(@PathVariable Long id) {
         return questionBoardService.findQuestionBoardById(id);
     }
 
-    @PostMapping("/create/question")
+    @GetMapping("/search/keyword")
+    public Map<Integer, List<QuestionBoardResDto>> findQuesBoardByTitleKeyword(@RequestParam("keyword") String keyword) {
+        return questionBoardService.findByNameContaining(keyword);
+    }
+
+    @PostMapping("v1/question/create")
     public ResponseEntity<?> createQuestionBoard(@RequestBody QuestionBoardReqDto questionBoardReqDto, @AuthenticationPrincipal CustomUserDetails user) {
         String result = questionBoardService.createQuestionBoard(questionBoardReqDto, user.getUsername());
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/{quesId}/like")
+    @PostMapping("v1/question/like/{quesId}")
     public ResponseEntity<?> likeQuestionBoard(@PathVariable Long quesId, @AuthenticationPrincipal CustomUserDetails user) {
         String result = questionBoardService.questionBoardLike(quesId, user.getUsername());
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/v1/search")
-    public Map<Integer, List<QuestionBoardResDto>> findQuesBoardByTitleKeyword(@RequestParam("keyword") String keyword) {
-        return questionBoardService.findByNameContaining(keyword);
-    }
 
-    @DeleteMapping("/delete/{questionId}")
-    public ResponseEntity<?> deleteQuestion(@PathVariable Long questionId) {
-        questionBoardService.deleteQuestionBoard(questionId);
+    @DeleteMapping("v1/question/delete/{quesId}")
+    public ResponseEntity<?> deleteQuestion(@PathVariable Long quesId) {
+        questionBoardService.deleteQuestionBoard(quesId);
         return ResponseEntity.ok("질문이 삭제되었습니다.");
     }
 }

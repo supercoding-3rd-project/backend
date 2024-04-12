@@ -1,7 +1,6 @@
 package com.github.devsns.domain.question.entity;
 
 import com.github.devsns.domain.answers.entity.AnswerEntity;
-//import com.github.devsns.domain.comments.entity.QuestionCommentEntity;
 import com.github.devsns.domain.question.dto.QuestionBoardReqDto;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import jakarta.persistence.*;

@@ -1,6 +1,5 @@
 package com.github.devsns.domain.question.service;
 
-import com.github.devsns.domain.answers.repository.AnswerLikeRepository;
 import com.github.devsns.domain.notifications.service.NotificationService;
 import com.github.devsns.domain.question.dto.QuestionBoardReqDto;
 import com.github.devsns.domain.question.dto.QuestionBoardResDto;

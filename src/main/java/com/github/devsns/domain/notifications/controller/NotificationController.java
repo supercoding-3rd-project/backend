@@ -17,8 +17,7 @@ public class NotificationController {
 
     @Autowired
     private EntityManager entityManager;
-
-    @PostMapping("/notification/read")
+    @PostMapping("/api/v1/notification/read")
     @Transactional
     public ResponseEntity<String> readNotification(@RequestBody NotificationRequest request) {
         Long notificationId = request.getId();

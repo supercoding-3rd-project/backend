@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-public class ExtractIdUtil {
+public class ExtractUserDataUtil {
     private UserRepository userRepository;
 
-    public ExtractIdUtil(UserRepository userRepository) {
+    public ExtractUserDataUtil(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -21,4 +21,12 @@ public class ExtractIdUtil {
         long userId = user.get().getUserId();
         return userId;
     }
+
+    public String extractUserNameFromAuthentication(Authentication authentication) {
+        String email =  authentication.getName();
+        Optional<UserEntity> user = userRepository.findByEmail(email);
+        String userName = user.get().getUsername();
+        return userName;
+    }
+
 }

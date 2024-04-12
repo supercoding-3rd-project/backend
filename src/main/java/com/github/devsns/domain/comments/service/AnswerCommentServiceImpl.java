@@ -7,7 +7,6 @@ import com.github.devsns.domain.comments.repository.AnswerCommentRepository;
 import com.github.devsns.domain.notifications.service.NotificationService;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import com.github.devsns.domain.user.repository.UserRepository;
-import com.github.devsns.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
