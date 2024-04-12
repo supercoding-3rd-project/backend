@@ -50,19 +50,6 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         log.info("로그인에 성공하였습니다. 이메일 : {}", email);
         log.info("로그인에 성공하였습니다. AccessToken : {}", accessToken);
         log.info("발급된 AccessToken 만료 기간 : {}", accessTokenExpiration);
-
-
-        LoginResponseDto loginResponseDto = new LoginResponseDto();
-
-        LoginResponseDto.builder()
-                .userId(userEntity.getUserId())
-                .email(userEntity.getEmail())
-                .password(userEntity.getPassword())
-                .username(userEntity.getUsername())
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .imageUrl(userEntity.getImageUrl())
-                .build();
     }
 
     private String extractUsername(Authentication authentication) {
