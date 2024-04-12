@@ -10,6 +10,8 @@ import com.github.devsns.domain.user.repository.UserRepository;
 import com.github.devsns.domain.user.service.UserService;
 import com.github.devsns.exception.AppException;
 import com.github.devsns.exception.ErrorCode;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Tag(name = "팔로우 관련 API", description = "팔로우 서비스 관련 API 컨트롤러")
 public class FollowController {
     private final UserService userService;
     private final FollowService followService;
@@ -29,6 +32,7 @@ public class FollowController {
     private final FollowRepository followRepository;
 
     // 팔로잉
+    @Operation(summary = "로그인한 유저가 유저네임을 이용하여 유저를 팔로잉하는 API 컨트롤러")
     @PostMapping("/v1/user/follow/{username}")
     public ResponseEntity<String> following(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable("username") String username) {
 
@@ -45,6 +49,7 @@ public class FollowController {
     }
 
     // 팔로우 취소
+    @Operation(summary = "로그인한 유저가 유저네임을 이용하여 유저를 언팔로우 하는 API 컨트롤러")
     @DeleteMapping("/v1/user/follow/{username}")
     public ResponseEntity<?> unfollow(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable("username") String username) {
 
@@ -68,6 +73,7 @@ public class FollowController {
     }
 
     // 해당 유저의 팔로잉 리스트 조회
+    @Operation(summary = "로그인하지 않고 유저네임을 이용하여 해당 유저의 팔로잉 목록을 가져오는 API 컨트롤러")
     @GetMapping("/user/following/{username}")
     public ResponseEntity<List<FollowResponseDto>> getFollowing(@PathVariable("username") String username) {
 
@@ -80,6 +86,7 @@ public class FollowController {
     }
 
     // 해당 유저의 팔로워 리스트 조회
+    @Operation(summary = "로그인하지 않고 유저네임을 이용하여 해당 유저의 팔로워 목록을 가져오는 API 컨트롤러")
     @GetMapping("/user/follower/{username}")
     public ResponseEntity<List<FollowResponseDto>> getFollower(@PathVariable("username") String username) {
 
