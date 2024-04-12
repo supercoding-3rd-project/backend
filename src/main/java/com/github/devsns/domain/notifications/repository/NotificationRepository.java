@@ -15,5 +15,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     List<Notification>findAllByRecipientId(Long recipientId);
 
+
     void deleteByCreatedAtBefore(LocalDateTime dateTime);
 }

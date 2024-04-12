@@ -3,6 +3,7 @@ package com.github.devsns.domain.follow.service;
 import com.github.devsns.domain.follow.dto.FollowResponseDto;
 import com.github.devsns.domain.follow.entity.FollowEntity;
 import com.github.devsns.domain.follow.repository.FollowRepository;
+import com.github.devsns.domain.notifications.service.NotificationService;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import com.github.devsns.domain.user.repository.UserRepository;
 import com.github.devsns.exception.AppException;
@@ -21,6 +22,7 @@ public class FollowService {
 
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     // 팔로잉
     @Transactional
@@ -42,6 +44,7 @@ public class FollowService {
                 .build();
 
         followRepository.save(followEntity);
+        notificationService.sendFollowNotification(toUser, fromUser);
     }
 
     // 언팔로우
@@ -56,6 +59,7 @@ public class FollowService {
         );
 
         followRepository.deleteByToUserAndFromUser(toUser, fromUser);
+        notificationService.deleteFollowingNotification(toUser.getUserId(), fromUser.getUserId());
     }
 
     // 유저가 팔로잉하는 리스트 찾기

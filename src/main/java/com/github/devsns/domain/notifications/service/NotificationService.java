@@ -18,14 +18,14 @@ public interface NotificationService {
 
     void sendLikeQuestionNotification(UserEntity recipient, UserEntity liker, QuestionBoardEntity question);
 
+    void sendFollowNotification(UserEntity recipient, UserEntity follower);
+
+
+    void deleteFollowingNotification(Long recipientId, Long followerId);
 
     void deleteAnswerCommentNotification(Long commentId);
 
 
     void deleteAnswerNotification(Long answererId, Long questionId);
-
-
-//    void sendMessageNotification(UserEntity recipient, UserEntity sender);
-//    void deleteMessageNotification(Long senderId, Long recipientId);
 
 }

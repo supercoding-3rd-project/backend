@@ -13,4 +13,6 @@ public class FollowNotification extends Notification {
     @Column(name = "follower_id")
     private Long followerId; // 팔로우를 한 사용자
 
+    @Column(name = "follower")
+    private String follower;
 }

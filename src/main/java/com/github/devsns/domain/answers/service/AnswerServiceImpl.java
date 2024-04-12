@@ -43,7 +43,7 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Transactional
-    public void createAnswer(Long quesId, Long userId, String title, String content) {
+    public void createAnswer(Long quesId, Long userId, String userName, String content) {
 
         // 게시물 조회
         Optional<QuestionBoardEntity> question = questionBoardRepository.findById(quesId);
@@ -57,7 +57,6 @@ public class AnswerServiceImpl implements AnswerService {
 
         AnswerEntity answer = new AnswerEntity();
         answer.setContent(content);
-        answer.setTitle(title);
         answer.setQuestionBoard(question.get());
         answer.setAnswerer(answerer.get());
         answerRepository.save(answer);
@@ -134,13 +133,12 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Transactional
-    public void updateAnswer(Long answerId, Long userId, String title, String content) {
+    public void updateAnswer(Long answerId, Long userId, String content) {
 
         AnswerEntity answer = answerRepository.findById(answerId).orElseThrow(() -> new IllegalArgumentException("답변자가 아닙습니다."));
         if (answer.getAnswerer().getUserId() != userId) {
             throw new RuntimeException("작성자가 아닙니다.");
         }
-        answer.setTitle(title);
         answer.setContent(content);
         answerRepository.save(answer);
     }

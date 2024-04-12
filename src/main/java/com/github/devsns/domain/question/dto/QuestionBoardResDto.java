@@ -18,7 +18,8 @@ public class QuestionBoardResDto {
     private Long id;
     private String title;
     private String content;
-    private Long questioner;
+    private Long questionerId;
+    private String questioner;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Long likeCount;
@@ -28,7 +29,8 @@ public class QuestionBoardResDto {
         this.id = questionBoard.getId();
         this.title = questionBoard.getTitle();
         this.content = questionBoard.getContent();
-        this.questioner = questionBoard.getUser().getUserId();
+        this.questionerId = questionBoard.getUser().getUserId();
+        this.questioner = questionBoard.getUser().getUsername();
         this.createdAt = questionBoard.getCreatedAt();
         this.updatedAt = questionBoard.getUpdatedAt();
         this.likeCount = (long) questionBoard.getLike().size();

@@ -37,6 +37,7 @@ public class NotificationServiceImpl implements NotificationService {
         answerCommentNotification.setCreatedAt(LocalDateTime.now());
         answerCommentNotification.setRead(false);
         answerCommentNotification.setCommenterId(comment.getCommenter().getUserId());
+        answerCommentNotification.setCommenter(comment.getCommenter().getUsername());
         answerCommentNotification.setAnswerId(comment.getAnswer().getId());
         answerCommentNotification.setCommentId(comment.getId());
 
@@ -54,6 +55,7 @@ public class NotificationServiceImpl implements NotificationService {
         likeQuestionNotification.setCreatedAt(LocalDateTime.now());
         likeQuestionNotification.setRead(false);
         likeQuestionNotification.setLikerId(liker.getUserId());
+        likeQuestionNotification.setLiker(liker.getUsername());
         likeQuestionNotification.setQuestionId(question.getId());
 
         // Notification 엔티티 저장
@@ -70,6 +72,7 @@ public class NotificationServiceImpl implements NotificationService {
         likeAnswerNotification.setCreatedAt(LocalDateTime.now());
         likeAnswerNotification.setRead(false);
         likeAnswerNotification.setLikerId(liker.getUserId());
+        likeAnswerNotification.setLiker(liker.getUsername());
         likeAnswerNotification.setAnswerId(answer.getId());
 
         // Notification 엔티티 저장
@@ -87,6 +90,7 @@ public class NotificationServiceImpl implements NotificationService {
         answerNotification.setCreatedAt(LocalDateTime.now());
         answerNotification.setRead(false);
         answerNotification.setAnswererId(answerer.getUserId());
+        answerNotification.setAnswerer(answerer.getUsername());
         answerNotification.setQuestionId(question.getId()); //1대1
 
         // Notification 엔티티 저장
@@ -103,6 +107,7 @@ public class NotificationServiceImpl implements NotificationService {
         followNotification.setCreatedAt(LocalDateTime.now());
         followNotification.setRead(false);
         followNotification.setFollowerId(follower.getUserId());
+        followNotification.setFollower(follower.getUsername());
 
         // Notification 엔티티 저장
         notificationRepository.save(followNotification);
@@ -125,28 +130,4 @@ public class NotificationServiceImpl implements NotificationService {
         followNotificationRepository.deleteByRecipientIdAndFollowerId(
                 recipientId, followerId);
     }
-
-
-//    @Transactional
-//    @Async
-//    public void sendMessageNotification(UserEntity recipient, UserEntity sender) {
-//
-//        // MessageNotification 엔티티 생성
-//        MessageNotification messageNotification = new MessageNotification();
-//        messageNotification.setRecipientId(recipient);
-//        messageNotification.setType(NotificationType.MESSAGE);
-//        messageNotification.setCreatedAt(LocalDateTime.now());
-//        messageNotification.setRead(false);
-//        messageNotification.setSenderId(sender.getUserId());
-//
-//        // Notification 엔티티 저장
-//        notificationRepository.save(messageNotification);
-//    }
-//
-//    @Transactional
-//    @Async
-//    public void deleteMessageNotification(Long senderId, Long recipientId) {
-//        messageNotificationRepository.deleteBySenderIdAndRecipientId(senderId, recipientId);
-//    }
-
 }
