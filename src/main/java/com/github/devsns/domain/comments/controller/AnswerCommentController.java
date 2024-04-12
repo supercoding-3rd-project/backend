@@ -2,7 +2,7 @@ package com.github.devsns.domain.comments.controller;
 
 import com.github.devsns.domain.comments.dto.AnswerCommentReqDto;
 import com.github.devsns.domain.comments.service.AnswerCommentService;
-import com.github.devsns.global.component.ExtractIdUtil;
+import com.github.devsns.global.component.ExtractUserDataUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -12,20 +12,21 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class AnswerCommentController {
 
     private final AnswerCommentService answerCommentService;
-    private final ExtractIdUtil extractIdUtil;
+    private final ExtractUserDataUtil extractUserDataUtil;
 
 
     //답변에 댓글을 답니다
-    @PostMapping("/api/answer/{answerId}/comment")
+    @PostMapping("/v1/answer/{answerId}/comment/create")
     public ResponseEntity<String> createAnswerComment(@PathVariable Long answerId,
                                                       @RequestBody AnswerCommentReqDto answerCommentReqDto,
                                                       Authentication authentication) {
 
         // Authentication 객체에서 사용자 ID 추출
-        Long userId = extractIdUtil.extractUserIdFromAuthentication(authentication);
+        Long userId = extractUserDataUtil.extractUserIdFromAuthentication(authentication);
 
         String content = answerCommentReqDto.getContent(); // 댓글 내용
 
@@ -35,13 +36,13 @@ public class AnswerCommentController {
         return ResponseEntity.ok("댓글 작성 완료");
     }
 
-    @PutMapping("/api/answer/comment/{commentId}")
+    @PutMapping("/v1/answer/comment/update/{commentId}")
     public ResponseEntity<String> updateComment(@PathVariable String commentId,
                                                 @RequestBody AnswerCommentReqDto answerCommentReqDto,
                                                 Authentication authentication) {
         try {
             // Authentication 객체에서 사용자 ID 추출
-            Long userId = extractIdUtil.extractUserIdFromAuthentication(authentication);
+            Long userId = extractUserDataUtil.extractUserIdFromAuthentication(authentication);
             String content = answerCommentReqDto.getContent(); // 댓글 내용
 
             // 댓글 소유자 확인
@@ -58,13 +59,13 @@ public class AnswerCommentController {
         }
     }
 
-    @DeleteMapping("/api/answer/comment/{commentId}/delete")
+    @DeleteMapping("/api/answer/comment/delete/{commentId}")
     public ResponseEntity<String> deleteComment(@PathVariable String commentId,
                                                 Authentication authentication) {
 
         try {
             // Authentication 객체에서 사용자 ID 추출
-            Long userId = extractIdUtil.extractUserIdFromAuthentication(authentication);
+            Long userId = extractUserDataUtil.extractUserIdFromAuthentication(authentication);
 
             // 댓글 소유자 확인
             answerCommentService.checkCommenter(commentId, userId);

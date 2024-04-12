@@ -2,7 +2,7 @@ package com.github.devsns.domain.answers.controller;
 
 import com.github.devsns.domain.answers.dto.AnswerReqDto;
 import com.github.devsns.domain.answers.service.AnswerService;
-import com.github.devsns.global.component.ExtractIdUtil;
+import com.github.devsns.global.component.ExtractUserDataUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -12,22 +12,24 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class AnswerController {
 
     private final AnswerService answerService;
-    private final ExtractIdUtil extractIdUtil;
+    private final ExtractUserDataUtil extractUserDataUtil;
 
 
-    @PostMapping("/api/{quesId}/answer/create")
+    @PostMapping("/v1/question/{quesId}/answer/create")
     public ResponseEntity<String> createAnswer(@PathVariable Long quesId,
                                                @RequestBody AnswerReqDto answerReqDto,
                                                Authentication authentication) {
 
         // Authentication 객체에서 사용자 ID 추출
-        Long userId = extractIdUtil.extractUserIdFromAuthentication(authentication);
+        Long userId = extractUserDataUtil.extractUserIdFromAuthentication(authentication);
 
         String title = answerReqDto.getTitle();
         String content = answerReqDto.getContent();
+
 
         // AnswerService의 createAnswer() 메서드 호출
         answerService.createAnswer(quesId, userId, title, content);
@@ -35,12 +37,12 @@ public class AnswerController {
         return ResponseEntity.ok("답변 작성 완료");
     }
 
-    @PostMapping("/api/answer/{answerId}/like")
+    @PostMapping("/v1/answer/{answerId}/like")
     public ResponseEntity<String> likeAnswer(@PathVariable Long answerId,
                                              Authentication authentication) {
         try {
             // Authentication 객체에서 사용자 ID 추출
-            Long userId = extractIdUtil.extractUserIdFromAuthentication(authentication);
+            Long userId = extractUserDataUtil.extractUserIdFromAuthentication(authentication);
             // 답변 소유자 확인
             answerService.checkAnswerer(answerId, userId);
             // 좋아요 확인
@@ -53,12 +55,12 @@ public class AnswerController {
     }
 
 
-    @DeleteMapping("/api/answer/{answerId}/delete")
+    @DeleteMapping("/v1/answer/{answerId}/delete")
     public ResponseEntity<String> deleteAnswer(@PathVariable Long answerId,
                                                Authentication authentication) {
         try {
             // Authentication 객체에서 사용자 ID 추출
-            Long userId = extractIdUtil.extractUserIdFromAuthentication(authentication);
+            Long userId = extractUserDataUtil.extractUserIdFromAuthentication(authentication);
             // 답변 소유자 확인
             answerService.checkAnswerer(answerId, userId);
             // 답변 삭제
@@ -69,7 +71,7 @@ public class AnswerController {
         }
     }
 
-    @PutMapping("/api/answer/{answerId}/update")
+    @PutMapping("/v1/answer/{answerId}/update")
     public ResponseEntity<String> updateAnswer(@PathVariable Long answerId,
                                                @RequestBody AnswerReqDto answerReqDto,
                                                Authentication authentication) {
@@ -79,7 +81,7 @@ public class AnswerController {
 
         try {
             // Authentication 객체에서 사용자 ID 추출
-            Long userId = extractIdUtil.extractUserIdFromAuthentication(authentication);
+            Long userId = extractUserDataUtil.extractUserIdFromAuthentication(authentication);
             // 답변 소유자 확인
             answerService.checkAnswerer(answerId, userId);
             // 답변 업데이트

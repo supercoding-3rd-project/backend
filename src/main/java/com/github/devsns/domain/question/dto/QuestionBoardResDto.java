@@ -1,7 +1,6 @@
 package com.github.devsns.domain.question.dto;
 
 import com.github.devsns.domain.answers.dto.AnswerResDto;
-//import com.github.devsns.domain.comments.dto.QuestionCommentResDto;
 import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import lombok.*;
 
