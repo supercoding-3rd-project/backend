@@ -2,16 +2,14 @@ package com.github.devsns.domain.user.dto;
 
 import com.github.devsns.domain.user.entitiy.SocialType;
 import com.github.devsns.domain.user.entitiy.UserEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
 @Builder
 public class UserResponseDto {
 
@@ -24,6 +22,8 @@ public class UserResponseDto {
     private String socialId;
     private SocialType socialType;
     private LocalDateTime createdAt;
+    private Long followingCount;
+    private Long followerCount;
 
     public UserResponseDto(UserEntity userEntity){
         this.userId = userEntity.getUserId();

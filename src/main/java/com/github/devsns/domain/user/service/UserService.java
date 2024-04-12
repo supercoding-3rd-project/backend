@@ -4,6 +4,7 @@ import com.github.devsns.domain.answers.repository.AnswerRepository;
 
 import com.github.devsns.domain.comments.repository.AnswerCommentRepository;
 import com.github.devsns.domain.follow.dto.FollowResponseDto;
+import com.github.devsns.domain.follow.repository.FollowRepository;
 import com.github.devsns.domain.notifications.repository.NotificationRepository;
 import com.github.devsns.domain.question.repository.LikeRepository;
 import com.github.devsns.domain.question.repository.QuestionBoardRepository;
@@ -38,6 +39,7 @@ public class UserService {
     private final AnswerCommentRepository answerCommentRepository;
     private final NotificationRepository notificationRepository;
     private final LikeRepository likeRepository;
+    private final FollowRepository followRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
@@ -76,8 +78,15 @@ public class UserService {
                 () -> new AppException(ErrorCode.USER_EMAIL_NOT_FOUND.getMessage(), ErrorCode.USER_EMAIL_NOT_FOUND)
         );
 
+        UserResponseDto userResponseDto = new UserResponseDto(user);
 
-        return new UserResponseDto(user);
+        Long followingCount = followRepository.countByFromUser(user);
+        Long followerCount = followRepository.countByToUser(user);
+
+        userResponseDto.setFollowingCount(followingCount);
+        userResponseDto.setFollowerCount(followerCount);
+
+        return userResponseDto;
     }
 
     // 유저정보 가져오기
