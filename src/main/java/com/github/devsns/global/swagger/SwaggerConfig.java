@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(
-        info = @Info(title = "swagger API 명세서",
-                description = "swagger -description API 명세서",
+        info = @Info(title = "Alco swagger API 명세서",
+                description = "초보개발자를 위한 Alco 커뮤니티 API 명세서",
                 version = "v3"))
 @RequiredArgsConstructor
 @Configuration
@@ -39,5 +39,4 @@ public class SwaggerConfig {
                                 .scheme("bearer")
                                 .bearerFormat("JWT")));
     }
-
 }

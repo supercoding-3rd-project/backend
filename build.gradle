@@ -25,16 +25,18 @@ dependencies {
     // Spring Boot 기본 웹 스타터
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    // OAuth2, 웹소켓, 보안, 유효성 검사, 데이터 JPA 스타터
+    // OAuth2, 보안, 유효성 검사, 데이터 JPA 스타터
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
+    // WebSocket
+//    implementation 'org.springframework.security:spring-security-messaging:6.1.4'(구현 후 추가 예정)
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
     // 개발 도구
     developmentOnly 'org.springframework.boot:spring-boot-devtools' // 스프링 부트 개발 도구
-
 
     // lombok
     compileOnly 'org.projectlombok:lombok'
@@ -50,6 +52,7 @@ dependencies {
 
     // swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
 
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

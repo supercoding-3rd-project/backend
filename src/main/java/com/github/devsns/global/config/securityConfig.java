@@ -50,7 +50,7 @@ public class securityConfig {
                 .rememberMe(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/api/v1/**", "/swagger-resources/**", "/v3/api-docs/**").authenticated() //swagger-ui 제외
+                        .requestMatchers("/api/v1/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth -> oauth
