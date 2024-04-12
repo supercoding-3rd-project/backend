@@ -1,13 +1,14 @@
 package com.github.devsns.domain.user.service;
 
 import com.github.devsns.domain.answers.repository.AnswerRepository;
-import com.github.devsns.domain.auth.filter.CustomJsonUsernamePasswordAuthenticationFilter;
-import com.github.devsns.domain.comments.controller.AnswerCommentController;
+
 import com.github.devsns.domain.comments.repository.AnswerCommentRepository;
 import com.github.devsns.domain.follow.dto.FollowResponseDto;
+import com.github.devsns.domain.follow.repository.FollowRepository;
 import com.github.devsns.domain.notifications.repository.NotificationRepository;
 import com.github.devsns.domain.question.repository.LikeRepository;
 import com.github.devsns.domain.question.repository.QuestionBoardRepository;
+import com.github.devsns.domain.user.dto.GetUserDto;
 import com.github.devsns.domain.user.dto.SignupDto;
 import com.github.devsns.domain.user.dto.UpdateUser;
 import com.github.devsns.domain.user.dto.UserResponseDto;
@@ -39,6 +40,7 @@ public class UserService {
     private final AnswerCommentRepository answerCommentRepository;
     private final NotificationRepository notificationRepository;
     private final LikeRepository likeRepository;
+    private final FollowRepository followRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
@@ -77,17 +79,32 @@ public class UserService {
                 () -> new AppException(ErrorCode.USER_EMAIL_NOT_FOUND.getMessage(), ErrorCode.USER_EMAIL_NOT_FOUND)
         );
 
+        UserResponseDto userResponseDto = new UserResponseDto(user);
 
-        return new UserResponseDto(user);
+        Long followingCount = followRepository.countByFromUser(user);
+        Long followerCount = followRepository.countByToUser(user);
+
+        userResponseDto.setFollowingCount(followingCount);
+        userResponseDto.setFollowerCount(followerCount);
+
+        return userResponseDto;
     }
 
     // 유저정보 가져오기
-    public FollowResponseDto getUser(String username) {
+    public GetUserDto getUser(String username) {
         UserEntity user = userRepository.findByUsername(username).orElseThrow(
                 () -> new AppException(ErrorCode.USERNAME_NOT_FOUND.getMessage(), ErrorCode.USERNAME_NOT_FOUND)
         );
 
-        return new FollowResponseDto(user);
+        GetUserDto getUserDto = new GetUserDto(user);
+
+        Long followingCount = followRepository.countByFromUser(user);
+        Long followerCount = followRepository.countByToUser(user);
+
+        getUserDto.setFollowingCount(followingCount);
+        getUserDto.setFollowerCount(followerCount);
+
+        return getUserDto;
     }
 
     // 마이페이지에서 유저정보 업데이트
