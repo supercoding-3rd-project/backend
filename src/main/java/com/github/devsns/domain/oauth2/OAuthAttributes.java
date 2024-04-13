@@ -6,9 +6,12 @@ import com.github.devsns.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.github.devsns.domain.user.entitiy.Role;
 import com.github.devsns.domain.user.entitiy.SocialType;
 import com.github.devsns.domain.user.entitiy.UserEntity;
+import com.github.devsns.global.jwt.service.JwtService;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.net.http.HttpHeaders;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
@@ -65,6 +68,7 @@ public class OAuthAttributes {
                 .password("oauthPassword!@")
                 .username(oauth2UserInfo.getNickname())
                 .imageUrl(oauth2UserInfo.getImageUrl())
+                .createdAt(LocalDateTime.now())
                 .role(Role.USER)
                 .build();
     }

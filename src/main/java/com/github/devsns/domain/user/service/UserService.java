@@ -35,14 +35,8 @@ import java.time.LocalDateTime;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final QuestionBoardRepository questionBoardRepository;
-    private final AnswerRepository answerRepository;
-    private final AnswerCommentRepository answerCommentRepository;
-    private final NotificationRepository notificationRepository;
-    private final LikeRepository likeRepository;
     private final FollowRepository followRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
 
     // 회원가입
     @Transactional
@@ -64,7 +58,6 @@ public class UserService {
                 .imageUrl("anonymous.png")
                 .role(Role.USER)
                 .createdAt(LocalDateTime.now())
-                .refreshToken(jwtService.createRefreshToken())
                 .build();
 
         userEntity.passwordEncode(passwordEncoder);
