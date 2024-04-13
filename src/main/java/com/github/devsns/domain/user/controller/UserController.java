@@ -1,31 +1,22 @@
 package com.github.devsns.domain.user.controller;
 
 import com.github.devsns.domain.auth.entity.CustomUserDetails;
-import com.github.devsns.domain.follow.dto.FollowResponseDto;
 import com.github.devsns.domain.user.dto.GetUserDto;
 import com.github.devsns.domain.user.dto.SignupDto;
 import com.github.devsns.domain.user.dto.UpdateUser;
 import com.github.devsns.domain.user.dto.UserResponseDto;
-import com.github.devsns.domain.user.entitiy.UserEntity;
-import com.github.devsns.domain.user.repository.UserRepository;
 import com.github.devsns.domain.user.service.UserService;
 import com.github.devsns.exception.AppException;
 import com.github.devsns.exception.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Objects;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -72,12 +63,17 @@ public class UserController {
     @PutMapping("/v1/user/update/{userId}")
     public ResponseEntity<?> updateUser(
             @PathVariable Long userId,
-            @RequestBody UpdateUser updateUser,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+            @RequestBody @Valid UpdateUser updateUser,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            BindingResult bindingResult) {
 
         // 유저아이디가 현재 로그인한 유저의 아이디와 일치하는지 확인
         if (!Objects.equals(userId, customUserDetails.getUserEntity().getUserId())) {
             throw new AppException(ErrorCode.USER_ID_UNMATCHED.getMessage(), ErrorCode.USER_ID_UNMATCHED);
+        }
+
+        if(bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         }
 
         String email = customUserDetails.getUsername();

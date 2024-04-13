@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.devsns.domain.auth.filter.CustomJsonUsernamePasswordAuthenticationFilter;
 import com.github.devsns.domain.auth.handler.LoginFailureHandler;
 import com.github.devsns.domain.auth.handler.LoginSuccessHandler;
+import com.github.devsns.domain.auth.handler.LogoutSuccessHandler;
 import com.github.devsns.domain.auth.service.CustomUserDetailsService;
 import com.github.devsns.domain.oauth2.handler.OAuth2LoginFailureHandler;
 import com.github.devsns.domain.oauth2.handler.OAuth2LoginSuccessHandler;
@@ -22,10 +23,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @Configuration
@@ -40,6 +41,7 @@ public class securityConfig {
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final LogoutSuccessHandler logoutSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain (HttpSecurity http) throws Exception {
@@ -49,14 +51,23 @@ public class securityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .rememberMe(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // 접근 권한 설정
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/api/v1/**").authenticated()
                         .anyRequest().permitAll()
                 )
+                // 소셜 로그인 설정
                 .oauth2Login(oauth -> oauth
                         .successHandler(oAuth2LoginSuccessHandler)
                         .failureHandler(oAuth2LoginFailureHandler)
                         .userInfoEndpoint(endpoint -> endpoint.userService(customOAuth2UserService))
+                )
+                // 로그아웃 설정
+                .logout((logout) -> logout
+                        .logoutUrl("/api/logout").permitAll()
+                        .addLogoutHandler(logoutSuccessHandler)
+                        .logoutSuccessHandler(((request, response, authentication) -> SecurityContextHolder.clearContext()))
+                        .invalidateHttpSession(true)
                 );
 
         http.addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class);

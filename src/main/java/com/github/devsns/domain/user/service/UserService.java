@@ -1,13 +1,6 @@
 package com.github.devsns.domain.user.service;
 
-import com.github.devsns.domain.answers.repository.AnswerRepository;
-
-import com.github.devsns.domain.comments.repository.AnswerCommentRepository;
-import com.github.devsns.domain.follow.dto.FollowResponseDto;
 import com.github.devsns.domain.follow.repository.FollowRepository;
-import com.github.devsns.domain.notifications.repository.NotificationRepository;
-import com.github.devsns.domain.question.repository.LikeRepository;
-import com.github.devsns.domain.question.repository.QuestionBoardRepository;
 import com.github.devsns.domain.user.dto.GetUserDto;
 import com.github.devsns.domain.user.dto.SignupDto;
 import com.github.devsns.domain.user.dto.UpdateUser;
@@ -17,16 +10,11 @@ import com.github.devsns.domain.user.entitiy.UserEntity;
 import com.github.devsns.domain.user.repository.UserRepository;
 import com.github.devsns.exception.AppException;
 import com.github.devsns.exception.ErrorCode;
-import com.github.devsns.global.jwt.filter.JwtAuthenticationFilter;
-import com.github.devsns.global.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
-
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -35,14 +23,8 @@ import java.time.LocalDateTime;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final QuestionBoardRepository questionBoardRepository;
-    private final AnswerRepository answerRepository;
-    private final AnswerCommentRepository answerCommentRepository;
-    private final NotificationRepository notificationRepository;
-    private final LikeRepository likeRepository;
     private final FollowRepository followRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
 
     // 회원가입
     @Transactional
@@ -64,7 +46,6 @@ public class UserService {
                 .imageUrl("anonymous.png")
                 .role(Role.USER)
                 .createdAt(LocalDateTime.now())
-                .refreshToken(jwtService.createRefreshToken())
                 .build();
 
         userEntity.passwordEncode(passwordEncoder);
