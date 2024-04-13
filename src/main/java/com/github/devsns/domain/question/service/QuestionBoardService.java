@@ -3,6 +3,8 @@ package com.github.devsns.domain.question.service;
 import com.github.devsns.domain.notifications.service.NotificationService;
 import com.github.devsns.domain.question.dto.QuestionBoardReqDto;
 import com.github.devsns.domain.question.dto.QuestionBoardResDto;
+import com.github.devsns.domain.question.dto.SearchQuestionDto;
+import com.github.devsns.domain.question.dto.SearchUserDto;
 import com.github.devsns.domain.question.entity.LikeEntity;
 import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.question.entity.QuestionBoardStatusType;
@@ -13,17 +15,18 @@ import com.github.devsns.domain.user.repository.UserRepository;
 import com.github.devsns.exception.AppException;
 import com.github.devsns.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class QuestionBoardService {
 
     private final QuestionBoardRepository questionBoardRepository;
@@ -64,6 +67,7 @@ public class QuestionBoardService {
 
         if(likes.isPresent()){
             likeRepository.delete(likes.get());
+            notificationService.deleteLikeQuestionNotification(questionBoard.getUser().getUserId(), user.getUserId());
             return "좋아요를 취소했습니다.";
         } else {
             likeRepository.save(LikeEntity.toEntity(user, questionBoard));
@@ -87,8 +91,9 @@ public class QuestionBoardService {
 
 
     // 전체 질문 게시판
+    @Transactional
     public Map<Integer, List<QuestionBoardResDto>> findAllQuestionBoard() {
-        List<QuestionBoardEntity> questionBoardEntities = questionBoardRepository.findAll();
+        List<QuestionBoardEntity> questionBoardEntities = questionBoardRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
         List<QuestionBoardEntity> submittedQuestions = questionBoardEntities.stream()
                 .filter(questionBoard -> questionBoard.getStatusType().equals(QuestionBoardStatusType.SUBMIT))
                 .collect(Collectors.toList());
@@ -111,6 +116,7 @@ public class QuestionBoardService {
     }
 
     // 특정 id 질문 게시판
+    @Transactional
     public Map<Integer, QuestionBoardResDto> findQuestionBoardById(Long questionBoardId) {
         QuestionBoardEntity questionBoard = questionBoardRepository.findById(questionBoardId)
                 .filter(questionBoardEntity -> questionBoardEntity.getStatusType().equals(QuestionBoardStatusType.SUBMIT))
@@ -124,27 +130,71 @@ public class QuestionBoardService {
     }
 
     // 검색
-    public Map<Integer, List<QuestionBoardResDto>> findByNameContaining(String titleKeyword) {
-        List<QuestionBoardEntity> questionBoardEntities = questionBoardRepository.findQuestionBoardEntitiesByTitleContaining(titleKeyword);
-        List<QuestionBoardEntity> submittedQuestions = questionBoardEntities.stream()
-                .filter(questionBoardEntity -> questionBoardEntity.getStatusType().equals(QuestionBoardStatusType.SUBMIT))
-                .collect(Collectors.toList());
+//    public Map<Integer, List<QuestionBoardResDto>> findByNameContaining(String keyword) {
+//        List<QuestionBoardEntity> questionBoardEntities = questionBoardRepository.findQuestionBoardEntitiesByTitleContaining(keyword);
+//        List<QuestionBoardEntity> submittedQuestions = questionBoardEntities.stream()
+//                .filter(questionBoardEntity -> questionBoardEntity.getStatusType().equals(QuestionBoardStatusType.SUBMIT))
+//                .collect(Collectors.toList());
+//
+//        Map<Integer, List<QuestionBoardResDto>> result = new HashMap<>();
+//        int totalItems = submittedQuestions.size();
+//        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
+//
+//        for (int page = 0; page < totalPages; page++) {
+//            int fromIndex = page * pageSize;
+//            int toIndex = Math.min((page + 1) * pageSize, totalItems);
+//            List<QuestionBoardEntity> pageData = submittedQuestions.subList(fromIndex, toIndex);
+//            List<QuestionBoardResDto> dtoList = pageData.stream()
+//                    .map(QuestionBoardResDto::new)
+//                    .collect(Collectors.toList());
+//            result.put(page + 1, dtoList);
+//        }
+//
+//        return result;
+//    }
 
-        Map<Integer, List<QuestionBoardResDto>> result = new HashMap<>();
-        int totalItems = submittedQuestions.size();
+    @Transactional
+    public Map<String, Map<Integer, List<Object>>> findByNameContaining(String keyword) {
+        // 게시물 검색 결과 가져오기
+        List<QuestionBoardEntity> matchedQuestionBoards = questionBoardRepository.findByTitleContainingOrContentContaining(keyword, keyword);
+        log.info(matchedQuestionBoards.toString());
+
+        Map<Integer, List<SearchQuestionDto>> boardResults = getPagedResults(matchedQuestionBoards, SearchQuestionDto::new, 5);
+        log.info(boardResults.toString());
+
+        // 유저 검색 결과 가져오기
+        List<UserEntity> matchedUsers = userRepository.findByUsernameContaining(keyword);
+        log.info(matchedUsers.toString());
+
+        Map<Integer, List<SearchUserDto>> userResults = getPagedResults(matchedUsers, SearchUserDto::new, 5);
+        log.info(userResults.toString());
+
+        // 결과를 Map에 담아 반환
+        Map<String, Map<Integer, List<Object>>> searchResult = new HashMap<>();
+        searchResult.put("questionBoards", castToListObject(boardResults));
+        searchResult.put("users", castToListObject(userResults));
+        return searchResult;
+    }
+
+    private <T, R> Map<Integer, List<Object>> castToListObject(Map<Integer, List<R>> original) {
+        return original.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> new ArrayList<>(entry.getValue())));
+    }
+
+    private <T, R> Map<Integer, List<R>> getPagedResults(List<T> items, Function<T, R> mapper, int pageSize) {
+        Map<Integer, List<R>> pagedResults = new HashMap<>();
+        int totalItems = items.size();
         int totalPages = (int) Math.ceil((double) totalItems / pageSize);
 
         for (int page = 0; page < totalPages; page++) {
             int fromIndex = page * pageSize;
-            int toIndex = Math.min((page + 1) * pageSize, totalItems);
-            List<QuestionBoardEntity> pageData = submittedQuestions.subList(fromIndex, toIndex);
-            List<QuestionBoardResDto> dtoList = pageData.stream()
-                    .map(QuestionBoardResDto::new)
+            int toIndex = Math.min(fromIndex + pageSize, totalItems);
+            List<R> pageItems = items.subList(fromIndex, toIndex).stream()
+                    .map(mapper)
                     .collect(Collectors.toList());
-            result.put(page + 1, dtoList);
+            pagedResults.put(page + 1, pageItems);
         }
 
-        return result;
+        return pagedResults;
     }
-
 }

@@ -9,17 +9,14 @@ public interface NotificationService {
 
     void sendAnswerCommentNotification(UserEntity recipient, AnswerCommentEntity comment);
 
-
     void sendAnswerNotification(UserEntity recipient, UserEntity answerer, QuestionBoardEntity question);
 
-
     void sendLikeAnswerNotification(UserEntity recipient, UserEntity liker, AnswerEntity answer);
-
+    void sendDislikeAnswerNotification(UserEntity recipient, UserEntity liker, AnswerEntity question);
 
     void sendLikeQuestionNotification(UserEntity recipient, UserEntity liker, QuestionBoardEntity question);
 
     void sendFollowNotification(UserEntity recipient, UserEntity follower);
-
 
     void deleteFollowingNotification(Long recipientId, Long followerId);
 
@@ -27,5 +24,9 @@ public interface NotificationService {
 
 
     void deleteAnswerNotification(Long answererId, Long questionId);
+
+    void deleteLikeAnswerNotification(Long recipientId, Long likerId);
+
+    void deleteLikeQuestionNotification(Long recipientId, Long likerId);
 
 }
