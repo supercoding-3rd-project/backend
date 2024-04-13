@@ -1,13 +1,10 @@
 package com.github.devsns.domain.auth.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.devsns.domain.auth.dto.LoginResponseDto;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import com.github.devsns.domain.user.repository.UserRepository;
 import com.github.devsns.exception.AppException;
 import com.github.devsns.exception.ErrorCode;
 import com.github.devsns.global.jwt.service.JwtService;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

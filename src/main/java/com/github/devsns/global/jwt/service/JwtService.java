@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.Optional;
 
@@ -46,9 +45,7 @@ public class JwtService {
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
     private static final String EMAIL_CLAIM = "email";
     private static final String BEARER = "Bearer ";
-
     private final UserRepository userRepository;
-
 
     // AccessToken 생성
     public String createAccessToken(String email) {
@@ -99,7 +96,6 @@ public class JwtService {
                 .filter(refreshToken -> refreshToken.startsWith(BEARER))
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
-
 
     // 헤더에서 RefreshToken 추출
     public Optional<String> extractRefreshToken(HttpServletRequest request) {

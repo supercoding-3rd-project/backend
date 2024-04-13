@@ -4,7 +4,6 @@ import com.github.devsns.domain.auth.entity.CustomUserDetails;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import com.github.devsns.domain.user.repository.UserRepository;
 import com.github.devsns.global.jwt.service.JwtService;
-import com.github.devsns.global.jwt.util.PasswordUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,11 +16,7 @@ import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMap
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -99,7 +94,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     */
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
                                                   FilterChain filterChain) throws ServletException, IOException {
-        log.info("checkAccessTokenAndAuthentication() 호출");
         jwtService.extractAccessToken(request)
                 .filter(jwtService::isTokenValid)
                 .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
@@ -122,7 +116,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         CustomUserDetails customUserDetails = CustomUserDetails.builder()
                 .userEntity(user)
                 .build();
-
 
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(customUserDetails, null,

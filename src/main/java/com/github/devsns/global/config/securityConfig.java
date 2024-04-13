@@ -70,8 +70,6 @@ public class securityConfig {
                         .invalidateHttpSession(true)
                 );
 
-            
-
         http.addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class);
 

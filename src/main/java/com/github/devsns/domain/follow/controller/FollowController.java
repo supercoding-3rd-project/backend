@@ -2,7 +2,6 @@ package com.github.devsns.domain.follow.controller;
 
 import com.github.devsns.domain.auth.entity.CustomUserDetails;
 import com.github.devsns.domain.follow.dto.FollowResponseDto;
-import com.github.devsns.domain.follow.entity.FollowEntity;
 import com.github.devsns.domain.follow.repository.FollowRepository;
 import com.github.devsns.domain.follow.service.FollowService;
 import com.github.devsns.domain.user.entitiy.UserEntity;
@@ -13,12 +12,9 @@ import com.github.devsns.exception.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -78,9 +74,7 @@ public class FollowController {
     public ResponseEntity<List<FollowResponseDto>> getFollowing(@PathVariable("username") String username) {
 
         List<FollowResponseDto> followResponseDtoList;
-
         followResponseDtoList = followService.getFollowing(username);
-
 
         return ResponseEntity.ok(followResponseDtoList);
     }
@@ -91,9 +85,7 @@ public class FollowController {
     public ResponseEntity<List<FollowResponseDto>> getFollower(@PathVariable("username") String username) {
 
         List<FollowResponseDto> followResponseDtoList;
-
         followResponseDtoList = followService.getFollower(username);
-
 
         return ResponseEntity.ok(followResponseDtoList);
     }
