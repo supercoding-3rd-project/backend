@@ -3,6 +3,7 @@ package com.github.devsns.domain.answers.controller;
 import com.github.devsns.domain.answers.dto.AnswerReqDto;
 import com.github.devsns.domain.answers.service.AnswerService;
 import com.github.devsns.global.component.ExtractUserDataUtil;
+import com.github.devsns.global.constant.LikeType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -46,13 +47,29 @@ public class AnswerController {
             // 답변 소유자 확인
             answerService.checkAnswerer(answerId, userId);
             // 좋아요 확인
-            String message = answerService.likeAnswer(answerId, userId);
+            String message = answerService.updateAnswerReaction(answerId, userId, LikeType.LIKE);
             return ResponseEntity.ok(message);
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().body("답변이 존재하지 않습니다");
         }
-
     }
+
+    @PostMapping("/v1/answer/{answerId}/dislike")
+    public ResponseEntity<String> dislikeAnswer(@PathVariable Long answerId,
+                                                Authentication authentication) {
+        try {
+            // Authentication 객체에서 사용자 ID 추출
+            Long userId = extractUserDataUtil.extractUserIdFromAuthentication(authentication);
+            // 답변 소유자 확인
+            answerService.checkAnswerer(answerId, userId);
+            // 싫어요 추가
+            String message = answerService.updateAnswerReaction(answerId, userId, LikeType.DISLIKE);
+            return ResponseEntity.ok(message);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().body("답변이 존재하지 않습니다");
+        }
+    }
+
 
 
     @DeleteMapping("/v1/answer/{answerId}/delete")

@@ -52,6 +52,7 @@ public class AnswerEntity {
     @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AnswerLike> likes = new ArrayList<>();
 
+
     @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<AnswerCommentEntity> comments = new ArrayList<>();
 

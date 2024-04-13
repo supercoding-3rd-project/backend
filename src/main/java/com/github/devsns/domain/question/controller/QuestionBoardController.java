@@ -32,7 +32,7 @@ public class QuestionBoardController {
     }
 
     @GetMapping("/search/keyword")
-    public Map<Integer, List<QuestionBoardResDto>> findQuesBoardByTitleKeyword(@RequestParam("keyword") String keyword) {
+    public Map<String, Map<Integer, List<Object>>> findQuesBoardByTitleKeyword(@RequestParam("keyword") String keyword) {
         return questionBoardService.findByNameContaining(keyword);
     }
 

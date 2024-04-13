@@ -73,7 +73,6 @@ public class AnswerCommentServiceImpl implements AnswerCommentService {
 
         answerCommentRepository.delete(comment);
     }
-
 }
 
 

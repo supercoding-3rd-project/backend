@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LikeAnswerNotificationRepository extends JpaRepository<LikeAnswerNotification, Long> {
 
+    void deleteByRecipientIdAndLikerId (Long recipientId, Long likerId);
+
 }
