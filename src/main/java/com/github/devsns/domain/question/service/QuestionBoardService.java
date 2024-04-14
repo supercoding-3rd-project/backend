@@ -1,6 +1,7 @@
 package com.github.devsns.domain.question.service;
 
 import com.github.devsns.domain.answers.dto.AnswerResDto;
+import com.github.devsns.domain.comments.dto.AnswerCommentResDto;
 import com.github.devsns.domain.notifications.service.NotificationService;
 import com.github.devsns.domain.question.dto.*;
 import com.github.devsns.domain.question.entity.LikeEntity;
@@ -91,6 +92,17 @@ public class QuestionBoardService {
                     boolean answerIsDisliked = answer.getLikes().stream()
                             .anyMatch(like -> like.getUserId().getUserId().equals(userId) && like.getLiketype().equals(LikeType.DISLIKE));
 
+                    List<AnswerCommentResDto> answerComments = answer.getComments().stream()
+                            .map(comment -> AnswerCommentResDto.builder()
+                                    .id(comment.getId())
+                                    .content(comment.getContent())
+                                    .commenterId(comment.getCommenter().getUserId())
+                                    .commenter(comment.getCommenter().getUsername())
+                                    .createdAt(comment.getCreatedAt())
+                                    .updatedAt(comment.getUpdatedAt())
+                                    .build())
+                            .collect(Collectors.toList());
+
                     return ReadAnswerDto.builder()
                             .id(answer.getId())
                             .content(answer.getContent())
@@ -104,6 +116,7 @@ public class QuestionBoardService {
                             .dislikeCount(answer.getLikes().stream().filter(like -> like.getLiketype().equals(LikeType.DISLIKE)).count())
                             .isLiked(answerIsLiked)
                             .isDisliked(answerIsDisliked)
+                            .answerComments(answerComments)
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -116,9 +129,9 @@ public class QuestionBoardService {
                 .questioner(questionBoard.getUser().getUsername())
                 .createdAt(questionBoard.getCreatedAt())
                 .updatedAt(questionBoard.getUpdatedAt())
+                .isLiked(isLiked)
                 .likeCount((long)questionBoard.getLike().size())
                 .answers(answers)
-                .isLiked(isLiked)
                 .build();
     }
 
