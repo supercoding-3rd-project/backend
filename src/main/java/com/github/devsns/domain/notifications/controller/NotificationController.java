@@ -2,6 +2,8 @@ package com.github.devsns.domain.notifications.controller;
 
 import com.github.devsns.domain.notifications.dto.NotificationRequest;
 import com.github.devsns.domain.notifications.entity.Notification;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +15,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @Controller
+@Tag(name = "알림 읽음 API", description = "웹소켓으로 전달 된 알림 읽음 처리")
 public class NotificationController {
 
     @Autowired
     private EntityManager entityManager;
     @PostMapping("/api/v1/notification/read")
     @Transactional
+    @Operation(summary = "notificationId 전달 후 처리")
     public ResponseEntity<String> readNotification(@RequestBody NotificationRequest request) {
         Long notificationId = request.getId();
         Notification notification = entityManager.find(Notification.class, notificationId);
