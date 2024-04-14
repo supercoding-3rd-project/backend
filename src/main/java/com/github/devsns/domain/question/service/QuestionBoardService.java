@@ -1,10 +1,8 @@
 package com.github.devsns.domain.question.service;
 
+import com.github.devsns.domain.answers.dto.AnswerResDto;
 import com.github.devsns.domain.notifications.service.NotificationService;
-import com.github.devsns.domain.question.dto.QuestionBoardReqDto;
-import com.github.devsns.domain.question.dto.QuestionBoardResDto;
-import com.github.devsns.domain.question.dto.SearchQuestionDto;
-import com.github.devsns.domain.question.dto.SearchUserDto;
+import com.github.devsns.domain.question.dto.*;
 import com.github.devsns.domain.question.entity.LikeEntity;
 import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.question.entity.QuestionBoardStatusType;
@@ -14,6 +12,7 @@ import com.github.devsns.domain.user.entitiy.UserEntity;
 import com.github.devsns.domain.user.repository.UserRepository;
 import com.github.devsns.exception.AppException;
 import com.github.devsns.exception.ErrorCode;
+import com.github.devsns.global.constant.LikeType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -76,6 +75,54 @@ public class QuestionBoardService {
         }
     }
 
+    public ReadQuestionDto getQuestionBoardDetails(Long quesId, Long userId) {
+        QuestionBoardEntity questionBoard = questionBoardRepository.findById(quesId)
+                .orElseThrow(() -> new AppException(ErrorCode.QUES_BOARD_NOT_FOUND.getMessage(), ErrorCode.QUES_BOARD_NOT_FOUND));
+
+        // 로그인한 사용자의 질문에 대한 좋아요 여부 조회
+        boolean isLiked = questionBoard.getLike().stream()
+                .anyMatch(like -> like.getUser().getUserId().equals(userId));
+
+        List<ReadAnswerDto> answers = questionBoard.getAnswer().stream()
+                .map(answer -> {
+                    // 로그인한 사용자의 답변에 대한 좋아요/싫어요 여부 조회
+                    boolean answerIsLiked = answer.getLikes().stream()
+                            .anyMatch(like -> like.getUserId().getUserId().equals(userId) && like.getLiketype().equals(LikeType.LIKE));
+                    boolean answerIsDisliked = answer.getLikes().stream()
+                            .anyMatch(like -> like.getUserId().getUserId().equals(userId) && like.getLiketype().equals(LikeType.DISLIKE));
+
+                    return ReadAnswerDto.builder()
+                            .id(answer.getId())
+                            .content(answer.getContent())
+                            .answerId(answer.getId())
+                            .questionId(questionBoard.getId())
+                            .userId(answer.getAnswerer().getUserId())
+                            .username(answer.getAnswerer().getUsername())
+                            .createdAt(answer.getCreatedAt())
+                            .updatedAt(answer.getUpdatedAt())
+                            .likeCount(answer.getLikes().stream().filter(like -> like.getLiketype().equals(LikeType.LIKE)).count())
+                            .dislikeCount(answer.getLikes().stream().filter(like -> like.getLiketype().equals(LikeType.DISLIKE)).count())
+                            .isLiked(answerIsLiked)
+                            .isDisliked(answerIsDisliked)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        return ReadQuestionDto.builder()
+                .id(questionBoard.getId())
+                .title(questionBoard.getTitle())
+                .content(questionBoard.getContent())
+                .questionerId(questionBoard.getUser().getUserId())
+                .questioner(questionBoard.getUser().getUsername())
+                .createdAt(questionBoard.getCreatedAt())
+                .updatedAt(questionBoard.getUpdatedAt())
+                .likeCount((long)questionBoard.getLike().size())
+                .answers(answers)
+                .isLiked(isLiked)
+                .build();
+    }
+
+
     // 삭제
     @Transactional
     public void deleteQuestionBoard(Long questionId) {
@@ -115,6 +162,7 @@ public class QuestionBoardService {
         return result;
     }
 
+
     // 특정 id 질문 게시판
     @Transactional
     public Map<Integer, QuestionBoardResDto> findQuestionBoardById(Long questionBoardId) {
@@ -129,29 +177,6 @@ public class QuestionBoardService {
         return result;
     }
 
-    // 검색
-//    public Map<Integer, List<QuestionBoardResDto>> findByNameContaining(String keyword) {
-//        List<QuestionBoardEntity> questionBoardEntities = questionBoardRepository.findQuestionBoardEntitiesByTitleContaining(keyword);
-//        List<QuestionBoardEntity> submittedQuestions = questionBoardEntities.stream()
-//                .filter(questionBoardEntity -> questionBoardEntity.getStatusType().equals(QuestionBoardStatusType.SUBMIT))
-//                .collect(Collectors.toList());
-//
-//        Map<Integer, List<QuestionBoardResDto>> result = new HashMap<>();
-//        int totalItems = submittedQuestions.size();
-//        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
-//
-//        for (int page = 0; page < totalPages; page++) {
-//            int fromIndex = page * pageSize;
-//            int toIndex = Math.min((page + 1) * pageSize, totalItems);
-//            List<QuestionBoardEntity> pageData = submittedQuestions.subList(fromIndex, toIndex);
-//            List<QuestionBoardResDto> dtoList = pageData.stream()
-//                    .map(QuestionBoardResDto::new)
-//                    .collect(Collectors.toList());
-//            result.put(page + 1, dtoList);
-//        }
-//
-//        return result;
-//    }
 
     @Transactional
     public Map<String, Map<Integer, List<Object>>> findByNameContaining(String keyword) {
