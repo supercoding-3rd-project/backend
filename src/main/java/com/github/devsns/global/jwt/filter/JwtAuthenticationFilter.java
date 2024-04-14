@@ -35,7 +35,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         이때, return을 통해 다음 필터를 호출하고 현재 필터의 진행을 막는다.
          */
         if (request.getRequestURI().equals(NO_CHECK_URL)) {
-            log.info(request.getRequestURI());
             filterChain.doFilter(request, response);
             return;
         }
