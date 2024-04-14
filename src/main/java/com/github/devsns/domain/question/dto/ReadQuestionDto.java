@@ -18,11 +18,12 @@ public class ReadQuestionDto {
     private String questioner;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private boolean isLiked;
     private Long likeCount;
     private List<ReadAnswerDto> answers;
 
     // 로그인한 사용자의 경우 질문에 대한 좋아요 여부만 포함
-    private boolean isLiked;
+
 
 }
 
