@@ -8,6 +8,7 @@
 #     `social_id` VARCHAR(255),
 #     `social_type` VARCHAR(20),
 #     `image_url` VARCHAR(255),
+#     `description` VARCHAR(255),
 #     `refresh_token` VARCHAR(255),
 #     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
 # );

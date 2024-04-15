@@ -11,6 +11,7 @@ import lombok.*;
 public class GetUserDto {
 
     private String imageUrl;
+    private String description;
     private String email;
     private String username;
     private Long followingCount;
@@ -18,6 +19,7 @@ public class GetUserDto {
 
     public GetUserDto(UserEntity userEntity) {
         this.imageUrl = userEntity.getImageUrl();
+        this.description = userEntity.getDescription();
         this.email = userEntity.getEmail();
         this.username = userEntity.getUsername();
     }

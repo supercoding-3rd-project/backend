@@ -44,6 +44,7 @@ public class UserService {
                 .password(signupDto.getPassword())
                 .username(signupDto.getUsername())
                 .imageUrl("anonymous.png")
+                .description(" ")
                 .role(Role.USER)
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -101,6 +102,7 @@ public class UserService {
         user.setImageUrl(updateUser.getImageUrl());
         user.setPassword(encodedPassword);
         user.setUsername(updateUser.getUsername());
+        user.setDescription(updateUser.getDescription());
 
         return new UserResponseDto(user);
     }

@@ -16,6 +16,7 @@ public class UserResponseDto {
     private Long userId;
     private String role;
     private String imageUrl;
+    private String description;
     private String email;
     private String password;
     private String username;
@@ -29,6 +30,7 @@ public class UserResponseDto {
         this.userId = userEntity.getUserId();
         this.role = userEntity.getRole().toString();
         this.imageUrl = userEntity.getImageUrl();
+        this.description = userEntity.getDescription();
         this.email = userEntity.getEmail();
         this.password = userEntity.getPassword();
         this.username = userEntity.getUsername();
