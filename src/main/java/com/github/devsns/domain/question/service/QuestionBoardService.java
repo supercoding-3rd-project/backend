@@ -1,15 +1,14 @@
 package com.github.devsns.domain.question.service;
 
-import com.github.devsns.domain.answers.entity.AnswerLike;
 import com.github.devsns.domain.comments.dto.AnswerCommentResDto;
-import com.github.devsns.domain.notifications.repository.NotificationRepository;
 import com.github.devsns.domain.notifications.service.NotificationService;
 import com.github.devsns.domain.question.dto.*;
 import com.github.devsns.domain.question.entity.QuestionLike;
 import com.github.devsns.domain.question.entity.QuestionBoardEntity;
-import com.github.devsns.domain.question.entity.QuestionBoardStatusType;
+import com.github.devsns.domain.question.entity.TempQuestionEntity;
 import com.github.devsns.domain.question.repository.LikeRepository;
 import com.github.devsns.domain.question.repository.QuestionBoardRepository;
+import com.github.devsns.domain.question.repository.TempQuestionRepository;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import com.github.devsns.domain.user.repository.UserRepository;
 import com.github.devsns.exception.AppException;
@@ -35,23 +34,72 @@ public class QuestionBoardService {
     private final LikeRepository likeRepository;
     private final UserRepository userRepository;
     private final NotificationService notificationService;
+    private final TempQuestionRepository tempQuestionRepository;
 
-    // 질문 게시글 생성하기
-    @Transactional
-    public String createQuestionBoard(QuestionBoardReqDto questionBoardReqDto, String email) {
+
+
+    @Transactional(readOnly = true)
+    public List<TempQuestionResDto> getTemporarySavedQuestions(String email) {
         UserEntity user = userRepository.findByEmail(email).orElseThrow(
                 () -> new AppException(ErrorCode.USER_EMAIL_NOT_FOUND.getMessage(), ErrorCode.USER_EMAIL_NOT_FOUND)
         );
 
-        String status = questionBoardReqDto.getStatusType();
+        List<TempQuestionEntity> tempQuestions = tempQuestionRepository.findByQuestioner(user);
+        if (tempQuestions.isEmpty()) {
+            return Collections.emptyList();
+        } else {
+            return tempQuestions.stream()
+                    .map(TempQuestionResDto::from)
+                    .collect(Collectors.toList());
+        }
+    }
+
+    @Transactional
+    public QuestionCreateDto submitQuestion(QuestionBoardReqDto questionBoardReqDto, String email) {
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(
+                () -> new AppException(ErrorCode.USER_EMAIL_NOT_FOUND.getMessage(), ErrorCode.USER_EMAIL_NOT_FOUND)
+        );
 
         QuestionBoardEntity questionBoard = QuestionBoardEntity.toEntity(user, questionBoardReqDto);
-
         questionBoardRepository.save(questionBoard);
-
-        if (status.equals(QuestionBoardStatusType.SUBMIT.getStatus())) return "질문이 등록되었습니다.";
-        else return "임시 저장되었습니다.";
+        return new QuestionCreateDto("질문이 등록되었습니다.", null);
     }
+
+    @Transactional
+    public List<TempQuestionResDto> saveTemporaryQuestion(TempQuestionReqDto tempQuestionReqDto, String email) {
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(
+                () -> new AppException(ErrorCode.USER_EMAIL_NOT_FOUND.getMessage(), ErrorCode.USER_EMAIL_NOT_FOUND)
+        );
+
+        TempQuestionEntity tempQuestion = new TempQuestionEntity();
+        tempQuestion.setTitle(tempQuestionReqDto.getTitle());
+        tempQuestion.setContent(tempQuestionReqDto.getContent());
+        tempQuestion.setCreatedAt(LocalDateTime.now());
+        tempQuestion.setQuestioner(user);
+        tempQuestionRepository.save(tempQuestion);
+
+        // 사용자의 모든 임시 저장된 질문을 조회
+        List<TempQuestionEntity> tempQuestions = tempQuestionRepository.findByQuestioner(user);
+        return tempQuestions.stream()
+                .map(TempQuestionResDto::from)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<TempQuestionResDto> deleteTemporaryQuestion(Long tempId, String email) {
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(
+                () -> new AppException(ErrorCode.USER_EMAIL_NOT_FOUND.getMessage(), ErrorCode.USER_EMAIL_NOT_FOUND)
+        );
+
+        tempQuestionRepository.deleteByQuestionerAndId(user, tempId);
+
+        // 삭제 후 남은 임시 저장 목록 조회
+        List<TempQuestionEntity> remainingTempQuestions = tempQuestionRepository.findByQuestioner(user);
+        return remainingTempQuestions.stream()
+                .map(TempQuestionResDto::from)
+                .collect(Collectors.toList());
+    }
+
 
     @Transactional
     public LikeQuestionDto updateQuestionReaction(Long quesId, Long userId, LikeType likeType) {
@@ -91,6 +139,7 @@ public class QuestionBoardService {
         }
         return getLikeQuestionDto(questionBoard, user);
     }
+
 
     @Transactional
     public LikeQuestionDto getLikeQuestionDto(QuestionBoardEntity questionBoard, UserEntity user) {
@@ -141,7 +190,7 @@ public class QuestionBoardService {
 
                     List<AnswerCommentResDto> answerComments = answer.getComments().stream()
                             .map(comment -> AnswerCommentResDto.builder()
-                                    .id(comment.getId())
+                                    .commentId(comment.getId())
                                     .content(comment.getContent())
                                     .commenterId(comment.getCommenter().getUserId())
                                     .commenter(comment.getCommenter().getUsername())
@@ -182,17 +231,16 @@ public class QuestionBoardService {
                 .build();
     }
 
-
     // 삭제
     @Transactional
     public void deleteQuestionBoard(Long questionId) {
         QuestionBoardEntity questionBoard = questionBoardRepository.findById(questionId)
-                .filter(questionBoardEntity -> questionBoardEntity.getStatusType().equals(QuestionBoardStatusType.SUBMIT))
                 .orElseThrow(
                         () -> new AppException(ErrorCode.QUES_BOARD_NOT_FOUND.getMessage(), ErrorCode.QUES_BOARD_NOT_FOUND));
 
         questionBoardRepository.delete(questionBoard);
     }
+
 
     private static final int pageSize = 5;
 
@@ -202,7 +250,6 @@ public class QuestionBoardService {
     public Map<Integer, List<QuestionBoardResDto>> findAllQuestionBoard() {
         List<QuestionBoardEntity> questionBoardEntities = questionBoardRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
         List<QuestionBoardEntity> submittedQuestions = questionBoardEntities.stream()
-                .filter(questionBoard -> questionBoard.getStatusType().equals(QuestionBoardStatusType.SUBMIT))
                 .collect(Collectors.toList());
 
         Map<Integer, List<QuestionBoardResDto>> result = new HashMap<>();
@@ -227,7 +274,6 @@ public class QuestionBoardService {
     @Transactional
     public Map<Integer, QuestionBoardResDto> findQuestionBoardById(Long questionBoardId) {
         QuestionBoardEntity questionBoard = questionBoardRepository.findById(questionBoardId)
-                .filter(questionBoardEntity -> questionBoardEntity.getStatusType().equals(QuestionBoardStatusType.SUBMIT))
                 .orElseThrow(
                         () -> new AppException(ErrorCode.QUES_BOARD_NOT_FOUND.getMessage(), ErrorCode.QUES_BOARD_NOT_FOUND)
                 );

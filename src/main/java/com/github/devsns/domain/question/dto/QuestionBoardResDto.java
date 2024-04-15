@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Builder
 public class QuestionBoardResDto {
 
-    private Long id;
+    private Long questionId;
     private String title;
     private String content;
     private Long questionerId;
@@ -28,7 +28,7 @@ public class QuestionBoardResDto {
     private List<AnswerResDto> answers;
 
     public QuestionBoardResDto(QuestionBoardEntity questionBoard) {
-        this.id = questionBoard.getId();
+        this.questionId = questionBoard.getId();
         this.title = questionBoard.getTitle();
         this.content = questionBoard.getContent();
         this.questionerId = questionBoard.getQuestioner().getUserId();

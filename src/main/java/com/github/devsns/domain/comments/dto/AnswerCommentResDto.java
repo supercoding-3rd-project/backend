@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 public class AnswerCommentResDto {
 
-    private Long id;
+    private Long commentId;
     private String content;
     private Long commenterId;
     private String commenter;
@@ -20,7 +20,7 @@ public class AnswerCommentResDto {
     private LocalDateTime updatedAt;
 
     public AnswerCommentResDto(AnswerCommentEntity answerCommentEntity) {
-        this.id = answerCommentEntity.getId();
+        this.commentId = answerCommentEntity.getId();
         this.content = answerCommentEntity.getContent();
         this.commenterId = answerCommentEntity.getCommenter().getUserId();
         this.commenter = answerCommentEntity.getCommenter().getUsername();

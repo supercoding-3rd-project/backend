@@ -3,7 +3,6 @@ package com.github.devsns.domain.question.controller;
 import com.github.devsns.domain.auth.entity.CustomUserDetails;
 import com.github.devsns.domain.question.dto.*;
 import com.github.devsns.domain.question.service.QuestionBoardService;
-import com.github.devsns.domain.user.entitiy.UserEntity;
 import com.github.devsns.global.constant.LikeType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -46,13 +45,36 @@ public class QuestionBoardController {
     }
 
     @PostMapping("v1/question/create")
-    @Operation(summary = "질문 생성")
-    public ResponseEntity<?> createQuestionBoard(@RequestBody QuestionBoardReqDto questionBoardReqDto, @AuthenticationPrincipal CustomUserDetails user) {
-        String result = questionBoardService.createQuestionBoard(questionBoardReqDto, user.getUsername());
+    @Operation(summary = "질문 작성 페이지에서 임시 재생 목록")
+    public List<TempQuestionResDto> getTemporarySavedQuestions(@AuthenticationPrincipal CustomUserDetails user) {
+        List<TempQuestionResDto> result = questionBoardService.getTemporarySavedQuestions(user.getUsername());
+        return result;
+    }
+
+    @PostMapping("v1/question/create/submit")
+    @Operation(summary = "질문 저장")
+    public ResponseEntity<?> submitQuestion(@RequestBody QuestionBoardReqDto questionBoardReqDto,@AuthenticationPrincipal CustomUserDetails user) {
+        QuestionCreateDto result = questionBoardService.submitQuestion(questionBoardReqDto, user.getUsername());
         return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping("v1/question/delete/{quesId}")
+    @PatchMapping("v1/question/create/temp")
+    @Operation(summary = "임시 저장")
+    public ResponseEntity<List<TempQuestionResDto>> saveTemporaryQuestion(@RequestBody TempQuestionReqDto tempQuestionReqDto, @AuthenticationPrincipal CustomUserDetails user) {
+        List<TempQuestionResDto> result = questionBoardService.saveTemporaryQuestion(tempQuestionReqDto, user.getUsername());
+        return ResponseEntity.ok(result);
+    }
+
+
+    @PatchMapping("/v1/question/temp/{tempId}/delete")
+    @Operation(summary = "임시 저장 글 지우기")
+    public ResponseEntity<List<TempQuestionResDto>> deleteTemporaryQuestion(@PathVariable Long tempId, @AuthenticationPrincipal CustomUserDetails user) {
+        List<TempQuestionResDto> result = questionBoardService.deleteTemporaryQuestion(tempId, user.getUsername());
+        return ResponseEntity.ok(result);
+    }
+
+
+    @DeleteMapping("v1/question/{quesId}/delete")
     @Operation(summary = "질문 삭제 => 질문 삭제 시 모든 연관 요소 삭제")
     public ResponseEntity<?> deleteQuestion(@PathVariable Long quesId) {
         questionBoardService.deleteQuestionBoard(quesId);
