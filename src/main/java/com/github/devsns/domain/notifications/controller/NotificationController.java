@@ -24,7 +24,7 @@ public class NotificationController {
     @Transactional
     @Operation(summary = "notificationId 전달 후 처리")
     public ResponseEntity<String> readNotification(@RequestBody NotificationRequest request) {
-        Long notificationId = request.getId();
+        Long notificationId = request.getNotificationId();
         Notification notification = entityManager.find(Notification.class, notificationId);
         if (notification != null) {
             if (notification.isRead()) {
