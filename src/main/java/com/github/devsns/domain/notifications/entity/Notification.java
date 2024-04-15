@@ -18,13 +18,17 @@ public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "notification_id")
-    private Long id;
+    private Long notificationId;
 
     @Enumerated(EnumType.STRING)
     private NotificationType type;
 
     @Column(name = "recipient_id")
     private Long recipientId;
+
+
+    @Column(name="recipient")
+    private String recipient;
 
     @Column(nullable = false, updatable = false)
     @CreatedDate

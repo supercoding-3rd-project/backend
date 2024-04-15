@@ -31,6 +31,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         AnswerCommentNotification answerCommentNotification = new AnswerCommentNotification();
         answerCommentNotification.setRecipientId(recipient.getUserId());
+        answerCommentNotification.setRecipient(recipient.getUsername());
         answerCommentNotification.setType(NotificationType.ANSWER_COMMENT);
         answerCommentNotification.setCreatedAt(LocalDateTime.now());
         answerCommentNotification.setRead(false);
@@ -49,6 +50,7 @@ public class NotificationServiceImpl implements NotificationService {
         // LikeQuestionNotification 엔티티 생성
         LikeQuestionNotification likeQuestionNotification = new LikeQuestionNotification();
         likeQuestionNotification.setRecipientId(recipient.getUserId());
+        likeQuestionNotification.setRecipient(recipient.getUsername());
         likeQuestionNotification.setType(NotificationType.QUESTION_LIKE);
         likeQuestionNotification.setCreatedAt(LocalDateTime.now());
         likeQuestionNotification.setRead(false);
@@ -66,6 +68,7 @@ public class NotificationServiceImpl implements NotificationService {
         // LikeQuestionNotification 엔티티 생성
         LikeQuestionNotification likeQuestionNotification = new LikeQuestionNotification();
         likeQuestionNotification.setRecipientId(recipient.getUserId());
+        likeQuestionNotification.setRecipient(recipient.getUsername());
         likeQuestionNotification.setType(NotificationType.QUESTION_DISLIKE);
         likeQuestionNotification.setCreatedAt(LocalDateTime.now());
         likeQuestionNotification.setRead(false);
@@ -80,6 +83,7 @@ public class NotificationServiceImpl implements NotificationService {
         // LikeAnswerNotification 엔티티 생성
         LikeAnswerNotification likeAnswerNotification = new LikeAnswerNotification();
         likeAnswerNotification.setRecipientId(recipient.getUserId());
+        likeAnswerNotification.setRecipient(recipient.getUsername());
         likeAnswerNotification.setType(NotificationType.ANSWER_LIKE);
         likeAnswerNotification.setCreatedAt(LocalDateTime.now());
         likeAnswerNotification.setRead(false);
@@ -115,6 +119,7 @@ public class NotificationServiceImpl implements NotificationService {
         // AnswerNotification 엔티티 생성
         AnswerNotification answerNotification = new AnswerNotification();
         answerNotification.setRecipientId(recipient.getUserId());
+        answerNotification.setRecipient(recipient.getUsername());
         answerNotification.setType(NotificationType.ANSWER);
         answerNotification.setCreatedAt(LocalDateTime.now());
         answerNotification.setRead(false);
@@ -132,6 +137,7 @@ public class NotificationServiceImpl implements NotificationService {
         // FollowNotification 엔티티 생성
         FollowNotification followNotification = new FollowNotification();
         followNotification.setRecipientId(recipient.getUserId());
+        followNotification.setRecipient(recipient.getUsername());
         followNotification.setType(NotificationType.FOLLOW);
         followNotification.setCreatedAt(LocalDateTime.now());
         followNotification.setRead(false);

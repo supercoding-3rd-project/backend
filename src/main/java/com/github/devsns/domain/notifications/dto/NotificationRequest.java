@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class NotificationRequest {
-    private Long id;
+    private Long notificationId;
     @JsonProperty("read")
     private Boolean isRead;
 }

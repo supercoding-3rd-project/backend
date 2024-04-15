@@ -70,7 +70,7 @@ public class NotificationWebSocketHandler extends TextWebSocketHandler {
     @Async
     @Transactional
     public void handleNotificationCreated(Notification notification) {
-        log.info("Handling NotificationCreatedEvent for notification: {}", notification.getId());
+        log.info("Handling NotificationCreatedEvent for notification: {}", notification.getNotificationId());
         // 나머지 로직
         Long userId = notification.getRecipientId();
 
