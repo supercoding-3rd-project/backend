@@ -32,7 +32,7 @@ public class QuestionBoardEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private UserEntity user;
+    private UserEntity questioner;
 
     @Column(name = "title")
     private String title;
@@ -44,8 +44,6 @@ public class QuestionBoardEntity {
     @Column(name = "status")
     private QuestionBoardStatusType statusType;
 
-    @OneToMany(mappedBy = "questionBoard")
-    private List<LikeEntity> like = new ArrayList<>();
 
     @CreatedDate
     @Column(name = "created_at")
@@ -58,9 +56,12 @@ public class QuestionBoardEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    @OneToMany(mappedBy = "questionBoard", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuestionLike> likes = new ArrayList<>();
+
 
     @OneToMany(mappedBy = "questionBoard", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<AnswerEntity> answer = new ArrayList<>();
+    private List<AnswerEntity> answers = new ArrayList<>();
 
     private void setStatusType(QuestionBoardStatusType statusType) {
         this.statusType = statusType;
@@ -68,7 +69,7 @@ public class QuestionBoardEntity {
 
     public static QuestionBoardEntity toEntity(UserEntity user, QuestionBoardReqDto questionBoardReqDto) {
         QuestionBoardEntity questionBoard = builder()
-                .user(user)
+                .questioner(user)
                 .title(questionBoardReqDto.getTitle())
                 .content(questionBoardReqDto.getContent())
                 .createdAt(LocalDateTime.now())

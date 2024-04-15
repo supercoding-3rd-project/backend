@@ -5,8 +5,9 @@ public enum NotificationType {
     QUESTION_COMMENT,
     ANSWER_COMMENT,
     QUESTION_LIKE,
+    QUESTION_DISLIKE,
     ANSWER_LIKE,
-    ANSWER_DISLIKE,
+//    ANSWER_DISLIKE,
     FOLLOW,
     ANSWER
 }

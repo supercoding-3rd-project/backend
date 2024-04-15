@@ -12,9 +12,12 @@ public interface NotificationService {
     void sendAnswerNotification(UserEntity recipient, UserEntity answerer, QuestionBoardEntity question);
 
     void sendLikeAnswerNotification(UserEntity recipient, UserEntity liker, AnswerEntity answer);
-    void sendDislikeAnswerNotification(UserEntity recipient, UserEntity liker, AnswerEntity question);
+
+//    void sendDislikeAnswerNotification(UserEntity recipient, UserEntity liker, AnswerEntity answer);
 
     void sendLikeQuestionNotification(UserEntity recipient, UserEntity liker, QuestionBoardEntity question);
+
+    void sendDislikeQuestionNotification(UserEntity recipient, UserEntity liker, QuestionBoardEntity question);
 
     void sendFollowNotification(UserEntity recipient, UserEntity follower);
 

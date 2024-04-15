@@ -1,10 +1,11 @@
 package com.github.devsns.domain.question.service;
 
-import com.github.devsns.domain.answers.dto.AnswerResDto;
+import com.github.devsns.domain.answers.entity.AnswerLike;
 import com.github.devsns.domain.comments.dto.AnswerCommentResDto;
+import com.github.devsns.domain.notifications.repository.NotificationRepository;
 import com.github.devsns.domain.notifications.service.NotificationService;
 import com.github.devsns.domain.question.dto.*;
-import com.github.devsns.domain.question.entity.LikeEntity;
+import com.github.devsns.domain.question.entity.QuestionLike;
 import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.question.entity.QuestionBoardStatusType;
 import com.github.devsns.domain.question.repository.LikeRepository;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -33,7 +35,6 @@ public class QuestionBoardService {
     private final LikeRepository likeRepository;
     private final UserRepository userRepository;
     private final NotificationService notificationService;
-
 
     // 질문 게시글 생성하기
     @Transactional
@@ -52,45 +53,91 @@ public class QuestionBoardService {
         else return "임시 저장되었습니다.";
     }
 
-    // 좋아요
-    public String questionBoardLike(Long questionBoardId, String email) {
-        QuestionBoardEntity questionBoard = questionBoardRepository.findById(questionBoardId)
-                .filter(questionBoardEntity -> questionBoardEntity.getStatusType().equals(QuestionBoardStatusType.SUBMIT))
-                .orElseThrow(
-                () -> new AppException(ErrorCode.QUES_BOARD_NOT_FOUND.getMessage(), ErrorCode.QUES_BOARD_NOT_FOUND));
+    @Transactional
+    public LikeQuestionDto updateQuestionReaction(Long quesId, Long userId, LikeType likeType) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        QuestionBoardEntity questionBoard = questionBoardRepository.findById(quesId)
+                .orElseThrow(() -> new IllegalArgumentException("질문을 찾을 수 없습니다."));
+        Optional<QuestionLike> existingLike = likeRepository.findByQuestionBoardIdAndUserId(quesId, user);
 
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(
-                () -> new AppException(ErrorCode.USER_EMAIL_NOT_FOUND.getMessage(), ErrorCode.USER_EMAIL_NOT_FOUND)
-        );
-
-        Optional<LikeEntity> likes = likeRepository.findByUserAndQuestionBoard(user, questionBoard);
-
-        if(likes.isPresent()){
-            likeRepository.delete(likes.get());
-            notificationService.deleteLikeQuestionNotification(questionBoard.getUser().getUserId(), user.getUserId());
-            return "좋아요를 취소했습니다.";
+        if (existingLike.isPresent()) {
+            QuestionLike like = existingLike.get();
+            if (like.getLikeType() == likeType) {
+                likeRepository.delete(like);
+                notificationService.deleteLikeQuestionNotification(questionBoard.getQuestioner().getUserId(), user.getUserId());
+                log.info(likeType == LikeType.LIKE ? "좋아요가 취소되었습니다." : "싫어요가 취소되었습니다.");
+                questionBoardRepository.flush(); // 변경 사항 즉시 반영
+                questionBoard = questionBoardRepository.findById(quesId).orElseThrow(); // 새로고침
+            } else {
+                log.info("이미 다른 반응을 하셨습니다.");
+            }
         } else {
-            likeRepository.save(LikeEntity.toEntity(user, questionBoard));
-            notificationService.sendLikeQuestionNotification(questionBoard.getUser(), user, questionBoard);
-            return "좋아요를 눌렀습니다.";
+            QuestionLike newLike = new QuestionLike();
+            newLike.setUserId(user);
+            newLike.setQuestionBoard(questionBoard);
+            newLike.setLikeType(likeType);
+            newLike.setCreatedAt(LocalDateTime.now());
+            likeRepository.save(newLike);
+            questionBoardRepository.flush(); // 변경 사항 즉시 반영
+            questionBoard = questionBoardRepository.findById(quesId).orElseThrow(); // 새로고침
+            if (likeType == LikeType.LIKE) {
+                notificationService.sendLikeQuestionNotification(questionBoard.getQuestioner(), user, questionBoard);
+                log.info("좋아요가 등록되었습니다.");
+            } else {
+                notificationService.sendDislikeQuestionNotification(questionBoard.getQuestioner(), user, questionBoard);
+                log.info("싫어요가 등록되었습니다.");
+            }
         }
+        return getLikeQuestionDto(questionBoard, user);
     }
 
+    @Transactional
+    public LikeQuestionDto getLikeQuestionDto(QuestionBoardEntity questionBoard, UserEntity user) {
+        long questionLikeCount = questionBoard.getLikes().stream()
+                .filter(like -> like.getLikeType().equals(LikeType.LIKE))
+                .count();
+        long questionDislikeCount = questionBoard.getLikes().stream()
+                .filter(like -> like.getLikeType().equals(LikeType.DISLIKE))
+                .count();
+
+        boolean isLiked = questionBoard.getLikes().stream()
+                .anyMatch(like -> like.getUserId().getUserId().equals(user.getUserId()) && like.getLikeType().equals(LikeType.LIKE));
+        boolean isDisliked = questionBoard.getLikes().stream()
+                .anyMatch(like -> like.getUserId().getUserId().equals(user.getUserId()) && like.getLikeType().equals(LikeType.DISLIKE));
+
+        return LikeQuestionDto.builder()
+                .questionId(questionBoard.getId())
+                .likeCount(questionLikeCount)
+                .dislikeCount(questionDislikeCount)
+                .isLiked(isLiked)
+                .isDisliked(isDisliked)
+                .build();
+    }
+
+
+    @Transactional
     public ReadQuestionDto getQuestionBoardDetails(Long quesId, Long userId) {
         QuestionBoardEntity questionBoard = questionBoardRepository.findById(quesId)
                 .orElseThrow(() -> new AppException(ErrorCode.QUES_BOARD_NOT_FOUND.getMessage(), ErrorCode.QUES_BOARD_NOT_FOUND));
 
-        // 로그인한 사용자의 질문에 대한 좋아요 여부 조회
-        boolean isLiked = questionBoard.getLike().stream()
-                .anyMatch(like -> like.getUser().getUserId().equals(userId));
+        long questionLikeCount = questionBoard.getLikes().stream()
+                .filter(like -> like.getLikeType().equals(LikeType.LIKE))
+                .count();
+        long questionDislikeCount = questionBoard.getLikes().stream()
+                .filter(like -> like.getLikeType().equals(LikeType.DISLIKE))
+                .count();
 
-        List<ReadAnswerDto> answers = questionBoard.getAnswer().stream()
+        boolean isLiked = questionBoard.getLikes().stream()
+                .anyMatch(like -> like.getUserId().getUserId().equals(userId) && like.getLikeType().equals(LikeType.LIKE));
+        boolean isDisliked = questionBoard.getLikes().stream()
+                .anyMatch(like -> like.getUserId().getUserId().equals(userId) && like.getLikeType().equals(LikeType.DISLIKE));
+
+        List<ReadAnswerDto> answers = questionBoard.getAnswers().stream()
                 .map(answer -> {
-                    // 로그인한 사용자의 답변에 대한 좋아요/싫어요 여부 조회
+                    // 로그인한 사용자의 답변에 대한 좋아요 여부 조회
                     boolean answerIsLiked = answer.getLikes().stream()
-                            .anyMatch(like -> like.getUserId().getUserId().equals(userId) && like.getLiketype().equals(LikeType.LIKE));
-                    boolean answerIsDisliked = answer.getLikes().stream()
-                            .anyMatch(like -> like.getUserId().getUserId().equals(userId) && like.getLiketype().equals(LikeType.DISLIKE));
+                            .anyMatch(like -> like.getUserId().getUserId().equals(userId));
 
                     List<AnswerCommentResDto> answerComments = answer.getComments().stream()
                             .map(comment -> AnswerCommentResDto.builder()
@@ -104,33 +151,33 @@ public class QuestionBoardService {
                             .collect(Collectors.toList());
 
                     return ReadAnswerDto.builder()
-                            .id(answer.getId())
+                            .answerId(answer.getId())
                             .content(answer.getContent())
                             .answerId(answer.getId())
                             .questionId(questionBoard.getId())
-                            .userId(answer.getAnswerer().getUserId())
-                            .username(answer.getAnswerer().getUsername())
+                            .answererId(answer.getAnswerer().getUserId())
+                            .answerer(answer.getAnswerer().getUsername())
                             .createdAt(answer.getCreatedAt())
                             .updatedAt(answer.getUpdatedAt())
-                            .likeCount(answer.getLikes().stream().filter(like -> like.getLiketype().equals(LikeType.LIKE)).count())
-                            .dislikeCount(answer.getLikes().stream().filter(like -> like.getLiketype().equals(LikeType.DISLIKE)).count())
+                            .likeCount(answer.getLikes().size())
                             .isLiked(answerIsLiked)
-                            .isDisliked(answerIsDisliked)
                             .answerComments(answerComments)
                             .build();
                 })
                 .collect(Collectors.toList());
 
         return ReadQuestionDto.builder()
-                .id(questionBoard.getId())
+                .questionId(questionBoard.getId())
                 .title(questionBoard.getTitle())
                 .content(questionBoard.getContent())
-                .questionerId(questionBoard.getUser().getUserId())
-                .questioner(questionBoard.getUser().getUsername())
+                .questionerId(questionBoard.getQuestioner().getUserId())
+                .questioner(questionBoard.getQuestioner().getUsername())
                 .createdAt(questionBoard.getCreatedAt())
                 .updatedAt(questionBoard.getUpdatedAt())
                 .isLiked(isLiked)
-                .likeCount((long)questionBoard.getLike().size())
+                .isDisliked(isDisliked)
+                .likeCount(questionLikeCount)
+                .dislikeCount(questionDislikeCount)
                 .answers(answers)
                 .build();
     }

@@ -1,11 +1,10 @@
 package com.github.devsns.domain.question.controller;
 
 import com.github.devsns.domain.auth.entity.CustomUserDetails;
-import com.github.devsns.domain.question.dto.QuestionBoardReqDto;
-import com.github.devsns.domain.question.dto.QuestionBoardResDto;
-import com.github.devsns.domain.question.dto.ReadQuestionDto;
+import com.github.devsns.domain.question.dto.*;
 import com.github.devsns.domain.question.service.QuestionBoardService;
 import com.github.devsns.domain.user.entitiy.UserEntity;
+import com.github.devsns.global.constant.LikeType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
@@ -71,11 +71,31 @@ public class QuestionBoardController {
     }
 
 
-    @PostMapping("v1/question/{quesId}/like")
-    @Operation(summary = "질문에 대한 좋아요 / 좋아요 취소")
-    public ResponseEntity<?> likeQuestionBoard(@PathVariable Long quesId, @AuthenticationPrincipal CustomUserDetails user) {
-        String result = questionBoardService.questionBoardLike(quesId, user.getUsername());
+    @PatchMapping("v1/question/{quesId}/like")
+    @Operation(summary = "질문에 좋아요 및 좋아요 취소 / 최초 좋아요면 저장, 이미 좋아요 내역 있으면 취소, 싫어요 있으면 수행 X")
+    public ResponseEntity<?> toggleLikeQuestionBoard(@PathVariable Long quesId, @AuthenticationPrincipal CustomUserDetails user) {
+        try {
+        // Authentication 객체에서 사용자 ID 추출
+        LikeQuestionDto result = questionBoardService.updateQuestionReaction(quesId, user.getUserEntity().getUserId(), LikeType.LIKE);
         return ResponseEntity.ok(result);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().body("답변이 존재하지 않습니다");
+        }
+
+    }
+
+    @PatchMapping("v1/question/{quesId}/dislike")
+    @Operation(summary = "질문에 좋아요 및 좋아요 취소 / 최초 좋아요면 저장, 이미 좋아요 내역 있으면 취소, 싫어요 있으면 수행 X")
+    public ResponseEntity<?> toggleDislikeQuestionBoard(@PathVariable Long quesId, @AuthenticationPrincipal CustomUserDetails user) {
+        try {
+            // Authentication 객체에서 사용자 ID 추출
+            LikeQuestionDto result = questionBoardService.updateQuestionReaction(quesId, user.getUserEntity().getUserId(), LikeType.DISLIKE);
+            return ResponseEntity.ok(result);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().body("답변이 존재하지 않습니다");
+        }
+
+
     }
 
 
