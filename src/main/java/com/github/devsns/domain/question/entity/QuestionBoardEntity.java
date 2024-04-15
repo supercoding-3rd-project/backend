@@ -40,11 +40,6 @@ public class QuestionBoardEntity {
     @Column(name = "content")
     private String content;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    private QuestionBoardStatusType statusType;
-
-
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -63,9 +58,7 @@ public class QuestionBoardEntity {
     @OneToMany(mappedBy = "questionBoard", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<AnswerEntity> answers = new ArrayList<>();
 
-    private void setStatusType(QuestionBoardStatusType statusType) {
-        this.statusType = statusType;
-    }
+
 
     public static QuestionBoardEntity toEntity(UserEntity user, QuestionBoardReqDto questionBoardReqDto) {
         QuestionBoardEntity questionBoard = builder()
@@ -74,12 +67,6 @@ public class QuestionBoardEntity {
                 .content(questionBoardReqDto.getContent())
                 .createdAt(LocalDateTime.now())
                 .build();
-
-        if (questionBoardReqDto.getStatusType().equals(QuestionBoardStatusType.SUBMIT.getStatus())) {
-            questionBoard.setStatusType(QuestionBoardStatusType.SUBMIT);
-        } else {
-            questionBoard.setStatusType(QuestionBoardStatusType.TEMP_SAVE);
-        }
 
         return questionBoard;
     }
