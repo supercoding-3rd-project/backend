@@ -61,6 +61,20 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Transactional
+    public void sendDislikeQuestionNotification(UserEntity recipient, UserEntity liker, QuestionBoardEntity question) {
+
+        // LikeQuestionNotification 엔티티 생성
+        LikeQuestionNotification likeQuestionNotification = new LikeQuestionNotification();
+        likeQuestionNotification.setRecipientId(recipient.getUserId());
+        likeQuestionNotification.setType(NotificationType.QUESTION_DISLIKE);
+        likeQuestionNotification.setCreatedAt(LocalDateTime.now());
+        likeQuestionNotification.setRead(false);
+        likeQuestionNotification.setLikerId(liker.getUserId());
+        likeQuestionNotification.setLiker(liker.getUsername());
+        likeQuestionNotification.setQuestionId(question.getId());
+    }
+
+    @Transactional
     public void sendLikeAnswerNotification(UserEntity recipient, UserEntity liker, AnswerEntity answer) {
 
         // LikeAnswerNotification 엔티티 생성
@@ -77,22 +91,22 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.save(likeAnswerNotification);
     }
 
-    @Transactional
-    public void sendDislikeAnswerNotification(UserEntity recipient, UserEntity liker, AnswerEntity answer) {
-
-        // LikeAnswerNotification 엔티티 생성
-        LikeAnswerNotification likeAnswerNotification = new LikeAnswerNotification();
-        likeAnswerNotification.setRecipientId(recipient.getUserId());
-        likeAnswerNotification.setType(NotificationType.ANSWER_DISLIKE);
-        likeAnswerNotification.setCreatedAt(LocalDateTime.now());
-        likeAnswerNotification.setRead(false);
-        likeAnswerNotification.setLikerId(liker.getUserId());
-        likeAnswerNotification.setLiker(liker.getUsername());
-        likeAnswerNotification.setAnswerId(answer.getId());
-
-        // Notification 엔티티 저장
-        notificationRepository.save(likeAnswerNotification);
-    }
+//    @Transactional
+//    public void sendDislikeAnswerNotification(UserEntity recipient, UserEntity liker, AnswerEntity answer) {
+//
+//        // LikeAnswerNotification 엔티티 생성
+//        LikeAnswerNotification likeAnswerNotification = new LikeAnswerNotification();
+//        likeAnswerNotification.setRecipientId(recipient.getUserId());
+//        likeAnswerNotification.setType(NotificationType.ANSWER_DISLIKE);
+//        likeAnswerNotification.setCreatedAt(LocalDateTime.now());
+//        likeAnswerNotification.setRead(false);
+//        likeAnswerNotification.setLikerId(liker.getUserId());
+//        likeAnswerNotification.setLiker(liker.getUsername());
+//        likeAnswerNotification.setAnswerId(answer.getId());
+//
+//        // Notification 엔티티 저장
+//        notificationRepository.save(likeAnswerNotification);
+//    }
 
 
     @Transactional

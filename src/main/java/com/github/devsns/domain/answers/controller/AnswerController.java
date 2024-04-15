@@ -2,8 +2,9 @@ package com.github.devsns.domain.answers.controller;
 
 import com.github.devsns.domain.answers.dto.AnswerReqDto;
 import com.github.devsns.domain.answers.service.AnswerService;
+import com.github.devsns.domain.question.dto.LikeAnswerDto;
+import com.github.devsns.domain.question.dto.ReadAnswerDto;
 import com.github.devsns.global.component.ExtractUserDataUtil;
-import com.github.devsns.global.constant.LikeType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -41,34 +42,18 @@ public class AnswerController {
         return ResponseEntity.ok("답변 작성 완료");
     }
 
-    @Operation(summary = "답변에 좋아요 및 좋아요 취소 / 최초 좋아요면 저장, 이미 좋아요 내역 있으면 취소, 싫어요 있으면 수행 X")
-    @PostMapping("/v1/answer/{answerId}/like")
-    public ResponseEntity<String> likeAnswer(@PathVariable Long answerId,
-                                             Authentication authentication) {
+    @Operation(summary = "답변에 좋아요 및 좋아요 취소 / 최초 좋아요면 저장, 이미 좋아요 내역 있으면 취소")
+    @PatchMapping("/v1/answer/{answerId}/like")
+    public ResponseEntity<?> toggleLikeAnswer(@PathVariable Long answerId,
+                                              Authentication authentication) {
         try {
             // Authentication 객체에서 사용자 ID 추출
             Long userId = extractUserDataUtil.extractUserIdFromAuthentication(authentication);
             // 답변 소유자 확인
             answerService.checkAnswerer(answerId, userId);
             // 좋아요 확인
-            String message = answerService.updateAnswerReaction(answerId, userId, LikeType.LIKE);
-            return ResponseEntity.ok(message);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body("답변이 존재하지 않습니다");
-        }
-    }
-    @Operation(summary = "답변에 싫어요 및 싫어요 취소 / 최초 싫어요면 저장, 이미 싫어요 내역 있으면 취소, 좋아요 있으면 수행 X")
-    @PostMapping("/v1/answer/{answerId}/dislike")
-    public ResponseEntity<String> dislikeAnswer(@PathVariable Long answerId,
-                                                Authentication authentication) {
-        try {
-            // Authentication 객체에서 사용자 ID 추출
-            Long userId = extractUserDataUtil.extractUserIdFromAuthentication(authentication);
-            // 답변 소유자 확인
-            answerService.checkAnswerer(answerId, userId);
-            // 싫어요 추가
-            String message = answerService.updateAnswerReaction(answerId, userId, LikeType.DISLIKE);
-            return ResponseEntity.ok(message);
+            LikeAnswerDto answer = answerService.updateAnswerReaction(answerId, userId);
+            return ResponseEntity.ok(answer);
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().body("답변이 존재하지 않습니다");
         }

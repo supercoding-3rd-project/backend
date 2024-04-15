@@ -2,6 +2,7 @@ package com.github.devsns.domain.question.dto;
 
 import com.github.devsns.domain.answers.dto.AnswerResDto;
 import com.github.devsns.domain.question.entity.QuestionBoardEntity;
+import com.github.devsns.global.constant.LikeType;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -21,18 +22,24 @@ public class SearchQuestionDto {
     private Long questionerId;
     private String questioner;
     private LocalDateTime createdAt;
-    private Long likeCount;
+    private long likeCount;
+    private long dislikeCount;
     private List<AnswerResDto> answers;
 
     public SearchQuestionDto(QuestionBoardEntity questionBoard) {
         this.id = questionBoard.getId();
         this.title = questionBoard.getTitle();
         this.content = questionBoard.getContent();
-        this.questionerId = questionBoard.getUser().getUserId();
-        this.questioner = questionBoard.getUser().getUsername();
+        this.questionerId = questionBoard.getQuestioner().getUserId();
+        this.questioner = questionBoard.getQuestioner().getUsername();
         this.createdAt = questionBoard.getCreatedAt();
-        this.likeCount = (long) questionBoard.getLike().size();
-        this.answers = questionBoard.getAnswer().stream()
+        this.likeCount = questionBoard.getLikes().stream()
+                .filter(like -> like.getLikeType().equals(LikeType.LIKE))
+                .count();
+        this.dislikeCount = questionBoard.getLikes().stream()
+                .filter(like -> like.getLikeType().equals(LikeType.DISLIKE))
+                .count();
+        this.answers = questionBoard.getAnswers().stream()
                 .map(AnswerResDto::new)
                 .collect(Collectors.toList());
     }

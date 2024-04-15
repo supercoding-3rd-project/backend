@@ -1,14 +1,10 @@
-package com.github.devsns.domain.answers.entity;
+package com.github.devsns.domain.question.entity;
 
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import com.github.devsns.global.constant.LikeType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -17,30 +13,29 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
-public class AnswerLike {
+public class QuestionLike {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "answer_id", nullable = false)
-    private AnswerEntity answer;
+    @JoinColumn(name = "ques_id")
+    private QuestionBoardEntity questionBoard;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userId;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private LikeType likeType;
+
     @Column(nullable = false, updatable = false)
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public AnswerEntity getAnswer() {
-        return answer;
-    }
 
-    public void setAnswer(AnswerEntity answer) {
-        this.answer = answer;
-    }
+
 
 }

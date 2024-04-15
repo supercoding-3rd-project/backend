@@ -11,18 +11,21 @@ import java.util.stream.Collectors;
 @Getter
 @Builder
 public class ReadQuestionDto {
-    private Long id;
-    private String title;
-    private String content;
+    private Long questionId;
     private Long questionerId;
     private String questioner;
+    private String title;
+    private String content;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    // 로그인한 사용자의 경우 질문에 대한 좋아요 여부만 포함
     private boolean isLiked;
-    private Long likeCount;
+    private boolean isDisliked;
+    private long likeCount;
+    private long dislikeCount;
     private List<ReadAnswerDto> answers;
 
-    // 로그인한 사용자의 경우 질문에 대한 좋아요 여부만 포함
+
 
 
 }
