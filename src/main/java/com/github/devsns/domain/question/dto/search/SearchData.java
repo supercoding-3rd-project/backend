@@ -16,5 +16,4 @@ public class SearchData {
     private long totalItems;
     private List<SearchQuestionDto> searchQuestionDto;
     private List<SearchUserDto> searchUserDto;
-
 }

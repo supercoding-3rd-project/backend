@@ -43,16 +43,9 @@ public class SearchQuestionDto {
         this.dislikeCount = questionBoard.getLikes().stream()
                 .filter(like -> like.getLikeType().equals(LikeType.DISLIKE))
                 .count();
-        if (!questionBoard.getAnswers().isEmpty()) {
-            AnswerResDto mostLikedAnswer = questionBoard.getAnswers().stream()
-                    .max(Comparator.comparingInt(answer -> answer.getLikes().size()))
-                    .map(AnswerResDto::new)
-                    .orElseGet(() -> new AnswerResDto(questionBoard.getAnswers().get(0)));
-            this.answers = Collections.singletonList(mostLikedAnswer);
-        } else {
-            this.answers = Collections.emptyList();
-        }
+        this.answers = questionBoard.getAnswers().stream()
+                .map(AnswerResDto::new)
+                .collect(Collectors.toList());
     }
-
 }
 

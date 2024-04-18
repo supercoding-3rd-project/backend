@@ -14,5 +14,5 @@ public class MainAllData {
     private int totalPages;
     private int pageSize;
     private long totalItems;
-    private List<SearchQuestionDto> searchQuestionDto;
+    private List<MainAllQuestionDto> mainAllQuestionDto;
 }
