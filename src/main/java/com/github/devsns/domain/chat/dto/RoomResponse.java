@@ -16,4 +16,5 @@ public class RoomResponse {
     private String recipientId; // 수신자 ID
     private String lastMessage; // 마지막 메시지 내용
     private LocalDateTime lastMessageTimestamp; // 마지막 메시지의 시간
+    private boolean isNew; // 새로운 채팅방인지 여부
 }

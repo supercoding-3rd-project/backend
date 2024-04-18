@@ -1,11 +1,17 @@
 package com.github.devsns.domain.chat.service;
 
 
+import com.github.devsns.domain.auth.entity.CustomUserDetails;
 import com.github.devsns.domain.chat.dto.RoomDto;
 import com.github.devsns.domain.chat.dto.RoomResponse;
 import com.github.devsns.domain.chat.entity.ChatMessage;
+import com.github.devsns.domain.chat.entity.ChatRoom;
+import com.github.devsns.domain.chat.repository.ChatRoomRepository;
+import com.github.devsns.domain.user.entitiy.UserEntity;
+import com.github.devsns.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -17,6 +23,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RoomService {
     private final Map<String, RoomDto> roomMap = new HashMap<>();
+    private final UserRepository userRepository;
+    private final ChatRoomRepository chatRoomRepository;
     private final ChatService chatService;
 
     // 특정 사용자와의 채팅방을 조회 또는 생성하는 메서드
@@ -39,7 +47,7 @@ public class RoomService {
             return RoomResponse.builder().roomId(roomId).build();
         }
     }
-    // 사용자가 포함된 모든 채팅방의 목록을 조회하는 메서드
+//     사용자가 포함된 모든 채팅방의 목록을 조회하는 메서드
     public List<RoomResponse> getUserRooms(String userId) {
         log.info("사용자가 포함된 모든 채팅방의 목록을 조회합니다. 사용자 ID: {}", userId);
 
@@ -70,6 +78,25 @@ public class RoomService {
         return roomResponses;
     }
 
+    //닉네임으로 채팅방을 찾는 메서드
+    public List<RoomResponse> searchRoomsByNickname(String keywordUserName, CustomUserDetails customUserDetails) {
+        //내 아이디
+        Long myId = customUserDetails.getUserEntity().getUserId();
+        List<ChatRoom> rooms = chatRoomRepository.findRoomsByRecipientNameContaining(keywordUserName, myId);
+        if (rooms.isEmpty()) {
+            log.info("닉네임 '{}'에 해당하는 수신자가 존재하지 않습니다.", keywordUserName);
+            return Collections.emptyList();
+
+        }
+
+        // 송신자 ID와 찾은 수신자 ID를 기준으로 채팅방 조회
+        return null; //Todo
+    }
+
+
+
+
+
     // 유저와 수신자를 구분하지 않고 동일한 룸 아이디 생성
     public String generateRoomId(String senderId, String recipientId) {
         log.info("동일한 룸 아이디를 생성합니다.");
@@ -92,7 +119,7 @@ public class RoomService {
     }
 
 
-    // 룸에 세션 추가
+    // 룸에 세션 추가(웹소켓용)
     public void addSessionToRoom(String roomId, WebSocketSession session) {
         RoomDto roomDto = roomMap.get(roomId);
         if (roomDto != null) {
@@ -103,7 +130,7 @@ public class RoomService {
         }
     }
 
-    // 룸에서 세션 제거
+    // 룸에서 세션 제거(웹소켓용)
     public void removeSessionFromRoom(String roomId, WebSocketSession session) {
         RoomDto roomDto = roomMap.get(roomId);
         if (roomDto != null) {
