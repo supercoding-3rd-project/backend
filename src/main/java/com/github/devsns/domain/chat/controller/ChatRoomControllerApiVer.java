@@ -1,7 +1,6 @@
 package com.github.devsns.domain.chat.controller;
 
 
-import com.github.devsns.domain.auth.entity.CustomUserDetails;
 import com.github.devsns.domain.chat.dto.RoomResponse;
 import com.github.devsns.domain.chat.service.RoomService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,7 +49,7 @@ public class ChatRoomControllerApiVer {
             log.info("채팅방 목록 조회 결과: 사용자 '{}'가 {}개의 채팅방에 참여 중입니다.", userId, userRooms.size());
             return ResponseEntity.ok(userRooms);
         } else {
-            log.info("사용자 '{}'의 채팅방 목록 조회: 채팅방이 없습니다.", userId);
+            log.info("사용자 '{}'의 채팅방 목록 조회z: 채팅방이 없습니다.", userId);
             return ResponseEntity.noContent().build();
         }
     }
@@ -60,15 +58,17 @@ public class ChatRoomControllerApiVer {
     @Operation(summary = "특정 닉네임을 기반으로 채팅방 검색")
     @GetMapping("/search")
     public ResponseEntity<List<RoomResponse>> searchRoomsByNickname(
-            @RequestParam String keywordUssername, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+            @RequestParam String keywordUsername, Authentication authentication)  {
+        log.info("닉네임 '{}'을 포함하는 채팅방을 검색합니다.", keywordUsername);
 
-        log.info("사용자 '{}'가 '{}'을 기준으로 채팅방을 검색합니다.", keywordUssername, customUserDetails);
-        List<RoomResponse> rooms = roomService.searchRoomsByNickname(keywordUssername, customUserDetails);
+        String currentUserId = authentication.getName(); // 인증된 사용자의 ID를 추출
+        List<RoomResponse> rooms = roomService.searchChatRoomsByNickname(currentUserId, keywordUsername); // currentUserId 추가
+
         if (!rooms.isEmpty()) {
-            log.info("검색결과 : 닉네임 '{}'를 가진 수신자와의 채팅방이 {}개 찾아졌습니다.", keywordUssername, rooms.size());
+            log.info("검색결과: '{}'를 포함하는 채팅방이 {}개 찾아졌습니다.", keywordUsername, rooms.size());
             return ResponseEntity.ok(rooms);
         } else {
-            log.info("검색결과 : 닉네임 '{}'를 가진 수신자와의 채팅방이 없습니다.", keywordUssername);
+            log.info("검색결과: '{}'를 포함하는 채팅방이 없습니다.", keywordUsername);
             return ResponseEntity.noContent().build();
         }
     }

@@ -44,4 +44,13 @@ public class ChatMessage {
    @Column(nullable = true)
    private String fileDownloadUri; // 파일 다운로드 URI
 
+    public ChatMessage(String senderId, String recipientId, String content, LocalDateTime timestamp, ChatRoom chatRoom) {
+        this.senderId = senderId;
+        this.recipientId = recipientId;
+        this.content = content;
+        this.timestamp = timestamp;
+        this.chatRoom = chatRoom;
+    }
+
+
 }

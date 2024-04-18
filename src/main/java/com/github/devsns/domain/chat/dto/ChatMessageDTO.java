@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Getter@Setter
 @Builder
-public class ChatMessageDTO {
+public class ChatMessageDto {
     private Long messageId; // 메시지의 고유 식별자
 
     @NotEmpty(message = "Room ID cannot be empty") // 룸 아이디는 비면 안됨
