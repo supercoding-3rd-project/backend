@@ -2,8 +2,7 @@ package com.github.devsns.domain.answers.controller;
 
 import com.github.devsns.domain.answers.dto.AnswerReqDto;
 import com.github.devsns.domain.answers.service.AnswerService;
-import com.github.devsns.domain.question.dto.LikeAnswerDto;
-import com.github.devsns.domain.question.dto.ReadAnswerDto;
+import com.github.devsns.domain.question.dto.like.LikeAnswerDto;
 import com.github.devsns.global.component.ExtractUserDataUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

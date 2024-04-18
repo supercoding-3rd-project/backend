@@ -1,4 +1,4 @@
-package com.github.devsns.domain.question.dto;
+package com.github.devsns.domain.question.dto.search;
 
 import com.github.devsns.domain.answers.dto.AnswerResDto;
 import com.github.devsns.domain.question.entity.QuestionBoardEntity;
@@ -6,6 +6,8 @@ import com.github.devsns.global.constant.LikeType;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +16,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class QuestionBoardResDto {
+public class SearchQuestionDto {
 
     private Long questionId;
     private String title;
@@ -23,12 +25,11 @@ public class QuestionBoardResDto {
     private String questioner;
     private String profileImg;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
     private long likeCount;
     private long dislikeCount;
     private List<AnswerResDto> answers;
 
-    public QuestionBoardResDto(QuestionBoardEntity questionBoard) {
+    public SearchQuestionDto(QuestionBoardEntity questionBoard) {
         this.questionId = questionBoard.getId();
         this.title = questionBoard.getTitle();
         this.content = questionBoard.getContent();
@@ -36,7 +37,6 @@ public class QuestionBoardResDto {
         this.questioner = questionBoard.getQuestioner().getUsername();
         this.profileImg = questionBoard.getQuestioner().getImageUrl();
         this.createdAt = questionBoard.getCreatedAt();
-        this.updatedAt = questionBoard.getUpdatedAt();
         this.likeCount = questionBoard.getLikes().stream()
                 .filter(like -> like.getLikeType().equals(LikeType.LIKE))
                 .count();

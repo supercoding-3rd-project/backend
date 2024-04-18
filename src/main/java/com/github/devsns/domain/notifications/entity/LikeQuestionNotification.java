@@ -18,6 +18,9 @@ public class LikeQuestionNotification extends Notification {
     @Column(name = "liker")
     private String liker;
 
+    @Column(name = "profile_image")
+    private String profileImage;
+
     @Column(name = "question_id")
     private Long questionId; // 좋아요를 누른 글
 }

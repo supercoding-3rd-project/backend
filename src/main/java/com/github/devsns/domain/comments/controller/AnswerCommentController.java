@@ -40,7 +40,7 @@ public class AnswerCommentController {
         return ResponseEntity.ok("댓글 작성 완료");
     }
     @Operation(summary = "답변 댓글 수정")
-    @PutMapping("/v1/answer/comment/update/{commentId}")
+    @PutMapping("/v1/comment/{commentId}/update/")
     public ResponseEntity<String> updateComment(@PathVariable String commentId,
                                                 @RequestBody AnswerCommentReqDto answerCommentReqDto,
                                                 Authentication authentication) {
@@ -63,7 +63,7 @@ public class AnswerCommentController {
         }
     }
     @Operation(summary = "답변 댓글 삭제")
-    @DeleteMapping("/api/answer/comment/delete/{commentId}")
+    @DeleteMapping("/v1/comment/{commentId}/delete")
     public ResponseEntity<String> deleteComment(@PathVariable String commentId,
                                                 Authentication authentication) {
 

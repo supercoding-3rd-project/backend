@@ -14,27 +14,24 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Builder
 public class AnswerResDto {
-
-    private Long id;
-    private String content;
-    private Long answererId;
+    private Long questionId;
+    private String questionTitle;
+    private Long answerId;
     private String answerer;
+    private String content;
     private Long likeCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private List<AnswerCommentResDto> comments;
 
     public AnswerResDto(AnswerEntity answerEntity) {
-        this.id = answerEntity.getId();
+        this.questionId = answerEntity.getQuestionBoard().getId();
+        this.questionTitle = answerEntity.getQuestionBoard().getTitle();
+        this.answerId = answerEntity.getId();
         this.content = answerEntity.getContent();
-        this.answererId = answerEntity.getAnswerer().getUserId();
         this.answerer = answerEntity.getAnswerer().getUsername();
         this.createdAt = answerEntity.getCreatedAt();
         this.updatedAt = answerEntity.getUpdatedAt();
         this.likeCount = (long) answerEntity.getLikes().size();
-        this.comments = answerEntity.getComments().stream()
-                .map(AnswerCommentResDto::new)
-                .collect(Collectors.toList());
     }
 
 }

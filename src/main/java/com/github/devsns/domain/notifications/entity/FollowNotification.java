@@ -15,4 +15,7 @@ public class FollowNotification extends Notification {
 
     @Column(name = "follower")
     private String follower;
+
+    @Column(name = "profile_image")
+    private String profileImage;
 }

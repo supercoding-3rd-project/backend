@@ -22,9 +22,9 @@ public interface FollowRepository extends JpaRepository<FollowEntity, Long> {
     @Query("delete from FollowEntity f where f.toUser = :toUser and f.fromUser = :fromUser")
     void deleteByToUserAndFromUser(@Param("toUser") UserEntity toUser, @Param("fromUser") UserEntity fromUser);
 
-    List<FollowEntity> findByFromUser(UserEntity fromUser);
+    List<FollowEntity> findAllByFromUser(UserEntity fromUser);
 
-    List<FollowEntity> findByToUser(UserEntity toUser);
+    List<FollowEntity> findAllByToUser(UserEntity toUser);
 
     Long countByFromUser(UserEntity fromUser);
 

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "answer_comment")
 public class AnswerCommentEntity {
 
     @Id

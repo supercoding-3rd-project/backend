@@ -68,7 +68,7 @@ public class FollowService {
                 () -> new AppException(ErrorCode.USERNAME_NOT_FOUND.getMessage(), ErrorCode.USERNAME_NOT_FOUND)
         );
 
-        List<FollowEntity> getFromUser = followRepository.findByFromUser(fromUser);
+        List<FollowEntity> getFromUser = followRepository.findAllByFromUser(fromUser);
 
         List<FollowResponseDto> followResponseDtoList = new ArrayList<>();
 
@@ -87,7 +87,7 @@ public class FollowService {
                 () -> new AppException(ErrorCode.USERNAME_NOT_FOUND.getMessage(), ErrorCode.USERNAME_NOT_FOUND)
         );
 
-        List<FollowEntity> getToUser = followRepository.findByToUser(toUser);
+        List<FollowEntity> getToUser = followRepository.findAllByToUser(toUser);
 
         List<FollowResponseDto> followResponseDtoList = new ArrayList<>();
 

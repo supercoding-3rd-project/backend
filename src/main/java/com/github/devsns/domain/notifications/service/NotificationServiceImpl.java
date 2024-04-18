@@ -38,6 +38,7 @@ public class NotificationServiceImpl implements NotificationService {
         answerCommentNotification.setCommenterId(comment.getCommenter().getUserId());
         answerCommentNotification.setCommenter(comment.getCommenter().getUsername());
         answerCommentNotification.setAnswerId(comment.getAnswer().getId());
+        answerCommentNotification.setProfileImage(comment.getCommenter().getImageUrl());
         answerCommentNotification.setCommentId(comment.getId());
 
         // Notification 엔티티 저장
@@ -56,6 +57,7 @@ public class NotificationServiceImpl implements NotificationService {
         likeQuestionNotification.setRead(false);
         likeQuestionNotification.setLikerId(liker.getUserId());
         likeQuestionNotification.setLiker(liker.getUsername());
+        likeQuestionNotification.setProfileImage(liker.getImageUrl());
         likeQuestionNotification.setQuestionId(question.getId());
 
         // Notification 엔티티 저장
@@ -74,6 +76,7 @@ public class NotificationServiceImpl implements NotificationService {
         likeQuestionNotification.setRead(false);
         likeQuestionNotification.setLikerId(liker.getUserId());
         likeQuestionNotification.setLiker(liker.getUsername());
+        likeQuestionNotification.setProfileImage(liker.getImageUrl());
         likeQuestionNotification.setQuestionId(question.getId());
     }
 
@@ -89,6 +92,7 @@ public class NotificationServiceImpl implements NotificationService {
         likeAnswerNotification.setRead(false);
         likeAnswerNotification.setLikerId(liker.getUserId());
         likeAnswerNotification.setLiker(liker.getUsername());
+        likeAnswerNotification.setProfileImage(liker.getImageUrl());
         likeAnswerNotification.setAnswerId(answer.getId());
 
         // Notification 엔티티 저장
@@ -125,6 +129,7 @@ public class NotificationServiceImpl implements NotificationService {
         answerNotification.setRead(false);
         answerNotification.setAnswererId(answerer.getUserId());
         answerNotification.setAnswerer(answerer.getUsername());
+        answerNotification.setProfileImage(answerer.getImageUrl());
         answerNotification.setQuestionId(question.getId()); //1대1
 
         // Notification 엔티티 저장
@@ -143,6 +148,7 @@ public class NotificationServiceImpl implements NotificationService {
         followNotification.setRead(false);
         followNotification.setFollowerId(follower.getUserId());
         followNotification.setFollower(follower.getUsername());
+        followNotification.setProfileImage(follower.getImageUrl());
 
         // Notification 엔티티 저장
         notificationRepository.save(followNotification);

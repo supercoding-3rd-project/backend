@@ -1,4 +1,4 @@
-package com.github.devsns.domain.question.dto;
+package com.github.devsns.domain.question.dto.like;
 
 import lombok.Builder;
 import lombok.Getter;

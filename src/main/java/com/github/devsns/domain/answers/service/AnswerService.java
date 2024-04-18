@@ -1,9 +1,7 @@
 package com.github.devsns.domain.answers.service;
 
 import com.github.devsns.domain.notifications.entity.Notification;
-import com.github.devsns.domain.question.dto.LikeAnswerDto;
-import com.github.devsns.domain.question.dto.ReadAnswerDto;
-import com.github.devsns.global.constant.LikeType;
+import com.github.devsns.domain.question.dto.like.LikeAnswerDto;
 
 import java.util.List;
 
