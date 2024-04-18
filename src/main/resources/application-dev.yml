@@ -40,7 +40,8 @@ logging:
   level:
     org.hibernate.SQL: DEBUG # SQL 로깅
     org.hibernate.type.descriptor.sql: TRACE # SQL 타입 로깅
-
+server:
+  address: 0.0.0.0
 
 #server:
 #  port: 443
