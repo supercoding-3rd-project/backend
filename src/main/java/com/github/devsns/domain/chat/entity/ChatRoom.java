@@ -3,16 +3,15 @@ package com.github.devsns.domain.chat.entity;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter@Setter
+@NoArgsConstructor
 @Table(name = "chat_rooms")
 public class ChatRoom {
     @Id
@@ -37,6 +36,9 @@ public class ChatRoom {
     @Column(nullable = false)
     private LocalDateTime creationTimestamp = LocalDateTime.now();
 
+    public ChatRoom(String senderId, String recipientId) {
+    }
+
     //마지막메세지 호출
     public ChatMessage getLastMessage() {
         return messages.stream()
@@ -48,5 +50,8 @@ public class ChatRoom {
     public boolean isNew() {
         // 방이 생성된 후 24시간 이내인지 확인
         return creationTimestamp.isAfter(LocalDateTime.now().minusDays(1));
+    }
+    public List<UserEntity> getParticipants() {
+        return Arrays.asList(participant1, participant2);
     }
 }

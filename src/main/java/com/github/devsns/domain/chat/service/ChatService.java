@@ -4,16 +4,16 @@ import com.github.devsns.domain.chat.entity.ChatMessage;
 import com.github.devsns.domain.chat.entity.ChatRoom;
 import com.github.devsns.domain.chat.repository.ChatMessageRepository;
 import com.github.devsns.domain.chat.repository.ChatRoomRepository;
+import com.github.devsns.domain.chat.repository.MessageReadReceiptRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -30,39 +30,25 @@ public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final FileStorageService fileStorageService;
     private final ChatRoomRepository chatRoomRepository;
+    private final MessageReadReceiptRepository readReceiptRepository;
 
     /// 채팅 메시지와 파일을 처리
-    public void processMessage(String roomId, String senderId, String recipientId, String content, MultipartFile file) {
-    // 채팅방 엔터티 조회 (가정: chatRoomRepository가 선언되어 있고 사용 가능)
-        Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findByRoomId(roomId);
-        if (!chatRoomOptional.isPresent()) {
-            // 채팅방을 찾을 수 없는 경우 로그를 남기고 메소드를 종료합니다.
-            log.error("채팅방 '{}'를 찾을 수 없습니다.", roomId);
-            return;
-        }
+    public void processMessage(String roomId, String senderId, String recipientId, String content, MultipartFile file) throws IllegalArgumentException {
+        ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId)
+                .orElseThrow(() -> new IllegalArgumentException("채팅방을 찾을 수 없습니다. roomId: " + roomId));
 
-        ChatRoom chatRoom = chatRoomOptional.get();
-        // 새 메시지 객체 생성 및 초기화
-        ChatMessage message = new ChatMessage();
-        message.setChatRoom(chatRoom);
-        message.setSenderId(senderId);
-        message.setRecipientId(recipientId);
-        message.setContent(content);
-        message.setTimestamp(LocalDateTime.now()); // 메시지 타임스탬프 설정(현재시간)
-
+        ChatMessage message = new ChatMessage(senderId, recipientId, content, LocalDateTime.now(), chatRoom);
         if (file != null && !file.isEmpty()) {
-            handleFileUpload(message, file); // 파일 업로드 처리
+            handleFileUpload(message, file);
         }
 
-        chatMessageRepository.save(message); // 메시지 저장
-        log.info("방 '{}'에서 '{}'에게 메시지 '{}' 전송됨.", roomId, recipientId, content);
+        chatMessageRepository.save(message);
+        log.info("방 '{}'에서 '{}'에게 메시지 '{}'을(를) 전송했습니다.", roomId, recipientId, content);
 
-
-
-        // 메시지 수신자에게 메시지 전송
-        sendMessageToUser(message.getRecipientId(), "/queue/messages/" + roomId, message);
-        log.info("방 ID '{}'에서 '{}'에게 메시지 전송됨.", roomId, message.getRecipientId());
+        sendMessageToUser(recipientId, "/queue/messages/" + roomId, message);
+        markMessageAsRead(message.getId(), recipientId);
     }
+
 
     // 파일 업로드 처리
     private void handleFileUpload(ChatMessage message, MultipartFile file) {
@@ -77,22 +63,35 @@ public class ChatService {
             throw new RuntimeException("파일 저장 실패: " + file.getOriginalFilename(), e);
         }
     }
-
     // 메시지를 읽음처리
-    public boolean markMessageAsRead(Long messageId) {
+    /**
+     * 지정된 메시지를 읽음 상태로 업데이트합니다.
+     *
+     * @param messageId   읽을 메시지의 ID
+     * @param recipientId 메시지를 읽은 사용자의 ID
+     * @return 메시지 읽기가 성공적으로 처리되었는지 여부를 반환
+     */
+    public boolean markMessageAsRead(Long messageId, String recipientId) {
         Optional<ChatMessage> messageOpt = chatMessageRepository.findById(messageId);
+
         if (messageOpt.isPresent()) {
             ChatMessage message = messageOpt.get();
-            if (!message.isRead()) {
+            if (!message.isRead() && recipientId.equals(message.getRecipientId())) {
                 message.setRead(true);
                 chatMessageRepository.save(message);
-                log.info("메시지 ID '{}'를 읽음으로 성공적으로 표시했습니다.", messageId);
+                log.info("메시지 ID '{}'을(를) 읽음으로 표시했습니다.", messageId);  // 성공 로그
                 return true;
+            } else {
+                if (!recipientId.equals(message.getRecipientId())) {
+                    log.info("메시지 ID '{}'의 수신자 ID가 일치하지 않습니다.", messageId); // 수신자 불일치 로그
+                }
+                if (message.isRead()) {
+                    log.info("메시지 ID '{}'는 이미 읽음 상태입니다.", messageId); // 이미 읽은 상태 로그
+                }
             }
-            log.info("메시지 ID '{}'는 이미 읽음 상태입니다.", messageId);
-            return false;
+        } else {
+            log.error("메시지 ID '{}'를 찾을 수 없습니다.", messageId); // 찾을 수 없음 로그
         }
-        log.warn("메시지 ID '{}'를 찾을 수 없습니다.", messageId);
         return false;
     }
 
@@ -143,7 +142,7 @@ public class ChatService {
     public ChatMessage getLastMessage(String roomId) {
         log.debug("마지막 메시지 조회: 방 ID={}", roomId);
         ChatMessage lastMessage = chatMessageRepository.findFirstByChatRoomIdOrderByIdDesc(roomId);
-        log.debug("마지막 메시지 조회 결과: 방 ID={}, 메시지={}", roomId, lastMessage);
+        log.debug("마지막 메시지 조회 결과: 방 ID={}, 메시지={}", roomId, lastMessage.getTimestamp());
         return lastMessage;
     }
 
@@ -160,7 +159,7 @@ public class ChatService {
     }
 
     //파일을 저장 &채팅 메시지 생성
-    public ChatMessage saveFileAndCreateMessage(String roomId, String senderId, MultipartFile file) {
+    public ChatMessage saveFileAndCreateMessage(String roomId, String senderId, String recipientId, String content, MultipartFile file) {
         String fileName = file.getOriginalFilename();
         String filePath;
         try {
@@ -178,13 +177,11 @@ public class ChatService {
         }
         ChatRoom chatRoom = chatRoomOptional.get();
 
-        ChatMessage fileMessage = new ChatMessage();
-        fileMessage.setChatRoom(chatRoom);
-        fileMessage.setSenderId(senderId);
-        fileMessage.setFileName(fileName);
-        fileMessage.setFileDownloadUri(filePath); // 파일 다운로드 URI 설정
+
+        ChatMessage fileMessage = new ChatMessage(senderId, recipientId, content, LocalDateTime.now(), chatRoom);
         fileMessage.setHasFile(true);
-        fileMessage.setTimestamp(LocalDateTime.now());
+        fileMessage.setFileName(fileName);
+        fileMessage.setFileDownloadUri(filePath);
 
         chatMessageRepository.save(fileMessage); // 메시지 저장
 

@@ -55,20 +55,20 @@ public class ChatControllerApiVer {
     }
 
 
-
     // 메시지를 '읽음' 상태로 표시하는 API 엔드포인트
     @Operation(summary ="해당 메세지 읽음처리 여부 api")
     @PostMapping("/messages/{messageId}/read")
     public ResponseEntity<?> markMessageAsRead(
-            @PathVariable Long messageId){
-        boolean result = chatService.markMessageAsRead(messageId);
+            @PathVariable Long messageId,
+            @RequestParam("recipientId") String recipientId) {  // recipientId를 RequestParam으로 받음
+        boolean result = chatService.markMessageAsRead(messageId, recipientId);
         // 메시지 ID에 해당하는 메시지를 '읽음'으로 표시
         if (result) {
-            log.info("메시지 ID '{}'를 읽음으로 표시", messageId);
-            return ResponseEntity.ok().build();
+            log.info("메시지 ID '{}'와 수신자 ID '{}'를 읽음으로 표시", messageId, recipientId);
+            return ResponseEntity.ok().build(); // 응답 성공
         } else {
-            log.info("메시지 ID '{}'를 읽음으로 표시 실패. 메시지가 존재하지 않거나 접근 권한이 없습니다.", messageId);
-            return ResponseEntity.notFound().build();
+            log.info("메시지 ID '{}'와 수신자 ID '{}'를 읽음으로 표시 실패. 메시지가 존재하지 않거나 접근 권한이 없습니다.", messageId, recipientId);
+            return ResponseEntity.notFound().build(); // 메시지가 존재하지 않거나 오류 발생
         }
     }
 

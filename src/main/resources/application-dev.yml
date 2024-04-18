@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:mariadb://sc-alco.cn6w8cie8wju.ap-northeast-2.rds.amazonaws.com:3306/Alco?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
-    username: root #${MyMariaDB_Name}
-    password: alco2024 #${MyMariaDB_PW}
+    username: ${MyMariaDB_Name}
+    password: ${MyMariaDB_PW}
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     properties:
