@@ -1,11 +1,7 @@
-package com.github.devsns.domain.question.dto;
+package com.github.devsns.domain.question.dto.like;
 
-import com.github.devsns.domain.comments.dto.AnswerCommentResDto;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Builder

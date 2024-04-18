@@ -4,20 +4,17 @@ import com.github.devsns.domain.answers.entity.AnswerEntity;
 import com.github.devsns.domain.answers.entity.AnswerLike;
 import com.github.devsns.domain.answers.repository.AnswerLikeRepository;
 import com.github.devsns.domain.answers.repository.AnswerRepository;
-import com.github.devsns.domain.comments.dto.AnswerCommentResDto;
 import com.github.devsns.domain.comments.entity.AnswerCommentEntity;
 import com.github.devsns.domain.comments.repository.AnswerCommentRepository;
 import com.github.devsns.domain.notifications.constant.NotificationType;
 import com.github.devsns.domain.notifications.entity.Notification;
 import com.github.devsns.domain.notifications.repository.NotificationRepository;
 import com.github.devsns.domain.notifications.service.NotificationService;
-import com.github.devsns.domain.question.dto.LikeAnswerDto;
-import com.github.devsns.domain.question.dto.ReadAnswerDto;
+import com.github.devsns.domain.question.dto.like.LikeAnswerDto;
 import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.question.repository.QuestionBoardRepository;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import com.github.devsns.domain.user.repository.UserRepository;
-import com.github.devsns.global.constant.LikeType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

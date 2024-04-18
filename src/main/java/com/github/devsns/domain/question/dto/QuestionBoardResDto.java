@@ -21,6 +21,7 @@ public class QuestionBoardResDto {
     private String content;
     private Long questionerId;
     private String questioner;
+    private String profileImg;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private long likeCount;
@@ -33,6 +34,7 @@ public class QuestionBoardResDto {
         this.content = questionBoard.getContent();
         this.questionerId = questionBoard.getQuestioner().getUserId();
         this.questioner = questionBoard.getQuestioner().getUsername();
+        this.profileImg = questionBoard.getQuestioner().getImageUrl();
         this.createdAt = questionBoard.getCreatedAt();
         this.updatedAt = questionBoard.getUpdatedAt();
         this.likeCount = questionBoard.getLikes().stream()

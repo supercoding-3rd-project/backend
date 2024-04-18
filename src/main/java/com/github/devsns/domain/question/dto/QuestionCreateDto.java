@@ -7,12 +7,11 @@ import java.util.List;
 @Data
 public class QuestionCreateDto {
     private String message;
-    private List<TempQuestionResDto> temporarySavedQuestions;
+    private Long questionId;
 
-    public QuestionCreateDto(String message, List<TempQuestionResDto> temporarySavedQuestions) {
+    public QuestionCreateDto(String message, Long questionId) {
         this.message = message;
-        this.temporarySavedQuestions = temporarySavedQuestions;
+        this.questionId = questionId;
     }
-
 
 }
