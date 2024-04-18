@@ -20,7 +20,5 @@ public interface QuestionBoardRepository extends JpaRepository<QuestionBoardEnti
 
     Page<QuestionBoardEntity> findByTitleContainingOrContentContaining(String titleKeyword, String contentKeyword, Pageable pageable);
 
-    List<QuestionBoardEntity> findByQuestionerOrderByCreatedAtDesc(UserEntity questioner);
-
-    List<QuestionBoardEntity> findByQuestioner(UserEntity questioner);
+    List<QuestionBoardEntity> findAllByQuestionerOrderByCreatedAtDesc(UserEntity user);
 }

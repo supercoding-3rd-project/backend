@@ -1,6 +1,14 @@
 package com.github.devsns.domain.user.service;
 
+import com.github.devsns.domain.answers.dto.AnswerResDto;
+import com.github.devsns.domain.answers.entity.AnswerEntity;
+import com.github.devsns.domain.answers.repository.AnswerRepository;
+import com.github.devsns.domain.follow.dto.FollowResponseDto;
+import com.github.devsns.domain.follow.entity.FollowEntity;
 import com.github.devsns.domain.follow.repository.FollowRepository;
+import com.github.devsns.domain.question.dto.QuestionBoardResDto;
+import com.github.devsns.domain.question.entity.QuestionBoardEntity;
+import com.github.devsns.domain.question.repository.QuestionBoardRepository;
 import com.github.devsns.domain.user.dto.GetUserDto;
 import com.github.devsns.domain.user.dto.SignupDto;
 import com.github.devsns.domain.user.dto.UpdateUser;
@@ -16,6 +24,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -25,6 +35,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
     private final PasswordEncoder passwordEncoder;
+    private final QuestionBoardRepository questionBoardRepository;
+    private final AnswerRepository answerRepository;
 
     // 회원가입
     @Transactional
@@ -61,13 +73,36 @@ public class UserService {
                 () -> new AppException(ErrorCode.USER_EMAIL_NOT_FOUND.getMessage(), ErrorCode.USER_EMAIL_NOT_FOUND)
         );
 
+        // 팔로우 관련 출력
         UserResponseDto userResponseDto = new UserResponseDto(user);
 
         Long followingCount = followRepository.countByFromUser(user);
         Long followerCount = followRepository.countByToUser(user);
+        List<QuestionBoardEntity> questionBoardEntities = questionBoardRepository.findAllByQuestionerOrderByCreatedAtDesc(user);
+        List<AnswerEntity> answerEntities = answerRepository.findAllByAnswererOrderByCreatedAtDesc(user);
+
+        // 질문글 관련 출력
+        List<QuestionBoardResDto> questionBoardResDtoList = new ArrayList<>();
+
+        for (QuestionBoardEntity questionBoard : questionBoardEntities) {
+            UserEntity userEntity = questionBoard.getQuestioner();
+            QuestionBoardResDto questionBoardResDto = new QuestionBoardResDto(questionBoard);
+            questionBoardResDtoList.add(questionBoardResDto);
+        }
+
+        // 답변글 관련 출력
+        List<AnswerResDto> answerResDtoList = new ArrayList<>();
+
+        for (AnswerEntity answer : answerEntities) {
+            UserEntity userEntity = answer.getAnswerer();
+            AnswerResDto answerResDto = new AnswerResDto(answer);
+            answerResDtoList.add(answerResDto);
+        }
 
         userResponseDto.setFollowingCount(followingCount);
         userResponseDto.setFollowerCount(followerCount);
+        userResponseDto.setQuestionBoardResDtoList(questionBoardResDtoList);
+        userResponseDto.setAnswerResDtoList(answerResDtoList);
 
         return userResponseDto;
     }

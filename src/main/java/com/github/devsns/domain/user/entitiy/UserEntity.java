@@ -1,6 +1,8 @@
 package com.github.devsns.domain.user.entitiy;
 
+import com.github.devsns.domain.answers.entity.AnswerEntity;
 import com.github.devsns.domain.follow.entity.FollowEntity;
+import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,6 +39,14 @@ public class UserEntity {
     private String refreshToken;
 
     private LocalDateTime createdAt;
+
+    // 질문
+    @OneToMany(mappedBy = "questioner", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    private List<QuestionBoardEntity> questionBoardEntities;
+
+    // 답변
+    @OneToMany(mappedBy = "answerer", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    private List<AnswerEntity> answerEntities;
 
     // 팔로우
     @OneToMany(mappedBy = "fromUser", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
