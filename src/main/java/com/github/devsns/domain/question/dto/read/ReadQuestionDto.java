@@ -1,12 +1,9 @@
-package com.github.devsns.domain.question.dto;
+package com.github.devsns.domain.question.dto.read;
 
-import com.github.devsns.domain.answers.dto.AnswerResDto;
-import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -14,6 +11,7 @@ public class ReadQuestionDto {
     private Long questionId;
     private Long questionerId;
     private String questioner;
+    private String profileImg;
     private String title;
     private String content;
     private LocalDateTime createdAt;
@@ -23,6 +21,7 @@ public class ReadQuestionDto {
     private boolean isDisliked;
     private long likeCount;
     private long dislikeCount;
+    private boolean canDelete;
     private List<ReadAnswerDto> answers;
 
 

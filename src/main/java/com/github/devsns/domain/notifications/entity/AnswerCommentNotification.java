@@ -16,6 +16,10 @@ public class AnswerCommentNotification extends Notification {
     @Column(name = "commenter")
     private String commenter;
 
+    @Column(name = "profile_image")
+    private String profileImage;
+
+
     @Column(name = "answer_id")
     private Long answerId; // 해당 댓글이 작성된 답변
 

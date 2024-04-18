@@ -25,8 +25,7 @@ public class Notification {
 
     @Column(name = "recipient_id")
     private Long recipientId;
-
-
+    
     @Column(name="recipient")
     private String recipient;
 

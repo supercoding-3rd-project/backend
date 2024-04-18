@@ -22,7 +22,6 @@ public class AnswerResDto {
     private Long likeCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private List<AnswerCommentResDto> comments;
 
     public AnswerResDto(AnswerEntity answerEntity) {
         this.questionId = answerEntity.getQuestionBoard().getId();
@@ -33,9 +32,6 @@ public class AnswerResDto {
         this.createdAt = answerEntity.getCreatedAt();
         this.updatedAt = answerEntity.getUpdatedAt();
         this.likeCount = (long) answerEntity.getLikes().size();
-        this.comments = answerEntity.getComments().stream()
-                .map(AnswerCommentResDto::new)
-                .collect(Collectors.toList());
     }
 
 }

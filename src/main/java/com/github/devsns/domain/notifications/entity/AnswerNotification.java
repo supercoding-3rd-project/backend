@@ -18,6 +18,9 @@ public class AnswerNotification extends Notification {
     @Column(name = "answerer")
     private String answerer;
 
+    @Column(name = "profile_image")
+    private String profileImage;
+
     @Column(name = "question_id")
     private Long questionId; // 답변이 달린 질문
 

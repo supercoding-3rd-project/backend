@@ -1,4 +1,4 @@
-package com.github.devsns.domain.question.dto;
+package com.github.devsns.domain.question.dto.search;
 
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import lombok.*;
