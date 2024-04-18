@@ -13,12 +13,14 @@ import java.util.List;
 @Repository
 public interface QuestionBoardRepository extends JpaRepository<QuestionBoardEntity, Long>{
 
-//    List<QuestionBoardEntity> findQuestionBoardEntitiesByTitleContaining(String keyword);
-
-
     List<QuestionBoardEntity> findAll(Sort sort);
 
     Page<QuestionBoardEntity> findByTitleContainingOrContentContaining(String titleKeyword, String contentKeyword, Pageable pageable);
 
+    List<QuestionBoardEntity> findByQuestionerOrderByCreatedAtDesc(UserEntity questioner);
+
     List<QuestionBoardEntity> findAllByQuestionerOrderByCreatedAtDesc(UserEntity user);
+
+    List<QuestionBoardEntity> findByQuestioner(UserEntity questioner);
+
 }

@@ -20,11 +20,11 @@ public class FollowEntity {
     @Column(name = "follow_id")
     private Long followId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_user_id")
     private UserEntity fromUser;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_user_id")
     private UserEntity toUser;
 
