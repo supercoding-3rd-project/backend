@@ -1,4 +1,4 @@
-//package com.github.devsns.domain.chat.websocket;
+package com.github.devsns.domain.chat.websocket;//package com.github.devsns.domain.chat.websocket;
 //
 //import com.fasterxml.jackson.core.JsonProcessingException;
 //import com.fasterxml.jackson.databind.ObjectMapper;

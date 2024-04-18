@@ -1,4 +1,4 @@
-//package com.github.devsns.domain.chat.controller;
+package com.github.devsns.domain.chat.controller;//package com.github.devsns.domain.chat.controller;
 //
 //import com.github.devsns.domain.chat.entity.ChatMessage;
 //import com.github.devsns.domain.chat.service.ChatService;

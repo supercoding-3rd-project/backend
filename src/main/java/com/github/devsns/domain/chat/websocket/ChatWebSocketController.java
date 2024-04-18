@@ -1,4 +1,4 @@
-//package com.github.devsns.domain.chat.websocket;
+package com.github.devsns.domain.chat.websocket;//package com.github.devsns.domain.chat.websocket;
 //
 //import com.github.devsns.domain.chat.entity.ChatMessage;
 //import com.github.devsns.domain.chat.service.ChatService;
