@@ -42,7 +42,15 @@ public class NotificationWebSocketHandler extends TextWebSocketHandler {
 
         // WebSocket 연결 시 클라이언트로부터 토큰 수신
         String token = session.getHandshakeHeaders().getFirst("Authorization");
+        if (token == null) {
+            log.info("토큰이 포함되지 않은 요청입니다.");
+            session.close(CloseStatus.BAD_DATA.withReason("토큰을 찾을 수 없어요."));
+            return;
+        }
+
+        token = token.replace("Bearer ", "");
         log.info(token);
+
 
         // 토큰 검증
         if (token != null && jwtService.isTokenValid(token)) {

@@ -16,16 +16,16 @@ public class AnswerCommentResDto {
     private String content;
     private Long commenterId;
     private String commenter;
+    private String profileImage;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     public AnswerCommentResDto(AnswerCommentEntity answerCommentEntity) {
         this.commentId = answerCommentEntity.getId();
         this.content = answerCommentEntity.getContent();
         this.commenterId = answerCommentEntity.getCommenter().getUserId();
         this.commenter = answerCommentEntity.getCommenter().getUsername();
+        this.profileImage = answerCommentEntity.getCommenter().getImageUrl();
         this.createdAt = answerCommentEntity.getCreatedAt();
-        this.updatedAt = answerCommentEntity.getUpdatedAt();
     }
 
 }

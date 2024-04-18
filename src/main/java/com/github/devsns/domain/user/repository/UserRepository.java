@@ -2,6 +2,8 @@ package com.github.devsns.domain.user.repository;
 
 import com.github.devsns.domain.user.entitiy.SocialType;
 import com.github.devsns.domain.user.entitiy.UserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -18,6 +20,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>, JpaSpec
 
     Optional<UserEntity> findBySocialTypeAndSocialId(SocialType socialType, String socialId);
 
-    List<UserEntity> findByUsernameContaining(String keyword);
+    Page<UserEntity> findByUsernameContaining(String keyword, Pageable pageable);
     }
 
