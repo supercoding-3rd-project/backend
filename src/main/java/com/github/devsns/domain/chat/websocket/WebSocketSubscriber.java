@@ -1,4 +1,4 @@
-//package com.github.devsns.domain.chat.websocket;
+package com.github.devsns.domain.chat.websocket;//package com.github.devsns.domain.chat.websocket;
 //
 //import org.springframework.messaging.handler.annotation.DestinationVariable;
 //import org.springframework.messaging.handler.annotation.MessageMapping;
