@@ -74,7 +74,7 @@ public class QuestionBoardService {
         questionBoardRepository.save(questionBoard);
 
         // 사용자의 이메일을 이용하여 최근에 작성한 글을 조회
-        List<QuestionBoardEntity> recentQuestions = questionBoardRepository.findByQuestionerOrderByCreatedAtDesc(user);
+        List<QuestionBoardEntity> recentQuestions = questionBoardRepository.findAllByQuestionerOrderByCreatedAtDesc(user);
 
         // 최근에 작성한 글 중에서 가장 최근에 작성된 글의 ID 가져오기
         Long questionId = recentQuestions.get(0).getId();

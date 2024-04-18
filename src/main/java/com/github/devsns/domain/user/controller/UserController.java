@@ -31,7 +31,7 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@Valid @RequestBody SignupDto signupDto, BindingResult bindingResult) throws Exception {
         if(bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
+            return ResponseEntity.badRequest().body(ErrorCode.BINDING_RESULT_ERROR.getMessage());
         }
 
         userService.signup(signupDto);
@@ -83,7 +83,6 @@ public class UserController {
     }
 
     // 유저 삭제
-    // TODO: 유저 탈퇴 시 cascade 적용해서 전부 삭제 구현해야함
     @Operation(summary = "로그인한 유저를 DB에서 삭제하는 API 컨트롤러")
     @DeleteMapping("/v1/user/delete/{userId}")
     public ResponseEntity<?> deleteUser(

@@ -59,7 +59,7 @@ public class FollowController {
                 () -> new AppException(ErrorCode.USERNAME_NOT_FOUND.getMessage(), ErrorCode.USERNAME_NOT_FOUND)
         );
 
-        if (followRepository.findByFromUser(fromUser).isEmpty() || followRepository.findByToUser(toUser).isEmpty()) {
+        if (followRepository.findAllByFromUser(fromUser).isEmpty() || followRepository.findAllByToUser(toUser).isEmpty()) {
             throw new AppException(ErrorCode.FOLLOW_NOT_FOUND.getMessage(), ErrorCode.FOLLOW_NOT_FOUND);
         }
 

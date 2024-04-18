@@ -41,11 +41,11 @@ public class UserEntity {
     private LocalDateTime createdAt;
 
     // 질문
-    @OneToMany(mappedBy = "questioner", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "questioner", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<QuestionBoardEntity> questionBoardEntities;
 
     // 답변
-    @OneToMany(mappedBy = "answerer", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "answerer", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<AnswerEntity> answerEntities;
 
     // 팔로우
