@@ -1,18 +1,19 @@
 spring:
   datasource:
     url: jdbc:mariadb://sc-alco.cn6w8cie8wju.ap-northeast-2.rds.amazonaws.com:3306/Alco?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
-#    url: jdbc:mariadb://alco-db.cdi4cweas6u0.ap-northeast-2.rds.amazonaws.com:3306/alco_db?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
     username: ${MyMariaDB_Name}
     password: ${MyMariaDB_PW}
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
-    hibernate:
-      ddl-auto: none
     properties:
       hibernate:
-        format_sql: false
+        jdbc.time_zone: Asia/Seoul # 한국 시간대 설정
+        format_sql: true  # SQL 포맷을 쉽게 보기 위해 true로 변경
         show_sql: true
-    database-platform: org.hibernate.dialect.MariaDB106Dialect
+        use_sql_comments: true
+    hibernate:
+      ddl-auto: update # 또는 validate, create 등 필요에 따라 설정
+    database-platform: org.hibernate.dialect.MariaDBDialect
     open-in-view: false
   config:
     activate:
@@ -35,8 +36,10 @@ springdoc:
     doc-expansion: 'none'
   paths-to-match: '/api/**'
 
-
-
+logging:
+  level:
+    org.hibernate.SQL: DEBUG # SQL 로깅
+    org.hibernate.type.descriptor.sql: TRACE # SQL 타입 로깅
 
 
 #server:

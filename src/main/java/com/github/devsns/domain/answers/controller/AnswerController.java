@@ -22,6 +22,8 @@ public class AnswerController {
     private final AnswerService answerService;
     private final ExtractUserDataUtil extractUserDataUtil;
 
+
+
     @Operation(summary = "질문(질문 ID)에 답변을 생성")
     @PostMapping("/v1/question/{quesId}/answer/create")
     public ResponseEntity<String> createAnswer(@PathVariable Long quesId,

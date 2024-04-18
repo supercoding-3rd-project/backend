@@ -1,36 +1,36 @@
-spring:
-  config:
-    activate:
-      on-profile: "local"
-    import:
-      - application-jwt.yaml
-      - application-oauth.yaml
-  datasource:
-    url: jdbc:mysql://localhost:3306/alco_db?useUnicode=true&characterEncoding=UTF-8
-    username: ${LOCAL_USERNAME}
-    password: ${LOCAL_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate:
-      ddl-auto: none
-    properties:
-      hibernate:
-        format_sql: false
-        show_sql: true
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-    show-sql: true
-
-springdoc:
-  version: '@project.version@'
-  api-docs:
-    path: '/api-docs'
-  default-consumes-media-type: 'application/json'
-  default-produces-media-type: 'application/json'
-  swagger-ui:
-    operations-sorter: 'alpha'
-    tags-sorter: 'alpha'
-    path: '/swagger-ui.html'
-    disable-swagger-default-url: true
-    display-query-params-without-oauth2: true
-    doc-expansion: 'none'
-  paths-to-match: '/api/**'
+#spring:
+#  config:
+#    activate:
+#      on-profile: "local"
+#    import:
+#      - application-jwt.yaml
+#      - application-oauth.yaml
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/alco_db?useUnicode=true&characterEncoding=UTF-8
+#    username: ${LOCAL_USERNAME}
+#    password: ${LOCAL_PASSWORD}
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#  jpa:
+#    hibernate:
+#      ddl-auto: none
+#    properties:
+#      hibernate:
+#        format_sql: false
+#        show_sql: true
+#    database-platform: org.hibernate.dialect.MySQL8Dialect
+#    show-sql: true
+#
+#springdoc:
+#  version: '@project.version@'
+#  api-docs:
+#    path: '/api-docs'
+#  default-consumes-media-type: 'application/json'
+#  default-produces-media-type: 'application/json'
+#  swagger-ui:
+#    operations-sorter: 'alpha'
+#    tags-sorter: 'alpha'
+#    path: '/swagger-ui.html'
+#    disable-swagger-default-url: true
+#    display-query-params-without-oauth2: true
+#    doc-expansion: 'none'
+#  paths-to-match: '/api/**'
