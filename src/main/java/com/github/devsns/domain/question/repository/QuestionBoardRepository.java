@@ -13,6 +13,7 @@ import java.util.List;
 @Repository
 public interface QuestionBoardRepository extends JpaRepository<QuestionBoardEntity, Long>{
 
+
     List<QuestionBoardEntity> findAll(Sort sort);
 
     Page<QuestionBoardEntity> findByTitleContainingOrContentContaining(String titleKeyword, String contentKeyword, Pageable pageable);
@@ -22,5 +23,6 @@ public interface QuestionBoardRepository extends JpaRepository<QuestionBoardEnti
     List<QuestionBoardEntity> findAllByQuestionerOrderByCreatedAtDesc(UserEntity user);
 
     List<QuestionBoardEntity> findByQuestioner(UserEntity questioner);
+
 
 }

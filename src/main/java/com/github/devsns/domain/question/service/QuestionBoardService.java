@@ -6,10 +6,7 @@ import com.github.devsns.domain.question.dto.*;
 import com.github.devsns.domain.question.dto.like.LikeQuestionDto;
 import com.github.devsns.domain.question.dto.read.ReadAnswerDto;
 import com.github.devsns.domain.question.dto.read.ReadQuestionDto;
-import com.github.devsns.domain.question.dto.search.MainAllData;
-import com.github.devsns.domain.question.dto.search.SearchData;
-import com.github.devsns.domain.question.dto.search.SearchQuestionDto;
-import com.github.devsns.domain.question.dto.search.SearchUserDto;
+import com.github.devsns.domain.question.dto.search.*;
 import com.github.devsns.domain.question.entity.QuestionLike;
 import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.question.entity.TempQuestionEntity;
@@ -32,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,7 +70,7 @@ public class QuestionBoardService {
         questionBoardRepository.save(questionBoard);
 
         // 사용자의 이메일을 이용하여 최근에 작성한 글을 조회
-        List<QuestionBoardEntity> recentQuestions = questionBoardRepository.findAllByQuestionerOrderByCreatedAtDesc(user);
+        List<QuestionBoardEntity> recentQuestions = questionBoardRepository.findByQuestionerOrderByCreatedAtDesc(user);
 
         // 최근에 작성한 글 중에서 가장 최근에 작성된 글의 ID 가져오기
         Long questionId = recentQuestions.get(0).getId();
@@ -286,8 +282,8 @@ public class QuestionBoardService {
         Page<QuestionBoardEntity> pageResult = questionBoardRepository.findAll(pageable);
 
         // 게시물 목록을 SearchQuestionDto로 변환
-        List<SearchQuestionDto> questionBoards = pageResult.getContent().stream()
-                .map(SearchQuestionDto::new)
+        List<MainAllQuestionDto> questionBoards = pageResult.getContent().stream()
+                .map(MainAllQuestionDto::new)
                 .collect(Collectors.toList());
 
         // PostData 객체에 데이터 저장하여 반환
@@ -296,7 +292,7 @@ public class QuestionBoardService {
         mainAllData.setTotalPages(totalPages);
         mainAllData.setPageSize(pageSize);
         mainAllData.setTotalItems(totalItems);
-        mainAllData.setSearchQuestionDto(questionBoards);
+        mainAllData.setMainAllQuestionDto(questionBoards);
 
         return mainAllData;
     }
