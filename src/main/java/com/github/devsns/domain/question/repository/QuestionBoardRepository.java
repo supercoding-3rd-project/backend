@@ -18,5 +18,5 @@ public interface QuestionBoardRepository extends JpaRepository<QuestionBoardEnti
 
     List<QuestionBoardEntity> findByTitleContainingOrContentContaining(String titleKeyword, String contentKeyword);
 
-
+    List<QuestionBoardEntity> findAllByQuestionerOrderByCreatedAtDesc(UserEntity user);
 }

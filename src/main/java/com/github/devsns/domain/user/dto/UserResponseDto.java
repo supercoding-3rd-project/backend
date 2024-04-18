@@ -1,10 +1,16 @@
 package com.github.devsns.domain.user.dto;
 
+import com.github.devsns.domain.answers.dto.AnswerResDto;
+import com.github.devsns.domain.answers.entity.AnswerEntity;
+import com.github.devsns.domain.question.dto.QuestionBoardResDto;
+import com.github.devsns.domain.question.entity.QuestionBoardEntity;
 import com.github.devsns.domain.user.entitiy.SocialType;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -25,6 +31,8 @@ public class UserResponseDto {
     private LocalDateTime createdAt;
     private Long followingCount;
     private Long followerCount;
+    private List<QuestionBoardResDto> questionBoardResDtoList;
+    private List<AnswerResDto> answerResDtoList;
 
     public UserResponseDto(UserEntity userEntity){
         this.userId = userEntity.getUserId();
