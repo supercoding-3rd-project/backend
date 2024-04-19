@@ -21,7 +21,7 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowCredentials(true)
                 .allowedHeaders("*")
-                .exposedHeaders("Header1", "Header2");
+                .exposedHeaders("Authorization", "Authorization-Refresh");
     }
 
 //    @Override
