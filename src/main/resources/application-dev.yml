@@ -42,6 +42,12 @@ logging:
     org.hibernate.type.descriptor.sql: TRACE # SQL 타입 로깅
 server:
   address: 0.0.0.0
+  ssl:
+    key-store: classpath:keystore.jks
+    key-store-password: changeit
+    key-store-type: JKS
+    key-alias: tomcat
+
 
 #server:
 #  port: 443
