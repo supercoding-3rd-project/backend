@@ -1,0 +1,54 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://sc-alco.cn6w8cie8wju.ap-northeast-2.rds.amazonaws.com:3306/Alco?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
+    username: ${MyMariaDB_Name}
+    password: ${MyMariaDB_PW}
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+        jdbc.time_zone: Asia/Seoul # 한국 시간대 설정
+        format_sql: true  # SQL 포맷을 쉽게 보기 위해 true로 변경
+        show_sql: true
+        use_sql_comments: true
+    hibernate:
+      ddl-auto: update # 또는 validate, create 등 필요에 따라 설정
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    open-in-view: false
+  config:
+    activate:
+      on-profile: dev
+    import:
+      - application-jwt.yaml
+      - application-oauth.yaml
+springdoc:
+  version: '@project.version@'
+  api-docs:
+    path: '/api-docs'
+  default-consumes-media-type: 'application/json'
+  default-produces-media-type: 'application/json'
+  swagger-ui:
+    operations-sorter: 'alpha'
+    tags-sorter: 'alpha'
+    path: '/swagger-ui.html'
+    disable-swagger-default-url: true
+    display-query-params-without-oauth2: true
+    doc-expansion: 'none'
+  paths-to-match: '/api/**'
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG # SQL 로깅
+    org.hibernate.type.descriptor.sql: TRACE # SQL 타입 로깅
+server:
+  address: 0.0.0.0
+
+
+#server:
+#  port: 443
+#  ssl:
+#    enabled: true
+#    key-store: bootsecurity.p12
+#    key-store-password: ${SSL_KEY_PASSWORD}
+#    key-store-type: PKCS12
+#    key-alias: bootsecurity

@@ -1,54 +1,38 @@
 package com.github.devsns.domain.notifications.entity;
 
+import com.github.devsns.domain.notifications.component.NotificationEntityListener;
 import com.github.devsns.domain.notifications.constant.NotificationType;
-import com.github.devsns.domain.user.entitiy.UserEntity;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Component
+@EntityListeners(NotificationEntityListener.class)
 @Data
 @Table(name = "notifications")
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "recipient_id", referencedColumnName = "user_id")
-    private UserEntity recipient; // 로그인한 유저
+    @Column(name = "notification_id")
+    private Long notificationId;
 
     @Enumerated(EnumType.STRING)
     private NotificationType type;
 
-    @ManyToOne
-    private LikeCommentNotification likeCommentNotification; // 댓글 좋아요 알림
-
-    @ManyToOne
-    private QuestionCommentNotification questionCommentNotification; // 질문 댓글 작성 알림
-
-    @ManyToOne
-    private AnswerCommentNotification answerCommentNotification; // 답변 댓글 작성 알림
-
-    @ManyToOne
-    private LikeQuestionNotification likeQuestionNotification; // 내 질문 좋아요 알림
-
-    @ManyToOne
-    private LikeAnswerNotification likeAnswerNotification; // 내 답변 좋아요 알림
-
-    @ManyToOne
-    private MessageNotification messageNotification; // 메시지 알림
-
-    @ManyToOne
-    private AnswerNotification answerNotification; // 답변 알림
-
-
+    @Column(name = "recipient_id")
+    private Long recipientId;
+    
+    @Column(name="recipient")
+    private String recipient;
 
     @Column(nullable = false, updatable = false)
-    @DateTimeFormat(pattern = "yy.mm.dd hh:mm")
+    @CreatedDate
     private LocalDateTime createdAt;
 
     private boolean isRead = false;
+
 }

@@ -1,3 +1,9 @@
+buildscript {
+    ext {
+        queryDslVersion = "5.0.0"
+    }
+}
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.3'
@@ -8,7 +14,7 @@ group = 'com.github'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = '17'
+    sourceCompatibility = '17' // 자바 버전 설정
 }
 
 configurations {
@@ -17,48 +23,71 @@ configurations {
     }
 }
 
+
 repositories {
     mavenCentral()
 }
 
-dependencies {
 
-    // OAuth2
+dependencies {
+    // Spring Boot 기본 설정
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-    // lombok
-    compileOnly 'org.projectlombok:lombok'
+    // Lombok
+    implementation 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    // db
-    runtimeOnly 'com.h2database:h2'
-    runtimeOnly 'com.mysql:mysql-connector-j'
+    // 데이터베이스
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'com.h2database:h2'
 
-    // jpa
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // 인증 및 문서화
+    implementation 'com.auth0:java-jwt:4.2.1'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
 
-    // validation
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-    // security
-    implementation 'org.springframework.boot:spring-boot-starter-security'
+    // 테스트
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
-    // jwt
-    implementation 'io.jsonwebtoken:jjwt:0.9.1'
-    implementation 'com.sun.xml.bind:jaxb-impl:4.0.1'
-    implementation 'com.sun.xml.bind:jaxb-core:4.0.1'
-    implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+    // JPA 및 Hibernate
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
-    // test
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // QueryDSL
+//    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"
+//    annotationProcessor(
+//            "jakarta.persistence:jakarta.persistence-api",
+//            "jakarta.annotation:jakarta.annotation-api",
+//            "com.querydsl:querydsl-apt:${queryDslVersion}:jakarta"
+//    )
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+
+
+
+}
+
+
+bootJar {
+    mainClass = 'com.github.devsns.DevSnsApplication'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+
+clean {
+    delete file('src/main/generated')
+}
+

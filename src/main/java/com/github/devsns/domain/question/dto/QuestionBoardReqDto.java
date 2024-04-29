@@ -1,6 +1,8 @@
 package com.github.devsns.domain.question.dto;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter

@@ -1,29 +1,40 @@
-//package com.github.devsns.domain.notifications.controller;
-//
-//import com.github.devsns.domain.notifications.dto.NotificationDto;
-//import com.github.devsns.domain.notifications.entity.Notification;
-//import com.github.devsns.domain.notifications.service.NotificationService;
-//import org.springframework.messaging.simp.SimpMessagingTemplate;
-//import org.springframework.web.bind.annotation.*;
-//
-//import java.util.List;
-//
-//@RestController
-//public class NotificationController {
-//    private final NotificationService notificationService;
-//    private final SimpMessagingTemplate messagingTemplate;
-//
-//    public NotificationController(NotificationService notificationService, SimpMessagingTemplate messagingTemplate) {
-//        this.notificationService = notificationService;
-//        this.messagingTemplate = messagingTemplate;
-//    }
-//
-//    @GetMapping("/api/notifications")
-//    public void sendRecentNotifications() {
-//        List<NotificationDto> recentNotifications = notificationService.sendNotificationToUser(1L); // 최신 10개 알림을 가져옵니다.
-//        messagingTemplate.convertAndSend("/topic/notifications", recentNotifications); // 최신 알림을 클라이언트에게 전송합니다.
-//    }
-//}
+package com.github.devsns.domain.notifications.controller;
 
-//로그인 성공 시 아래 주입해서 실행하도록 하기.
-// notificationService.sendNotificationToUser(userId);
+import com.github.devsns.domain.notifications.dto.NotificationRequest;
+import com.github.devsns.domain.notifications.entity.Notification;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+
+
+@Controller
+@Tag(name = "알림 읽음 API", description = "웹소켓으로 전달 된 알림 읽음 처리")
+public class NotificationController {
+
+    @Autowired
+    private EntityManager entityManager;
+    @PostMapping("/api/v1/notification/read")
+    @Transactional
+    @Operation(summary = "notificationId 전달 후 처리")
+    public ResponseEntity<String> readNotification(@RequestBody NotificationRequest request) {
+        Long notificationId = request.getNotificationId();
+        Notification notification = entityManager.find(Notification.class, notificationId);
+        if (notification != null) {
+            if (notification.isRead()) {
+                return ResponseEntity.badRequest().body("이미 읽은 알림입니다.");
+            }
+            notification.setRead(true);
+            entityManager.merge(notification);
+            return ResponseEntity.ok("해당 알림을 읽었습니다.");
+        } else {
+            return ResponseEntity.badRequest().body("알림을 찾을 수 없습니다.");
+        }
+    }
+}

@@ -1,5 +1,6 @@
 package com.github.devsns.domain.question.entity;
 
+import com.github.devsns.domain.answers.entity.AnswerEntity;
 import com.github.devsns.domain.question.dto.QuestionBoardReqDto;
 import com.github.devsns.domain.user.entitiy.UserEntity;
 import jakarta.persistence.*;
@@ -9,7 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,37 +32,43 @@ public class QuestionBoardEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private UserEntity user;
+    private UserEntity questioner;
 
     @Column(name = "title")
     private String title;
 
-    @OneToOne
-    @JoinColumn(name = "content_id")
-    private ContentEntity content;
+    @Column(name = "content")
+    private String content;
 
-    @OneToMany(mappedBy = "questionBoard")
-    private List<LikeEntity> like = new ArrayList<>();
-
-    @DateTimeFormat(pattern = "yy.mm.dd hh:mm")
+    @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @DateTimeFormat(pattern = "yy.mm.dd hh:mm")
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-//    @OneToMany(mappedBy = "questionBoard", cascade = CascadeType.PERSIST, orphanRemoval = true)
-//    @JoinColumn(name = "ques_id")
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    private List<AnswerEntity> answer = new ArrayList<AnswerEntity>();
+    @OneToMany(mappedBy = "questionBoard", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuestionLike> likes = new ArrayList<>();
 
-    public static QuestionBoardEntity toEntity(/*UserEntity user,*/ QuestionBoardReqDto questionBoardReqDto) {
-        return QuestionBoardEntity.builder()
-//                .user(user)
+
+    @OneToMany(mappedBy = "questionBoard", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<AnswerEntity> answers = new ArrayList<>();
+
+
+
+    public static QuestionBoardEntity toEntity(UserEntity user, QuestionBoardReqDto questionBoardReqDto) {
+        QuestionBoardEntity questionBoard = builder()
+                .questioner(user)
                 .title(questionBoardReqDto.getTitle())
-                .content(ContentEntity.toEntity(questionBoardReqDto.getContent()))
+                .content(questionBoardReqDto.getContent())
                 .createdAt(LocalDateTime.now())
                 .build();
+
+        return questionBoard;
     }
+
 }

@@ -1,94 +1,73 @@
 package com.github.devsns.domain.answers.controller;
 
-import com.github.devsns.domain.answers.dto.AnswerRequest;
+import com.github.devsns.domain.answers.dto.AnswerReqDto;
 import com.github.devsns.domain.answers.service.AnswerService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import com.github.devsns.domain.question.dto.like.LikeAnswerDto;
+import com.github.devsns.global.component.ExtractUserDataUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
 
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("/api")
+@Tag(name = "답변 API", description = "답변 C, U, D 및 좋아요/싫어요 C,D")
 public class AnswerController {
 
     private final AnswerService answerService;
+    private final ExtractUserDataUtil extractUserDataUtil;
 
-    public AnswerController(AnswerService answerService) {
-        this.answerService = answerService;
-    }
 
-    // JWT에서 사용자 ID 추출하는 메서드
-    public Long extractUserIdFromJwt(String jwtToken) {
-        // 토큰 발급 시 사용한 암호화 키
-        String secretKey = "your-secret-key";
 
-        // JWT 토큰에서 payload 추출
-        Claims claims = Jwts.parser()
-                .setSigningKey(secretKey.getBytes())
-                .parseClaimsJws(jwtToken)
-                .getBody();
-
-        // payload에서 사용자 ID 추출
-        return claims.get("userId", Long.class);
-    }
-
-    @PostMapping("/api/answer/{quesId}/create")
+    @Operation(summary = "질문(질문 ID)에 답변을 생성")
+    @PostMapping("/v1/question/{quesId}/answer/create")
     public ResponseEntity<String> createAnswer(@PathVariable Long quesId,
-                                               @RequestBody AnswerRequest answerRequest,
-                                               @RequestHeader("Authorization") String jwtToken) {
+                                               @RequestBody AnswerReqDto answerReqDto,
+                                               Authentication authentication) {
 
-        // JWT에서 사용자 ID 추출
-        Long userId = extractUserIdFromJwt(jwtToken);
+        // Authentication 객체에서 사용자 ID 추출
+        Long userId = extractUserDataUtil.extractUserIdFromAuthentication(authentication);
 
-        String title = answerRequest.getTitle();
-        String content = answerRequest.getContent();
+        String content = answerReqDto.getContent();
+        String userName = extractUserDataUtil.extractUserNameFromAuthentication(authentication);
+
 
         // AnswerService의 createAnswer() 메서드 호출
-        answerService.createAnswer(quesId, userId, title, content);
+        answerService.createAnswer(quesId, userId, userName, content);
 
         return ResponseEntity.ok("답변 작성 완료");
-
     }
 
-    @PostMapping("/api/answer/{answerId}/like")
-    public ResponseEntity<String> likeAnswer(@PathVariable Long answerId,
-                                             @RequestHeader("Authorization") String jwtToken) {
+    @Operation(summary = "답변에 좋아요 및 좋아요 취소 / 최초 좋아요면 저장, 이미 좋아요 내역 있으면 취소")
+    @PatchMapping("/v1/answer/{answerId}/like")
+    public ResponseEntity<?> toggleLikeAnswer(@PathVariable Long answerId,
+                                              Authentication authentication) {
         try {
-            // JWT에서 사용자 ID 추출
-            Long userId = extractUserIdFromJwt(jwtToken);
+            // Authentication 객체에서 사용자 ID 추출
+            Long userId = extractUserDataUtil.extractUserIdFromAuthentication(authentication);
             // 답변 소유자 확인
             answerService.checkAnswerer(answerId, userId);
-            // 답변에 좋아요를 추가
-            answerService.likeAnswer(answerId, userId);
-            return ResponseEntity.ok("답변에 좋아요를 추가");
+            // 좋아요 확인
+            LikeAnswerDto answer = answerService.updateAnswerReaction(answerId, userId);
+            return ResponseEntity.ok(answer);
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().body("답변이 존재하지 않습니다");
         }
     }
 
-    @PostMapping("/api/answer/{answerId}/unlike")
-    public ResponseEntity<String> unlikeAnswer(@PathVariable Long answerId,
-                                               @RequestHeader("Authorization") String jwtToken) {
-        try {
-            // JWT에서 사용자 ID 추출
-            Long userId = extractUserIdFromJwt(jwtToken);
-            // 답변 소유자 확인
-            answerService.checkAnswerer(answerId, userId);
-            // 답변에 좋아요를 취소
-            answerService.unlikeAnswer(answerId, userId);
-            return ResponseEntity.ok("답변에 좋아요를 취소");
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body("답변이 존재하지 않습니다");
-        }
-    }
 
-    @DeleteMapping("/api/answer/{answerId}/delete")
+    @Operation(summary = "답변 삭제 기능 => 답변 삭제 시 모든 연관 요소 삭제")
+    @DeleteMapping("/v1/answer/{answerId}/delete")
     public ResponseEntity<String> deleteAnswer(@PathVariable Long answerId,
-                                               @RequestHeader("Authorization") String jwtToken) {
+                                               Authentication authentication) {
         try {
-            // JWT에서 사용자 ID 추출
-            Long userId = extractUserIdFromJwt(jwtToken);
+            // Authentication 객체에서 사용자 ID 추출
+            Long userId = extractUserDataUtil.extractUserIdFromAuthentication(authentication);
             // 답변 소유자 확인
             answerService.checkAnswerer(answerId, userId);
             // 답변 삭제
@@ -98,22 +77,21 @@ public class AnswerController {
             return ResponseEntity.badRequest().body("답변이 존재하지 않습니다");
         }
     }
-
-    @PutMapping("/api/answer/{answerId}/update")
+    @Operation(summary = "답변 삭제 기능")
+    @PutMapping("/v1/answer/{answerId}/update")
     public ResponseEntity<String> updateAnswer(@PathVariable Long answerId,
-                                               @RequestBody AnswerRequest answerRequest,
-                                               @RequestHeader("Authorization") String jwtToken) {
+                                               @RequestBody AnswerReqDto answerReqDto,
+                                               Authentication authentication) {
 
-        String title = answerRequest.getTitle();
-        String content = answerRequest.getContent();
+        String content = answerReqDto.getContent();
 
         try {
-            // JWT에서 사용자 ID 추출
-            Long userId = extractUserIdFromJwt(jwtToken);
+            // Authentication 객체에서 사용자 ID 추출
+            Long userId = extractUserDataUtil.extractUserIdFromAuthentication(authentication);
             // 답변 소유자 확인
             answerService.checkAnswerer(answerId, userId);
             // 답변 업데이트
-            answerService.updateAnswer(answerId, userId, title, content);
+            answerService.updateAnswer(answerId, userId, content);
             return ResponseEntity.ok("답변 업데이트");
 
         } catch (NoSuchElementException e) {
